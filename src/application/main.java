@@ -16,6 +16,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyCode;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -159,6 +160,13 @@ public class main extends Application {
 
 
 
+        //::::::::::: Nickname Input :::::::::::\\
+
+        TextInputDialog inputDialog = new TextInputDialog("Nickname");
+        inputDialog.setContentText("Nickname");
+        inputDialog.setHeaderText("Choose your Nickname!");
+
+
 
         //------------------------------------------------------ SETTINGS WINDOW ------------------------------------------------------\\
 
@@ -277,6 +285,22 @@ public class main extends Application {
         currentStage.show();
 
 
+        if(!nameChosen){
+            inputDialog.showAndWait();                          // Wait for input
+            USERNAME = inputDialog.getEditor().getText();       // get input
+
+            // Check if input valid
+            // If not -> getInput one more time
+            if (gameMechanics.validNickname(USERNAME)) {
+                validUsername = USERNAME;
+                nameChosen = true;
+            } else {
+                getInput(inputDialog);
+            }
+        }
+
+
+
         //----------------------------------------------------------------------------------------CONTROLS----------------------------------------------------------------------------------------\\
 
 
@@ -320,6 +344,18 @@ public class main extends Application {
     }
 
 
+
+    public static void getInput(TextInputDialog inputDialog) {
+        inputDialog.setHeaderText("Invalid Nickname, try again (1 - 10 characters)");
+        inputDialog.showAndWait();
+        USERNAME = inputDialog.getEditor().getText();       // get input
+        if (!gameMechanics.validNickname(USERNAME)) {
+            validUsername = "Player 1";
+            nameChosen = true;
+        } else {
+            validUsername = USERNAME;
+        }
+    }
 
 
 

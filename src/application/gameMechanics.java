@@ -5,12 +5,33 @@ package application;
 
 import javafx.scene.Group;
 import javafx.scene.image.ImageView;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import static application.variables.*;
 
 
 //---------------------------------CLASS---------------------------------\\
 
 public class gameMechanics {
+
+
+    /**
+     * Checks if nickname is valid
+     * @param USERNAME input username
+     */
+    public static boolean validNickname(String USERNAME) {
+        Pattern p = Pattern.compile(regexp);
+        Matcher m = p.matcher(USERNAME);
+        if (m.matches()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
 
     /**
      * Animates Ghosts

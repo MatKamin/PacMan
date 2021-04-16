@@ -28,6 +28,7 @@ public class variables {
     public static final int height = 1000;      // Window height
 
     public static int score = 0;    // player score
+    public static int highscore;    // Highest score
 
     // TODO: Level
     //static int level = 1;      // level counter
@@ -39,9 +40,10 @@ public class variables {
 
 
     // TODO: Threads
-    //static String USERNAME = "Player 1";
-    //static String validUsername = "Player 1";
-    //static final String regexp = "\\w{1,10}" + "\\s?+" + "\\d{0,3}";
+    static String USERNAME = "Player 1";
+    public static String validUsername = "Player 1";
+    static final String regexp = "\\w{1,10}" + "\\s?+" + "\\d{0,3}";
+    static boolean nameChosen = false;
 
 
     static final String mapFile = "resources/levels/level.txt";
