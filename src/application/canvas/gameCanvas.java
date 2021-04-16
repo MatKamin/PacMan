@@ -87,8 +87,7 @@ public class gameCanvas {
 
             gameMechanics.drawLifes(gameLayout);                    // Draws Life Counter in UI
             gameMechanics.drawLevelCounter(gameLayout);             // Draws Level Counter in UI
-
-
+            
 
         } else {    // If Round is Over
 
@@ -105,7 +104,14 @@ public class gameCanvas {
 
             wallCount = 0;
             dotCount = 0;
+            dotCountAtStart = 0;
             powerPillCount = 0;
+            railVerticalCount = 0;
+            railHorizontalCount = 0;
+            railUpRightCount = 0;
+            railUpLeftCount = 0;
+            railRightUpCount = 0;
+            railLeftUpCount = 0;
 
             pacmanXPos = pacmanXPosStarting;
             pacmanYPos = pacmanYPosStarting;

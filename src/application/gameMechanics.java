@@ -33,6 +33,7 @@ public class gameMechanics {
      */
     public static void spawnFruit(Group gameLayout) {
         if (dotCount == dotCountAtStart - 70 && !fruitSpawned1) {
+
             viewSpawningFruit = new ImageView(spawningFruit);
 
             viewSpawningFruit.setX(14 * widthOneBlock + 2.5);

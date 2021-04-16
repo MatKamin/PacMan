@@ -77,7 +77,12 @@ public class variables {
     public static int dotCountAtStart = 0;
     public static int powerPillCount = 0;
     public static int wallCount = 0;
-
+    public static int railVerticalCount = 0;
+    public static int railHorizontalCount = 0;
+    public static int railUpRightCount = 0;
+    public static int railUpLeftCount = 0;
+    public static int railRightUpCount = 0;
+    public static int railLeftUpCount = 0;
 
     //::::::::::: Pac-Man :::::::::::\\
 
@@ -363,6 +368,104 @@ public class variables {
             e.printStackTrace();
         }
     }
+
+
+    //::::::::::: RAIL VERTICAL :::::::::::\\
+
+    public static ImageView[] viewRailVertical = new ImageView[blockCountHorizontally * blockCountVertically];
+
+    // Creating an image
+    static public Image railVertical;
+
+    static {
+        try {
+            railVertical = new Image(new FileInputStream("resources/mapAssets/railVertical.png"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    //::::::::::: RAIL HORIZONTAL :::::::::::\\
+
+    public static ImageView[] viewRailHorizontal = new ImageView[blockCountHorizontally * blockCountVertically];
+
+    // Creating an image
+    static public Image railHorizontal;
+
+    static {
+        try {
+            railHorizontal = new Image(new FileInputStream("resources/mapAssets/railHorizontal.png"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    //::::::::::: RAIL UP RIGHT :::::::::::\\
+
+    public static ImageView[] viewRailUpRight = new ImageView[blockCountHorizontally * blockCountVertically];
+
+    // Creating an image
+    static public Image railUpRight;
+
+    static {
+        try {
+            railUpRight = new Image(new FileInputStream("resources/mapAssets/railUpRight.png"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //::::::::::: RAIL UP LEFT :::::::::::\\
+
+    public static ImageView[] viewRailUpLeft = new ImageView[blockCountHorizontally * blockCountVertically];
+
+    // Creating an image
+    static public Image railUpLeft;
+
+    static {
+        try {
+            railUpLeft = new Image(new FileInputStream("resources/mapAssets/railUpLeft.png"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //::::::::::: RAIL RIGHT UP :::::::::::\\
+
+    public static ImageView[] viewRailRightUp = new ImageView[blockCountHorizontally * blockCountVertically];
+
+    // Creating an image
+    static public Image railRightUp;
+
+    static {
+        try {
+            railRightUp = new Image(new FileInputStream("resources/mapAssets/railRightUp.png"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //::::::::::: RAIL LEFT UP :::::::::::\\
+
+    public static ImageView[] viewRailLeftUp = new ImageView[blockCountHorizontally * blockCountVertically];
+
+    // Creating an image
+    static public Image railLeftUp;
+
+    static {
+        try {
+            railLeftUp = new Image(new FileInputStream("resources/mapAssets/railLeftUp.png"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+
 
 
 

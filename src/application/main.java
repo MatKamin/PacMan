@@ -109,6 +109,43 @@ public class main extends Application {
             gameLayout.getChildren().add(viewWall[i]);
         }
 
+        // Add Vertical Rails to Map
+        for(int i = 0; i < railVerticalCount; i++){
+            gameLayout.getChildren().remove(viewRailVertical[i]);
+            gameLayout.getChildren().add(viewRailVertical[i]);
+        }
+
+        // Add Horizontal Rails to Map
+        for(int i = 0; i < railHorizontalCount; i++){
+            gameLayout.getChildren().remove(viewRailHorizontal[i]);
+            gameLayout.getChildren().add(viewRailHorizontal[i]);
+        }
+
+        // Add Up Right Rails to Map
+        for(int i = 0; i < railUpRightCount; i++){
+            gameLayout.getChildren().remove(viewRailUpRight[i]);
+            gameLayout.getChildren().add(viewRailUpRight[i]);
+        }
+
+        // Add Up Left Rails to Map
+        for(int i = 0; i < railUpLeftCount; i++){
+            gameLayout.getChildren().remove(viewRailUpLeft[i]);
+            gameLayout.getChildren().add(viewRailUpLeft[i]);
+        }
+
+        // Add Right Up Rails to Map
+        for(int i = 0; i < railRightUpCount; i++){
+            gameLayout.getChildren().remove(viewRailRightUp[i]);
+            gameLayout.getChildren().add(viewRailRightUp[i]);
+        }
+
+        // Add Left Up Rails to Map
+        for(int i = 0; i < railLeftUpCount; i++){
+            gameLayout.getChildren().remove(viewRailLeftUp[i]);
+            gameLayout.getChildren().add(viewRailLeftUp[i]);
+        }
+
+
 
 
         //::::::::::: Timeline :::::::::::\\

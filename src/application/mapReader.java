@@ -150,7 +150,112 @@ public class mapReader {
                             viewWall[wallCount].setFitHeight(heightOneBlock);
 
                             wallCount++;
+                        } else if (value.equals("V")) {
+                            // RAIL VERTICAL
+
+                            notAllowedBox[columnCounter][row] = true;
+                            dots[columnCounter][row] = false;
+                            powerPills[columnCounter][row] = false;
+
+                            viewRailVertical[railVerticalCount] = new ImageView(railVertical);
+                            viewRailVertical[railVerticalCount].setX(columnCounter * widthOneBlock);
+                            viewRailVertical[railVerticalCount].setY(row * heightOneBlock);
+
+                            viewRailVertical[railVerticalCount].setFitWidth(widthOneBlock);
+                            viewRailVertical[railVerticalCount].setFitHeight(heightOneBlock);
+
+                            railVerticalCount++;
+
+
+                        } else if (value.equals("H")) {
+                            // RAIL HORIZONTAL
+
+                            notAllowedBox[columnCounter][row] = true;
+                            dots[columnCounter][row] = false;
+                            powerPills[columnCounter][row] = false;
+
+                            viewRailHorizontal[railHorizontalCount] = new ImageView(railHorizontal);
+                            viewRailHorizontal[railHorizontalCount].setX(columnCounter * widthOneBlock);
+                            viewRailHorizontal[railHorizontalCount].setY(row * heightOneBlock);
+
+                            viewRailHorizontal[railHorizontalCount].setFitWidth(widthOneBlock);
+                            viewRailHorizontal[railHorizontalCount].setFitHeight(heightOneBlock);
+
+                            railHorizontalCount++;
+
+
+                        } else if (value.equals("R")) {
+                            // UP RIGHT
+
+                            notAllowedBox[columnCounter][row] = true;
+                            dots[columnCounter][row] = false;
+                            powerPills[columnCounter][row] = false;
+
+                            viewRailUpRight[railUpRightCount] = new ImageView(railUpRight);
+                            viewRailUpRight[railUpRightCount].setX(columnCounter * widthOneBlock);
+                            viewRailUpRight[railUpRightCount].setY(row * heightOneBlock);
+
+                            viewRailUpRight[railUpRightCount].setFitWidth(widthOneBlock);
+                            viewRailUpRight[railUpRightCount].setFitHeight(heightOneBlock);
+
+                            railUpRightCount++;
+
+
+
+                        } else if (value.equals("L")) {
+                            // UP LEFT
+
+                            notAllowedBox[columnCounter][row] = true;
+                            dots[columnCounter][row] = false;
+                            powerPills[columnCounter][row] = false;
+
+                            viewRailUpLeft[railUpLeftCount] = new ImageView(railUpLeft);
+                            viewRailUpLeft[railUpLeftCount].setX(columnCounter * widthOneBlock);
+                            viewRailUpLeft[railUpLeftCount].setY(row * heightOneBlock);
+
+                            viewRailUpLeft[railUpLeftCount].setFitWidth(widthOneBlock);
+                            viewRailUpLeft[railUpLeftCount].setFitHeight(heightOneBlock);
+
+                            railUpLeftCount++;
+
+
+
+
+                        } else if (value.equals("U")) {
+                            // RIGHT UP
+
+                            notAllowedBox[columnCounter][row] = true;
+                            dots[columnCounter][row] = false;
+                            powerPills[columnCounter][row] = false;
+
+                            viewRailRightUp[railRightUpCount] = new ImageView(railRightUp);
+                            viewRailRightUp[railRightUpCount].setX(columnCounter * widthOneBlock);
+                            viewRailRightUp[railRightUpCount].setY(row * heightOneBlock);
+
+                            viewRailRightUp[railRightUpCount].setFitWidth(widthOneBlock);
+                            viewRailRightUp[railRightUpCount].setFitHeight(heightOneBlock);
+
+                            railRightUpCount++;
+
+
+
+                        } else if (value.equals("D")) {
+                            // LEFT UP
+
+                            notAllowedBox[columnCounter][row] = true;
+                            dots[columnCounter][row] = false;
+                            powerPills[columnCounter][row] = false;
+
+                            viewRailLeftUp[railLeftUpCount] = new ImageView(railLeftUp);
+                            viewRailLeftUp[railLeftUpCount].setX(columnCounter * widthOneBlock);
+                            viewRailLeftUp[railLeftUpCount].setY(row * heightOneBlock);
+
+                            viewRailLeftUp[railLeftUpCount].setFitWidth(widthOneBlock);
+                            viewRailLeftUp[railLeftUpCount].setFitHeight(heightOneBlock);
+
+                            railLeftUpCount++;
                         }
+
                     }
                 }
 
