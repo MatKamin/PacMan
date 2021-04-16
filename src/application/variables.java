@@ -19,6 +19,11 @@ public class variables {
 
     //---------------------------------VARIABLES---------------------------------\\
 
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+
+
+
     public static final int width = 1000;       // Window width
     public static final int height = 1000;      // Window height
 
@@ -39,9 +44,13 @@ public class variables {
     //static final String regexp = "\\w{1,10}" + "\\s?+" + "\\d{0,3}";
 
 
-    static final String mapFile = "resources/levels/level2.txt";
+    static final String mapFile = "resources/levels/level.txt";
 
     public static int lifesCounter = 3;
+    public static int lifesOriginally = 3;
+
+    public static int levelCounter = 0;
+    public static int startingLevel = 1;
 
     public static int blockCountHorizontally = 29;
     public static int blockCountVertically = 36;

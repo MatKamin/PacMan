@@ -73,16 +73,19 @@ public class gameMechanics {
      * @param gameLayout Group with the gameLayout
      */
     public static void drawLifes(Group gameLayout) {
-        for (int i = 1; i <= lifesCounter; i++) {
-            viewLifes = new ImageView(lifes);
+        if(lifesCounter != lifesOriginally){
 
-            viewLifes.setX(i * (widthOneBlock + 10));
-            viewLifes.setY(blockCountVertically * heightOneBlock);
-            viewLifes.setFitWidth(widthOneBlock);
-            viewLifes.setFitHeight(heightOneBlock);
+            for (int i = 1; i <= lifesCounter; i++) {
+                viewLifes = new ImageView(lifes);
 
-            gameLayout.getChildren().remove(viewLifes);
-            gameLayout.getChildren().add(viewLifes);
+                viewLifes.setX(i * (widthOneBlock + 10));
+                viewLifes.setY(blockCountVertically * heightOneBlock);
+                viewLifes.setFitWidth(widthOneBlock);
+                viewLifes.setFitHeight(heightOneBlock);
+
+                gameLayout.getChildren().addAll(viewLifes);
+            }
+            lifesOriginally--;
         }
     }
 
@@ -94,16 +97,20 @@ public class gameMechanics {
     public static void drawLevelCounter(Group gameLayout) {
         // TODO
 
-        viewCherry = new ImageView(cherry);
+        if (levelCounter != startingLevel){
+            viewCherry = new ImageView(cherry);
 
-        viewCherry.setX((blockCountHorizontally - 2) * widthOneBlock);
-        viewCherry.setY(blockCountVertically * heightOneBlock);
+            viewCherry.setX((blockCountHorizontally - 2) * widthOneBlock);
+            viewCherry.setY(blockCountVertically * heightOneBlock);
 
-        viewCherry.setFitWidth(widthOneBlock);
-        viewCherry.setFitHeight(heightOneBlock);
+            viewCherry.setFitWidth(widthOneBlock);
+            viewCherry.setFitHeight(heightOneBlock);
 
-        gameLayout.getChildren().remove(viewCherry);
-        gameLayout.getChildren().add(viewCherry);
+            gameLayout.getChildren().remove(viewCherry);
+            gameLayout.getChildren().add(viewCherry);
+
+            levelCounter++;
+        }
     }
 
     /**
@@ -134,6 +141,7 @@ public class gameMechanics {
             gameLayout.getChildren().remove(viewSpawningFruit);
 
         } else if (collectableFruit) {
+
             // Get Random Lifespan of the Fruit
             if (doOnce) {
                 delayFruit = (int) (Math.random() * (10000 - 9000 + 1)) + 9000;
@@ -216,8 +224,8 @@ public class gameMechanics {
             viewClearer.setX(pacmanColumn * widthOneBlock + 2.5);
             viewClearer.setY(pacmanRow * heightOneBlock + 2.5);
 
-            gameLayout.getChildren().remove(viewClearer);
-            gameLayout.getChildren().add(viewClearer);
+            //gameLayout.getChildren().remove(viewClearer);
+            gameLayout.getChildren().addAll(viewClearer);
 
             // Override with Pac-Man
             if (pacmanFacingRight) {
@@ -238,6 +246,7 @@ public class gameMechanics {
             }
         }
     }
+
 
     /**
      * Makes Pac-Man movement possible

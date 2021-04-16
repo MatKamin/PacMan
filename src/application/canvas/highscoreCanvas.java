@@ -20,7 +20,6 @@ public class highscoreCanvas {
         gc.setFill(Color.BLACK);                // Set background color
         gc.fillRect(0, 0, width, height);    // Draw background
 
-
         //::::::::::: Text :::::::::::\\
 
         gc.setFill(fontColor);          // Set font color
@@ -28,6 +27,8 @@ public class highscoreCanvas {
         Font highscoreFont = Font.loadFont("file:resources/fonts/emulogic.ttf", 50);
         gc.setFont(highscoreFont);
         gc.setTextAlign(TextAlignment.CENTER);      // Align text to center
+
+
 
         gc.strokeText("HIGHSCORES", width / 2, height / 7);
 
@@ -181,7 +182,6 @@ public class highscoreCanvas {
         gc.strokeText(score[4][1], width / 5 + width / 5, height / 6 + 350);
         gc.strokeText(score[4][2], width / 5 + width / 5 + width / 5, height / 6 + 350);
         gc.strokeText("#5", width / 5 + width / 5 + width / 5 + width / 5, height / 6 + 350);
-
 
     }
 }

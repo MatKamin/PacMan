@@ -39,17 +39,16 @@ public class gameCanvas {
 
         //::::::::::: Text Settings :::::::::::\\
 
+
         gc.setFill(fontColor);                       // Set font color
         gc.setFont(pacmanFontUI);                    // Set font
         gc.setStroke(fontColor);                     // Set font color for Stroke
         gc.setTextAlign(TextAlignment.CENTER);       // Align text to center
 
 
-
         //::::::::::: Read Map :::::::::::\\
 
         mapReader.readMap();
-
 
 
 
@@ -63,6 +62,7 @@ public class gameCanvas {
         //::::::::::: Score :::::::::::\\
 
         gc.fillText("Score: " + score, (int)((widthOneBlock * blockCountHorizontally)/6), heightOneBlock * 2);
+
 
 
 
@@ -102,6 +102,4 @@ public class gameCanvas {
 
         }
     }
-
-
 }

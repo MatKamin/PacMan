@@ -24,6 +24,7 @@ public class highscoresButtonFunction {
             // Primary Stage -> Settings Canvas
             currentStage.setScene(highscoreScene);
             currentStage.show();
+            System.out.println("--- HIGHSCORES OPENED ---");
         });
 
     }

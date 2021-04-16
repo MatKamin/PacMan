@@ -35,9 +35,9 @@ public class menuCanvas {
         gc.setTextAlign(TextAlignment.CENTER);                // Align text to center
 
 
-
         //::::::::::: Text :::::::::::\\
 
         gc.fillText("Pac-Man", width/2 , pacmanFontSize * 1.5);
+
     }
 }

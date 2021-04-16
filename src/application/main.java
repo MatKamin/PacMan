@@ -101,6 +101,7 @@ public class main extends Application {
             gameLayout.getChildren().add(viewPowerPill[i]);
         }
 
+
         // Add Walls to Map
         for(int i = 0; i < wallCount; i++){
             gameLayout.getChildren().remove(viewWall[i]);
@@ -120,6 +121,7 @@ public class main extends Application {
 
 
 
+
         //------------------------------------------------------ SETTINGS WINDOW ------------------------------------------------------\\
 
         // TODO: Settings
@@ -135,9 +137,9 @@ public class main extends Application {
         // Scene
         Scene settingsScene = new Scene(settingsLayout, width, height);
 
+
         // Adds Canvas to Layout
         settingsLayout.getChildren().addAll(canvasSettings);
-
 
 
 
@@ -158,7 +160,6 @@ public class main extends Application {
 
         // Adds Canvas to Layout
         highscoreLayout.getChildren().addAll(canvasHighscore);
-
 
 
         //------------------------------------------------------ MENU WINDOW ------------------------------------------------------\\
@@ -197,6 +198,7 @@ public class main extends Application {
 
 
 
+
         //::::::::::: SETTINGS Button :::::::::::\\
 
         // Label
@@ -204,7 +206,6 @@ public class main extends Application {
         settingsButton.setStroke(fontColor);
         pacmanFontSize = 60;
         settingsButton.setFont(pacmanFont);
-
 
         // Option Label Position
         settingsButton.setLayoutY(height - (int)(height / 10) * 2);
@@ -218,11 +219,9 @@ public class main extends Application {
         highscoreButton.setStroke(fontColor);
         highscoreButton.setFont(pacmanFont);
 
-
         // Option Label Position
         highscoreButton.setLayoutY(height - (int)(height / 10));
         highscoreButton.setLayoutX((int)(width / 2) - highscoreButton.getBoundsInParent().getWidth() / 2 );
-
 
 
         // FUNCTIONALITY
@@ -250,7 +249,9 @@ public class main extends Application {
         // Sets Background Music
         // sounds.playBackgroundMusic();
 
+        System.out.println(ANSI_GREEN + "--- Application Started ---");
         launch(args);
+        System.out.println(ANSI_RESET);
     }
 }
 

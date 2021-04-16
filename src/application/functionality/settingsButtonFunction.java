@@ -25,6 +25,7 @@ public class settingsButtonFunction {
             // Primary Stage -> Settings Canvas
             currentStage.setScene(settingsScene);
             currentStage.show();
+            System.out.println("--- SETTINGS OPENED ---");
         });
 
     }

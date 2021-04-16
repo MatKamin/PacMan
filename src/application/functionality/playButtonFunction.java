@@ -7,7 +7,8 @@ import javafx.scene.Scene;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import static application.variables.gameStarted;
+import static application.variables.ANSI_GREEN;
+import static application.variables.*;
 
 
 //---------------------------------CLASS---------------------------------\\
@@ -30,6 +31,9 @@ public class playButtonFunction {
             currentStage.show();
 
             tl.playFromStart();                            // Start Animation
+
+            System.out.println("--- GAME STARTED ---");
+            lifesCounter--;
         });
     }
 }
