@@ -16,15 +16,16 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
 
 import static application.variables.*;
 
 
 public class main extends Application {
+
 
 
     /**
@@ -238,9 +239,315 @@ public class main extends Application {
         currentStage.setScene(menuScene);
         currentStage.show();
 
+
+        //----------------------------------------------------------------------------------------CONTROLS----------------------------------------------------------------------------------------\\
+
+
+        //--------------------------------------------SETTINGS CONTROLS--------------------------------------------\\
+
+        settingsScene.setOnKeyPressed(e -> {
+
+            //::::::::::: ESCAPE :::::::::::\\
+
+            if (e.getCode() == KeyCode.ESCAPE) {      // If "Escape" Pressed
+
+                try {
+                    start(currentStage);            // Restart with new settings
+                    gameStarted = false;
+
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+            }
+        });
+
+
+        //--------------------------------------------HIGHSCORE CONTROLS--------------------------------------------\\
+
+        highscoreScene.setOnKeyPressed(e -> {
+
+            //::::::::::: ESCAPE :::::::::::\\
+
+            if (e.getCode() == KeyCode.ESCAPE) {      // If "Escape" Pressed
+
+                currentStage.setScene(menuScene);   // Go to Menu
+            }
+        });
+
+
+
+        //--------------------------------------------GAME CONTROLS--------------------------------------------\\
+
+        controls(gameScene, gameLayout, tl, gcGame, currentStage, menuScene);     // Controls
+
     }
 
 
+
+
+
+
+    public void controls(Scene gameScene, Group gameLayout, Timeline tl, GraphicsContext gc, Stage primaryStage, Scene menuScene) {
+
+        if(startingStatus){
+            //::::::::::: Pac-Man GIF :::::::::::\\
+
+            //Setting the position of the image
+            viewPacmanLeft.setX((pacmanXPos));
+            viewPacmanLeft.setY((pacmanYPos));
+
+            //setting the fit height and width of the image view
+            viewPacmanLeft.setFitHeight(characterHeight);
+            viewPacmanLeft.setFitWidth(characterWidth);
+
+            gameLayout.getChildren().remove(viewPacmanUp);
+            gameLayout.getChildren().remove(viewPacmanRight);
+            gameLayout.getChildren().remove(viewPacmanLeft);
+            gameLayout.getChildren().remove(viewPacmanDown);
+
+            gameLayout.getChildren().addAll(viewPacmanLeft);
+
+            startingStatus = false;
+            allowNextMoveRight = true;
+            allowNextMoveLeft = true;
+        }
+
+        gameScene.setOnKeyPressed(e -> {
+
+            //::::::::::: "UP" KEY & "W" KEY :::::::::::\\
+
+            if ((e.getCode() == KeyCode.W || e.getCode() == KeyCode.UP)) {
+                waitingForTurn = 'u';
+
+                if (allowNextMoveUp) {
+
+                    //::::::::::: Pac-Man GIF :::::::::::\\
+
+                    //Setting the position of the image
+                    viewPacmanUp.setX((pacmanXPos));
+                    viewPacmanUp.setY((pacmanYPos));
+
+                    //setting the fit height and width of the image view
+                    viewPacmanUp.setFitHeight(characterHeight);
+                    viewPacmanUp.setFitWidth(characterWidth);
+
+                    gameLayout.getChildren().remove(viewPacmanRight);
+                    gameLayout.getChildren().remove(viewPacmanUp);
+                    gameLayout.getChildren().remove(viewPacmanLeft);
+                    gameLayout.getChildren().remove(viewPacmanDown);
+
+                    gameLayout.getChildren().add(viewPacmanUp);
+
+                    pacmanFacingUp = true;
+                    pacmanFacingDown = false;
+                    pacmanFacingLeft = false;
+                    pacmanFacingRight = false;
+                    velocityPacmanHorizontal = 0;
+                    velocityPacmanVertical = -1;
+
+                    hitUpWall = false;
+                }
+            }
+
+
+
+
+
+            //::::::::::: "RIGHT" KEY & "D" KEY :::::::::::\\
+
+            if ((e.getCode() == KeyCode.D || e.getCode() == KeyCode.RIGHT)) {
+                waitingForTurn = 'r';
+
+                if (allowNextMoveRight) {
+                    //::::::::::: Pac-Man GIF :::::::::::\\
+
+                    //Setting the position of the image
+                    viewPacmanRight.setX((pacmanXPos));
+                    viewPacmanRight.setY((pacmanYPos));
+
+                    //setting the fit height and width of the image view
+                    viewPacmanRight.setFitHeight(characterHeight);
+                    viewPacmanRight.setFitWidth(characterWidth);
+
+                    gameLayout.getChildren().remove(viewPacmanUp);
+                    gameLayout.getChildren().remove(viewPacmanRight);
+                    gameLayout.getChildren().remove(viewPacmanLeft);
+                    gameLayout.getChildren().remove(viewPacmanDown);
+
+                    gameLayout.getChildren().addAll(viewPacmanRight);
+
+                    pacmanFacingRight = true;
+                    pacmanFacingDown = false;
+                    pacmanFacingLeft = false;
+                    pacmanFacingUp = false;
+                    velocityPacmanHorizontal = 1;
+                    velocityPacmanVertical = 0;
+
+                    hitRightWall = false;
+                }
+            }
+
+
+
+
+
+            //::::::::::: "LEFT" KEY & "A" KEY :::::::::::\\
+
+            if ((e.getCode() == KeyCode.A || e.getCode() == KeyCode.LEFT)) {
+                waitingForTurn = 'l';
+
+                if (allowNextMoveLeft){
+
+
+                    //::::::::::: Pac-Man GIF :::::::::::\\
+
+                    //Setting the position of the image
+                    viewPacmanLeft.setX((pacmanXPos));
+                    viewPacmanLeft.setY((pacmanYPos));
+
+                    //setting the fit height and width of the image view
+                    viewPacmanLeft.setFitHeight(characterHeight);
+                    viewPacmanLeft.setFitWidth(characterWidth);
+
+                    gameLayout.getChildren().remove(viewPacmanUp);
+                    gameLayout.getChildren().remove(viewPacmanRight);
+                    gameLayout.getChildren().remove(viewPacmanLeft);
+                    gameLayout.getChildren().remove(viewPacmanDown);
+
+                    gameLayout.getChildren().addAll(viewPacmanLeft);
+
+
+                    pacmanFacingLeft = true;
+                    pacmanFacingDown = false;
+                    pacmanFacingUp = false;
+                    pacmanFacingRight = false;
+                    velocityPacmanHorizontal = -1;
+                    velocityPacmanVertical = 0;
+
+                    hitLeftWall = false;
+                }
+            }
+
+
+
+
+            //::::::::::: "DOWN" KEY & "S" KEY :::::::::::\\
+
+            if ((e.getCode() == KeyCode.S || e.getCode() == KeyCode.DOWN)) {
+                waitingForTurn = 'd';
+
+                if (allowNextMoveDown){
+
+                    //::::::::::: Pac-Man GIF :::::::::::\\
+
+                    //Setting the position of the image
+                    viewPacmanDown.setX(pacmanXPos);
+                    viewPacmanDown.setY(pacmanYPos);
+
+
+
+                    //setting the fit height and width of the image view
+                    viewPacmanDown.setFitHeight(characterHeight);
+                    viewPacmanDown.setFitWidth(characterWidth);
+
+                    gameLayout.getChildren().remove(viewPacmanUp);
+                    gameLayout.getChildren().remove(viewPacmanRight);
+                    gameLayout.getChildren().remove(viewPacmanLeft);
+                    gameLayout.getChildren().remove(viewPacmanDown);
+
+                    gameLayout.getChildren().addAll(viewPacmanDown);
+
+                    pacmanFacingDown = true;
+                    pacmanFacingUp = false;
+                    pacmanFacingLeft = false;
+                    pacmanFacingRight = false;
+                    velocityPacmanHorizontal = 0;
+                    velocityPacmanVertical = 1;
+
+                    hitDownWall = false;
+                }
+            }
+
+
+
+            //::::::::::: DEBUG :::::::::::\\
+
+            if (e.getCode() == KeyCode.SPACE) {
+                debug = true;
+            }
+
+
+
+
+
+
+
+
+            // Pause Game when "P" Pressed
+            if (e.getCode() == KeyCode.P) {   // If "P" Pressed
+
+                startingStatus = false;
+                tl.stop();    // Stop Timeline/Animation
+
+
+                //::::::::::: Pause Menu :::::::::::\\
+
+                gc.fillText("PAUSED",(blockCountHorizontally / 2) * widthOneBlock , blockCountVertically * heightOneBlock);
+                gc.fillText("Press P to resume", (blockCountHorizontally / 2) * widthOneBlock, ( blockCountVertically + 1 ) * heightOneBlock);
+                gc.fillText("Press Esc to leave", (blockCountHorizontally / 2) * widthOneBlock, ( blockCountVertically  + 2 ) * heightOneBlock);
+
+
+                gameScene.setOnKeyPressed(el -> {
+
+                    // Continue Game when P Pressed
+                    if (el.getCode() == KeyCode.P) {      // If "P" pressed again
+
+                        tl.play();      // Continue Timeline/Animation
+
+                        controls(gameScene, gameLayout, tl, gc, primaryStage, menuScene);      // Recursion -> Check if pressed again
+                    }
+
+                    // Leave Game on Esc with Pause
+                    if (el.getCode() == KeyCode.ESCAPE) {         // If "Escape" pressed
+
+                        try {
+                            startingStatus = true;
+                            gameStarted = false;
+                            start(primaryStage);            // Restart with new settings
+
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                        }
+
+                        tl.jumpTo(Duration.millis(0));          // Restart Animation
+                        tl.stop();
+
+                    }
+                });
+            }
+
+
+            // Leave Game on Esc without Pause
+            if (e.getCode() == KeyCode.ESCAPE) {          // If "Escape" pressed
+
+                try {
+                    startingStatus = true;
+                    gameStarted = false;
+                    start(primaryStage);                 // Restart with new settings
+
+
+
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+
+                tl.jumpTo(Duration.millis(0));          // Restart Animation
+                tl.stop();
+
+            }
+
+        });
+    }
 
 
     public static void main(String[] args){

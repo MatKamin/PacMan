@@ -37,7 +37,7 @@ public class mapReader {
                         columnCounter = -1;
                     } else {
 
-                        if (firstRead && value.equals("S")) {
+                        if (value.equals("S")) {
                             // POWER PILLS
 
                             viewPowerPill[powerPillCount] = new ImageView(powerPill);
@@ -52,7 +52,7 @@ public class mapReader {
 
 
 
-                        } else if (firstRead && value.equals("B")) {
+                        } else if (value.equals("B")) {
                             // DOTS
 
                             viewDot[dotCount] = new ImageView(dot);
@@ -69,7 +69,7 @@ public class mapReader {
 
 
 
-                        } else if ( firstRead && value.equals("1")) {
+                        } else if (value.equals("1")) {
                             // BLINKY
 
                             blinkyXPos = widthOneBlock * columnCounter;
@@ -85,7 +85,7 @@ public class mapReader {
 
 
 
-                        } else if (firstRead && value.equals("2")) {
+                        } else if (value.equals("2")) {
                             // PINKY
 
                             pinkyXPos = widthOneBlock * columnCounter;
@@ -101,11 +101,15 @@ public class mapReader {
 
 
 
-                        } else if (firstRead && value.equals("P")) {
+                        } else if (value.equals("P")) {
                             // PAC-MAN
 
                             pacmanXPos = (widthOneBlock * columnCounter);
                             pacmanYPos = (heightOneBlock * row);
+
+                            pacmanXPosStarting = pacmanXPos;
+                            pacmanYPosStarting = pacmanYPos;
+
                             pacmanRow = row;
                             pacmanColumn = columnCounter;
 
@@ -115,7 +119,7 @@ public class mapReader {
 
 
 
-                        } else if (firstRead && value.equals("E")) {
+                        } else if (value.equals("E")) {
                             // NOTHING
 
                             //gc.setFill(Color.BLACK);
@@ -131,7 +135,7 @@ public class mapReader {
 
 
 
-                        } else if (firstRead && value.equals("W")) {
+                        } else if (value.equals("W")) {
                             // WALLS
 
                             notAllowedBox[columnCounter][row] = true;

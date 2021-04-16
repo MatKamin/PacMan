@@ -5,7 +5,6 @@ package application;
 
 import javafx.scene.Group;
 import javafx.scene.image.ImageView;
-import static application.functionality.pacmanControls.*;
 import static application.variables.*;
 
 
@@ -407,13 +406,15 @@ public class gameMechanics {
                             if (!notAllowedBox[(int) pacmanColumn][(int) pacmanRow + 1]) {
                                 allowNextMoveDown = true;
                             }
+
+                            allowNextMoveRight = false;
                         }
 
                     } else {
                         allowNextMoveLeft = true;
                         allowNextMoveUp = false;
                         allowNextMoveDown = false;
-                        allowNextMoveRight = false;
+                        allowNextMoveRight = true;
 
                         viewPacmanRight.setX(pacmanXPos);
                         viewPacmanRight.setY(pacmanYPos);
@@ -548,9 +549,10 @@ public class gameMechanics {
                                 allowNextMoveDown = true;
                             }
 
+                            allowNextMoveLeft = false;
                         }
                     } else {
-                        allowNextMoveLeft = false;
+                        allowNextMoveLeft = true;
                         allowNextMoveUp = false;
                         allowNextMoveDown = false;
                         allowNextMoveRight = true;

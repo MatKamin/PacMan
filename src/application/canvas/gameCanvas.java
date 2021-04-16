@@ -3,14 +3,12 @@ package application.canvas;
 
 //---------------------------------IMPORTS---------------------------------\\
 
-import application.functionality.pacmanControls;
 import application.gameMechanics;
 import application.mapReader;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
 import static application.variables.*;
@@ -77,7 +75,7 @@ public class gameCanvas {
 
             //::::::::::: Pac-Man Movement :::::::::::\\
 
-            pacmanControls.controls(gameScene, gameLayout);     // Controls
+
             gameMechanics.pacmanMove(gameLayout);                   // Allows moving
 
             gameMechanics.collectPoints(gameLayout);                // Allows collecting points
@@ -95,11 +93,32 @@ public class gameCanvas {
         } else {    // If Round is Over
 
             // TODO
-            gc.setTextAlign(TextAlignment.CENTER);
-            gc.setFill(Color.WHITE);
-            gc.setFont(Font.font(90));
-            gc.fillText("GAME OVER", (int)(width/2), (int)(height/2));
 
+            firstRead = true;
+
+            score = 0;
+            lifesCounter = 3;
+            lifesOriginally = 3;
+
+            levelCounter = 0;
+            startingLevel = 1;
+
+            wallCount = 0;
+            dotCount = 0;
+            powerPillCount = 0;
+
+            pacmanXPos = pacmanXPosStarting;
+            pacmanYPos = pacmanYPosStarting;
+
+            velocityPacmanHorizontal = 0;
+            velocityPacmanVertical = 0;
+
+            allowNextMoveDown = false;
+            allowNextMoveUp = false;
+            allowNextMoveRight = true;
+            allowNextMoveLeft = true;
+
+            mapReader.readMap();
         }
     }
 }

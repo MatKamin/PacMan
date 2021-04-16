@@ -22,7 +22,7 @@ public class variables {
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_GREEN = "\u001B[32m";
 
-
+    public static boolean startingStatus = true;
 
     public static final int width = 1000;       // Window width
     public static final int height = 1000;      // Window height
@@ -62,6 +62,7 @@ public class variables {
     public static long characterHeight = heightOneBlock;
 
     public static boolean firstRead = true;     // First time reading Map
+    public static boolean secondRead = false;     // Second time reading Map
 
     public static boolean[][] dots = new boolean[blockCountHorizontally + 1][blockCountVertically];
     public static boolean[][] powerPills = new boolean[blockCountHorizontally + 1][blockCountVertically];
@@ -84,6 +85,10 @@ public class variables {
     public static double pacmanColumn;
     public static double pacmanXPos;
     public static double pacmanYPos;
+
+    public static double pacmanXPosStarting;
+    public static double pacmanYPosStarting;
+
 
     public static double pacmanXPosCenter = pacmanXPos + (int)(characterWidth/2);
     public static double pacmanYPosCenter = pacmanYPos + (int)(characterWidth/2);
@@ -358,6 +363,91 @@ public class variables {
             e.printStackTrace();
         }
     }
+
+
+
+    //::::::::::: Pac-Man RIGHT :::::::::::\\
+
+    //Creating an image
+    public static Image pacmanRight;
+
+    static {
+        try {
+            pacmanRight = new Image(new FileInputStream("resources/characters/pacmanRight.gif"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Setting the image view
+    public static ImageView viewPacmanRight = new ImageView(pacmanRight);
+
+
+
+
+
+
+    //::::::::::: Pac-Man UP :::::::::::\\
+
+    //Creating an image
+    public static Image pacmanUp;
+
+    static {
+        try {
+            pacmanUp = new Image(new FileInputStream("resources/characters/pacmanUp.gif"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Setting the image view
+    public static ImageView viewPacmanUp = new ImageView(pacmanUp);
+
+
+
+
+
+
+
+    //::::::::::: Pac-Man DOWN :::::::::::\\
+
+    //Creating an image
+    public static Image pacmanDown;
+
+    static {
+        try {
+            pacmanDown = new Image(new FileInputStream("resources/characters/pacmanDown.gif"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Setting the image view
+    public static ImageView viewPacmanDown = new ImageView(pacmanDown);
+
+
+
+
+
+
+
+
+
+    //::::::::::: Pac-Man LEFT :::::::::::\\
+
+    //Creating an image
+    public static Image pacmanLeft;
+
+    static {
+        try {
+            pacmanLeft = new Image(new FileInputStream("resources/characters/pacmanLeft.gif"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Setting the image view
+    public static ImageView viewPacmanLeft = new ImageView(pacmanLeft);
 
 }
 
