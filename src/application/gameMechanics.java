@@ -4,7 +4,10 @@ package application;
 //---------------------------------IMPORTS---------------------------------\\
 
 import javafx.scene.Group;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,6 +22,7 @@ public class gameMechanics {
 
     /**
      * Checks if nickname is valid
+     *
      * @param USERNAME input username
      */
     public static boolean validNickname(String USERNAME) {
@@ -30,7 +34,6 @@ public class gameMechanics {
             return false;
         }
     }
-
 
 
     /**
@@ -94,7 +97,7 @@ public class gameMechanics {
      * @param gameLayout Group with the gameLayout
      */
     public static void drawLifes(Group gameLayout) {
-        if(lifesCounter != lifesOriginally){
+        if (lifesCounter != lifesOriginally) {
 
             for (int i = 1; i <= lifesCounter; i++) {
                 viewLifes = new ImageView(lifes);
@@ -118,7 +121,7 @@ public class gameMechanics {
     public static void drawLevelCounter(Group gameLayout) {
         // TODO
 
-        if (levelCounter != startingLevel){
+        if (levelCounter != startingLevel) {
             viewCherry = new ImageView(cherry);
 
             viewCherry.setX((blockCountHorizontally - 2) * widthOneBlock);
@@ -137,12 +140,192 @@ public class gameMechanics {
     /**
      * All Dots have been eaten -> Next Level
      */
-    public static void gameOver() {
-
-        // TODO Level UP
+    public static void gameOver(Group gameLayout, GraphicsContext gc) {
+        // TODO:
 
         if (dotCount == 0) {
-            gameStarted = false;
+            nextLevel = true;
+        }
+        if (nextLevel) {
+            levelCounter++;
+            mapFile = "resources/levels/level" + levelCounter + ".txt";
+            System.out.println(mapFile);
+
+
+            // Remove Dots to Map
+            for (int i = 0; i < dotCount; i++) {
+                gameLayout.getChildren().remove(viewDot[i]);
+            }
+
+
+            // Remove Power Pills to Map
+            for(int i = 0; i < powerPillCount; i++){
+                gameLayout.getChildren().remove(viewPowerPill[i]);
+            }
+
+
+            // Remove Walls to Map
+            for(int i = 0; i < wallCount; i++){
+                gameLayout.getChildren().remove(viewWall[i]);
+            }
+
+            // Remove Vertical Rails to Map
+            for(int i = 0; i < railVerticalCount; i++){
+                gameLayout.getChildren().remove(viewRailVertical[i]);
+            }
+
+            // Remove Horizontal Rails to Map
+            for(int i = 0; i < railHorizontalCount; i++){
+                gameLayout.getChildren().remove(viewRailHorizontal[i]);
+            }
+
+            // Remove Up Right Rails to Map
+            for(int i = 0; i < railUpRightCount; i++){
+                gameLayout.getChildren().remove(viewRailUpRight[i]);
+            }
+
+            // Remove Up Left Rails to Map
+            for(int i = 0; i < railUpLeftCount; i++){
+                gameLayout.getChildren().remove(viewRailUpLeft[i]);
+            }
+
+            // Remove Right Up Rails to Map
+            for(int i = 0; i < railRightUpCount; i++){
+                gameLayout.getChildren().remove(viewRailRightUp[i]);
+            }
+
+            // Remove Left Up Rails to Map
+            for(int i = 0; i < railLeftUpCount; i++){
+                gameLayout.getChildren().remove(viewRailLeftUp[i]);
+            }
+
+            gameLayout.getChildren().removeAll(viewBlinky, viewPinky);
+
+
+            nextLevel = false;
+
+
+
+            firstRead = true;
+
+            lifesOriginally = 3;
+
+            startingLevel = 1;
+
+            wallCount = 0;
+            dotCount = 0;
+            dotCountAtStart = 0;
+            powerPillCount = 0;
+            railVerticalCount = 0;
+            railHorizontalCount = 0;
+            railUpRightCount = 0;
+            railUpLeftCount = 0;
+            railRightUpCount = 0;
+            railLeftUpCount = 0;
+
+            pacmanXPos = pacmanXPosStarting;
+            pacmanYPos = pacmanYPosStarting;
+
+            velocityPacmanHorizontal = 0;
+            velocityPacmanVertical = 0;
+
+            allowNextMoveDown = false;
+            allowNextMoveUp = false;
+            allowNextMoveRight = true;
+            allowNextMoveLeft = true;
+
+            fruitSpawned1 = false;
+            fruitSpawned2 = false;
+
+            doOnce = true;
+            doOnce2 = true;
+
+
+            mapReader.readMap();
+
+            // Add Dots to Map
+            for (int i = 0; i < dotCount; i++) {
+                gameLayout.getChildren().remove(viewDot[i]);
+                gameLayout.getChildren().add(viewDot[i]);
+            }
+
+
+            // Add Power Pills to Map
+            for(int i = 0; i < powerPillCount; i++){
+                gameLayout.getChildren().remove(viewPowerPill[i]);
+                gameLayout.getChildren().add(viewPowerPill[i]);
+            }
+
+
+            // Add Walls to Map
+            for(int i = 0; i < wallCount; i++){
+                gameLayout.getChildren().remove(viewWall[i]);
+                gameLayout.getChildren().add(viewWall[i]);
+            }
+
+            // Add Vertical Rails to Map
+            for(int i = 0; i < railVerticalCount; i++){
+                gameLayout.getChildren().remove(viewRailVertical[i]);
+                gameLayout.getChildren().add(viewRailVertical[i]);
+            }
+
+            // Add Horizontal Rails to Map
+            for(int i = 0; i < railHorizontalCount; i++){
+                gameLayout.getChildren().remove(viewRailHorizontal[i]);
+                gameLayout.getChildren().add(viewRailHorizontal[i]);
+            }
+
+            // Add Up Right Rails to Map
+            for(int i = 0; i < railUpRightCount; i++){
+                gameLayout.getChildren().remove(viewRailUpRight[i]);
+                gameLayout.getChildren().add(viewRailUpRight[i]);
+            }
+
+            // Add Up Left Rails to Map
+            for(int i = 0; i < railUpLeftCount; i++){
+                gameLayout.getChildren().remove(viewRailUpLeft[i]);
+                gameLayout.getChildren().add(viewRailUpLeft[i]);
+            }
+
+            // Add Right Up Rails to Map
+            for(int i = 0; i < railRightUpCount; i++){
+                gameLayout.getChildren().remove(viewRailRightUp[i]);
+                gameLayout.getChildren().add(viewRailRightUp[i]);
+            }
+
+            // Add Left Up Rails to Map
+            for(int i = 0; i < railLeftUpCount; i++){
+                gameLayout.getChildren().remove(viewRailLeftUp[i]);
+                gameLayout.getChildren().add(viewRailLeftUp[i]);
+            }
+
+            //::::::::::: Red Ghost (Blinky) GIF :::::::::::\\
+
+            //Setting the position of the image
+            viewBlinky.setX((blinkyColumn * widthOneBlock) + (int)((widthOneBlock - characterWidth) / 2));
+            viewBlinky.setY((blinkyRow * heightOneBlock) + (int)((heightOneBlock - characterHeight) / 2));
+
+
+            //setting the fit height and width of the image view
+            viewBlinky.setFitHeight(characterHeight);
+            viewBlinky.setFitWidth(characterWidth);
+
+
+            //::::::::::: Pink Ghost (Pinky) GIF :::::::::::\\
+
+            //Setting the position of the image
+            viewPinky.setX((pinkyColumn * widthOneBlock) + (int)((widthOneBlock - characterWidth) / 2));
+            viewPinky.setY((pinkyRow * heightOneBlock) + (int)((heightOneBlock - characterHeight) / 2));
+
+
+            //setting the fit height and width of the image view
+            viewPinky.setFitHeight(characterHeight);
+            viewPinky.setFitWidth(characterWidth);
+
+
+            gameLayout.getChildren().addAll(viewBlinky, viewPinky);
+
+
         }
     }
 
@@ -191,6 +374,7 @@ public class gameMechanics {
 
     /**
      * Makes Collecting Dots possible
+     *
      * @param gameLayout Group with the gameLayout
      */
     public static void collectPoints(Group gameLayout) {
@@ -200,8 +384,8 @@ public class gameMechanics {
             score += 10;    // A dot is worth 10 Points
 
             viewClearer = new ImageView(clearer);
-            viewClearer.setFitWidth((int)(widthOneBlock / 2));
-            viewClearer.setFitHeight((int)(heightOneBlock / 2));
+            viewClearer.setFitWidth((int) (widthOneBlock / 2));
+            viewClearer.setFitHeight((int) (heightOneBlock / 2));
             viewClearer.setX(pacmanColumn * widthOneBlock + viewClearer.getFitWidth() / 2);
             viewClearer.setY(pacmanRow * heightOneBlock + viewClearer.getFitHeight() / 2);
 
@@ -231,6 +415,7 @@ public class gameMechanics {
     /**
      * Makes collecting Power Pills possible
      * TODO: Power Pill Effect
+     *
      * @param gameLayout Group with the gameLayout
      */
     public static void collectPowerPill(Group gameLayout) {
@@ -272,6 +457,7 @@ public class gameMechanics {
     /**
      * Makes Pac-Man movement possible
      * TODO: Fix Some Glitches
+     *
      * @param gameLayout Group with the gameLayout
      */
     public static void pacmanMove(Group gameLayout) {
@@ -308,7 +494,7 @@ public class gameMechanics {
             if (!notAllowedBox[(int) pacmanColumn][(int) pacmanRow - 1]) {
                 if (waitingForTurn == 'u' && !stop) {
                     stop = true;
-                    pacmanXPosCenter = pacmanXPos + (int)(characterWidth / 2);
+                    pacmanXPosCenter = pacmanXPos + (int) (characterWidth / 2);
                     pacmanYPosCenter = pacmanYPos;
                     allowNextMoveUp = true;
                 }
@@ -318,12 +504,11 @@ public class gameMechanics {
             if (!notAllowedBox[(int) pacmanColumn][(int) pacmanRow + 1]) {
                 if (waitingForTurn == 'd' && !stop) {
                     stop = true;
-                    pacmanXPosCenter = pacmanXPos + (int)(characterWidth / 2);
+                    pacmanXPosCenter = pacmanXPos + (int) (characterWidth / 2);
                     pacmanYPosCenter = pacmanYPos;
                     allowNextMoveUp = true;
                 }
             }
-
 
 
             if (stop) {                                     // If Up or Down turn is wanted
@@ -401,7 +586,7 @@ public class gameMechanics {
                     // Check if Wall got Hit
                     if (notAllowedBox[(int) pacmanColumn + 1][(int) pacmanRow] && !hitRightWall) {
                         hitRightWall = true;
-                        pacmanXPosCenter = pacmanXPos + (int)(characterWidth / 2);
+                        pacmanXPosCenter = pacmanXPos + (int) (characterWidth / 2);
                         pacmanYPosCenter = pacmanYPos;
                     }
 
@@ -453,7 +638,7 @@ public class gameMechanics {
             if (!notAllowedBox[(int) pacmanColumn][(int) pacmanRow - 1]) {
                 if (waitingForTurn == 'u' && !stop) {
                     stop = true;
-                    pacmanXPosCenter = pacmanXPos - (int)(characterWidth / 2);
+                    pacmanXPosCenter = pacmanXPos - (int) (characterWidth / 2);
                     pacmanYPosCenter = pacmanYPos;
                     allowNextMoveUp = true;
                 }
@@ -463,7 +648,7 @@ public class gameMechanics {
             if (!notAllowedBox[(int) pacmanColumn][(int) pacmanRow + 1]) {
                 if (waitingForTurn == 'd' && !stop) {
                     stop = true;
-                    pacmanXPosCenter = pacmanXPos - (int)(characterWidth / 2);
+                    pacmanXPosCenter = pacmanXPos - (int) (characterWidth / 2);
                     pacmanYPosCenter = pacmanYPos;
                     allowNextMoveDown = true;
                 }
@@ -544,7 +729,7 @@ public class gameMechanics {
                 } else {
                     if (notAllowedBox[(int) pacmanColumn - 1][(int) pacmanRow] && !hitLeftWall) {
                         hitLeftWall = true;
-                        pacmanXPosCenter = pacmanXPos - (int)(characterWidth / 2);
+                        pacmanXPosCenter = pacmanXPos - (int) (characterWidth / 2);
                         pacmanYPosCenter = pacmanYPos;
                     }
 
@@ -594,7 +779,7 @@ public class gameMechanics {
                 if (waitingForTurn == 'l' && !stop) {
                     stop = true;
                     pacmanXPosCenter = pacmanXPos;
-                    pacmanYPosCenter = pacmanYPos - (int)(characterWidth / 2);
+                    pacmanYPosCenter = pacmanYPos - (int) (characterWidth / 2);
                     allowNextMoveLeft = true;
                 }
             }
@@ -604,7 +789,7 @@ public class gameMechanics {
                 if (waitingForTurn == 'r' && !stop) {
                     stop = true;
                     pacmanXPosCenter = pacmanXPos;
-                    pacmanYPosCenter = pacmanYPos - (int)(characterWidth / 2);
+                    pacmanYPosCenter = pacmanYPos - (int) (characterWidth / 2);
                     allowNextMoveRight = true;
                 }
             }
@@ -681,7 +866,7 @@ public class gameMechanics {
                     hitUpWall = true;
 
                     pacmanXPosCenter = pacmanXPos;
-                    pacmanYPosCenter = pacmanYPos - (int)(characterWidth / 2);
+                    pacmanYPosCenter = pacmanYPos - (int) (characterWidth / 2);
                 }
 
                 if (hitUpWall) {
@@ -726,7 +911,7 @@ public class gameMechanics {
                 if (waitingForTurn == 'l' && !stop) {
                     stop = true;
                     pacmanXPosCenter = pacmanXPos;
-                    pacmanYPosCenter = pacmanYPos + (int)(characterWidth / 2);
+                    pacmanYPosCenter = pacmanYPos + (int) (characterWidth / 2);
                     allowNextMoveLeft = true;
                 }
             }
@@ -736,7 +921,7 @@ public class gameMechanics {
                 if (waitingForTurn == 'r' && !stop) {
                     stop = true;
                     pacmanXPosCenter = pacmanXPos;
-                    pacmanYPosCenter = pacmanYPos + (int)(characterWidth / 2);
+                    pacmanYPosCenter = pacmanYPos + (int) (characterWidth / 2);
                     allowNextMoveRight = true;
                 }
             }
@@ -815,7 +1000,7 @@ public class gameMechanics {
                     hitDownWall = true;
 
                     pacmanXPosCenter = pacmanXPos;
-                    pacmanYPosCenter = pacmanYPos + (int)(characterWidth / 2);
+                    pacmanYPosCenter = pacmanYPos + (int) (characterWidth / 2);
                 }
 
                 if (hitDownWall) {

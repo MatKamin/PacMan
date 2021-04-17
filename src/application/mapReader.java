@@ -19,6 +19,7 @@ public class mapReader {
      */
     public static void readMap() {
         if(firstRead){
+
             try {
 
                 File map = new File(mapFile);
@@ -255,7 +256,6 @@ public class mapReader {
 
                             railLeftUpCount++;
                         }
-
                     }
                 }
 

@@ -23,6 +23,7 @@ public class variables {
     public static final String ANSI_GREEN = "\u001B[32m";
 
     public static boolean startingStatus = true;
+    public static boolean nextLevel = true;
 
     public static final int width = 1000;       // Window width
     public static final int height = 1000;      // Window height
@@ -46,7 +47,8 @@ public class variables {
     static boolean nameChosen = false;
 
 
-    static final String mapFile = "resources/levels/level.txt";
+    public static String mapFile = "resources/levels/level1.txt";
+    public static int maxLevel = 2;
 
     public static int lifesCounter = 3;
     public static int lifesOriginally = 3;

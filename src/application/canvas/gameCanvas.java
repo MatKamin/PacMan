@@ -56,6 +56,9 @@ public class gameCanvas {
         //::::::::::: High score :::::::::::\\
 
         gc.setFill(Color.YELLOW);
+        if (score > highscore){
+            highscore = score;
+        }
         gc.fillText("Highscore: " + highscore, (int)((widthOneBlock * blockCountHorizontally)/2) + (int)((widthOneBlock * blockCountHorizontally)/6), heightOneBlock * 2);
 
 
@@ -88,7 +91,7 @@ public class gameCanvas {
             gameMechanics.collectPoints(gameLayout);                // Allows collecting points
             gameMechanics.collectPowerPill(gameLayout);             // Allows collecting Power Pills
 
-            gameMechanics.gameOver();                               // TODO: Level UP
+            gameMechanics.gameOver(gameLayout, gc);                     // TODO: Level UP
             gameMechanics.spawnFruit(gameLayout);                   // Spawns Fruit
             gameMechanics.collectFruit(gameLayout);                 // Allows collecting Fruit & makes it disappear after some time
 
@@ -162,7 +165,17 @@ public class gameCanvas {
             allowNextMoveRight = true;
             allowNextMoveLeft = true;
 
+            fruitSpawned1 = false;
+            fruitSpawned2 = false;
+
+            doOnce = true;
+            doOnce2 = true;
             mapReader.readMap();
+
+            nextLevel = true;
+            //gameMechanics.gameOver(gameLayout, gc);
+
+
         }
     }
 }
