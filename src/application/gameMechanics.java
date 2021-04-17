@@ -148,6 +148,9 @@ public class gameMechanics {
         }
         if (nextLevel) {
             levelCounter++;
+            if (levelCounter > maxLevel){
+                return;
+            }
             mapFile = "resources/levels/level" + levelCounter + ".txt";
             System.out.println(mapFile);
 
