@@ -6,8 +6,6 @@ package application;
 import javafx.scene.Group;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
-import javafx.scene.text.TextAlignment;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,19 +34,52 @@ public class gameMechanics {
     }
 
 
-    /**
-     * Animates Ghosts
-     * TODO: Ghost AI
-     */
-    public static void ghostMove() {
-        // Blinky
-        viewBlinky.setX(blinkyXPos);
-        blinkyXPos += velocityBlinky;
+    public static void resetGame(){
+        firstRead = true;
 
-        // Pinky
-        viewPinky.setX(pinkyXPos);
-        pinkyXPos += velocityPinky;
+        score = 0;
+        lifesCounter = 3;
+        lifesOriginally = 3;
+
+        levelCounter = 0;
+        startingLevel = 1;
+
+
+        wallCount = 0;
+        dotCount = 0;
+        dotCountAtStart = 0;
+        powerPillCount = 0;
+        railVerticalCount = 0;
+        railHorizontalCount = 0;
+        railUpRightCount = 0;
+        railUpLeftCount = 0;
+        railRightUpCount = 0;
+        railLeftUpCount = 0;
+
+        pacmanXPos = pacmanXPosStarting;
+        pacmanYPos = pacmanYPosStarting;
+
+        velocityPacmanHorizontal = 0;
+        velocityPacmanVertical = 0;
+
+        allowNextMoveDown = false;
+        allowNextMoveUp = false;
+        allowNextMoveRight = true;
+        allowNextMoveLeft = true;
+
+        fruitSpawned1 = false;
+        fruitSpawned2 = false;
+
+        doOnce = true;
+        doOnce2 = true;
+
+        mapReader.readMap();
+
+        nextLevel = true;
     }
+
+
+
 
     /**
      * Spawns a fruit after eating 70 and 170 dots
@@ -90,6 +121,8 @@ public class gameMechanics {
             doOnce2 = true;
         }
     }
+
+
 
     /**
      * draws the Life Counter in the UI
@@ -206,8 +239,6 @@ public class gameMechanics {
 
 
             nextLevel = false;
-
-
 
             firstRead = true;
 
@@ -327,8 +358,6 @@ public class gameMechanics {
 
 
             gameLayout.getChildren().addAll(viewBlinky, viewPinky);
-
-
         }
     }
 
@@ -1041,34 +1070,5 @@ public class gameMechanics {
                 }
             }
         }
-    }
-
-
-    /**
-     * Ghosts Bouncing left / right
-     * TODO: Ghost AI
-     */
-    public static void wallGhost() {
-
-        if (velocityBlinky < 0) {
-            if (notAllowedBox[(int) blinkyXPos / (int) widthOneBlock][(int) blinkyRow]) {
-                velocityBlinky *= -1;
-            }
-        } else {
-            if (notAllowedBox[(int) blinkyXPos / (int) widthOneBlock + 1][(int) blinkyRow]) {
-                velocityBlinky *= -1;
-            }
-        }
-
-        if (velocityPinky < 0) {
-            if (notAllowedBox[(int) pinkyXPos / (int) widthOneBlock][(int) pinkyRow]) {
-                velocityPinky *= -1;
-            }
-        } else {
-            if (notAllowedBox[(int) pinkyXPos / (int) widthOneBlock + 1][(int) pinkyRow]) {
-                velocityPinky *= -1;
-            }
-        }
-
     }
 }

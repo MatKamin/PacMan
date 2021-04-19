@@ -12,21 +12,31 @@ import application.functionality.settingsButtonFunction;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import javafx.util.Duration;
+
+import java.io.IOException;
 
 import static application.variables.*;
 
 
 public class main extends Application {
-
 
 
     /**
@@ -197,10 +207,11 @@ public class main extends Application {
 
 
         // Primary Stage -> Menu
-        currentStage.setScene(menuScene);
-        currentStage.show();
+        //currentStage.setScene(menuScene);
+        //currentStage.show();
 
 
+        /**
         if(!nameChosen){
             inputDialog.showAndWait();                          // Wait for input
             USERNAME = inputDialog.getEditor().getText();       // get input
@@ -214,6 +225,43 @@ public class main extends Application {
                 getInput(inputDialog);
             }
         }
+         **/
+
+
+
+
+        //------------------------------------------------------ REGISTRATION FORM ------------------------------------------------------\\
+
+        // Create the registration form grid pane
+        GridPane registrationLayout = createRegistrationFormPane();
+
+        // Create a scene with registration form grid pane as the root node
+        Scene registrationScene = new Scene(registrationLayout, width, height);
+
+
+
+        //------------------------------------------------------ LOGIN FORM ------------------------------------------------------\\
+
+        // Create the registration form grid pane
+        GridPane loginLayout = createLoginFormPane();
+
+        // Create a scene with registration form grid pane as the root node
+        Scene loginScene = new Scene(loginLayout, width, height);
+
+
+        // Add UI controls to the registration form grid pane
+        addUIControls(registrationLayout, currentStage, menuScene, loginScene);
+
+        // Add UI controls to the registration form grid pane
+        addUIControlsLogin(loginLayout, currentStage, menuScene, registrationScene);
+
+
+        // Set the scene in primary stage
+        currentStage.setScene(loginScene);
+
+        currentStage.show();
+
+
 
 
 
@@ -463,6 +511,8 @@ public class main extends Application {
 
             if (e.getCode() == KeyCode.SPACE) {
                 debug = true;
+                lifesCounter--;
+                gameMechanics.drawLifes(gameLayout);
             }
 
 
@@ -502,7 +552,9 @@ public class main extends Application {
                         try {
                             startingStatus = true;
                             gameStarted = false;
-                            start(primaryStage);            // Restart with new settings
+                            primaryStage.setScene(menuScene);
+                            gameMechanics.resetGame();
+                            //start(primaryStage);            // Restart with new settings
 
                         } catch (Exception exception) {
                             exception.printStackTrace();
@@ -522,7 +574,9 @@ public class main extends Application {
                 try {
                     startingStatus = true;
                     gameStarted = false;
-                    start(primaryStage);                 // Restart with new settings
+                    gameMechanics.resetGame();
+                    primaryStage.setScene(menuScene);
+                    //start(primaryStage);                 // Restart with new settings
 
 
 
@@ -537,6 +591,251 @@ public class main extends Application {
 
         });
     }
+
+
+
+    private GridPane createRegistrationFormPane() {
+        // Instantiate a new Grid Pane
+        GridPane gridPane = new GridPane();
+
+        // Position the pane at the center of the screen, both vertically and horizontally
+        gridPane.setAlignment(Pos.CENTER);
+
+        // Set a padding of 20px on each side
+        gridPane.setPadding(new Insets(40, 40, 40, 40));
+
+        // Set the horizontal gap between columns
+        gridPane.setHgap(10);
+
+        // Set the vertical gap between rows
+        gridPane.setVgap(10);
+
+        // Add Column Constraints
+
+        // columnOneConstraints will be applied to all the nodes placed in column one.
+        ColumnConstraints columnOneConstraints = new ColumnConstraints(100, 100, Double.MAX_VALUE);
+        columnOneConstraints.setHalignment(HPos.RIGHT);
+
+        // columnTwoConstraints will be applied to all the nodes placed in column two.
+        ColumnConstraints columnTwoConstrains = new ColumnConstraints(200,200, Double.MAX_VALUE);
+        columnTwoConstrains.setHgrow(Priority.ALWAYS);
+
+        gridPane.getColumnConstraints().addAll(columnOneConstraints, columnTwoConstrains);
+
+        return gridPane;
+    }
+
+
+    private GridPane createLoginFormPane() {
+        // Instantiate a new Grid Pane
+        GridPane loginLayout = new GridPane();
+
+        // Position the pane at the center of the screen, both vertically and horizontally
+        loginLayout.setAlignment(Pos.CENTER);
+
+        // Set a padding of 20px on each side
+        loginLayout.setPadding(new Insets(40, 40, 40, 40));
+
+        // Set the horizontal gap between columns
+        loginLayout.setHgap(10);
+
+        // Set the vertical gap between rows
+        loginLayout.setVgap(10);
+
+        // Add Column Constraints
+
+        // columnOneConstraints will be applied to all the nodes placed in column one.
+        ColumnConstraints columnOneConstraints = new ColumnConstraints(100, 100, Double.MAX_VALUE);
+        columnOneConstraints.setHalignment(HPos.RIGHT);
+
+        // columnTwoConstraints will be applied to all the nodes placed in column two.
+        ColumnConstraints columnTwoConstrains = new ColumnConstraints(200,200, Double.MAX_VALUE);
+        columnTwoConstrains.setHgrow(Priority.ALWAYS);
+
+        loginLayout.getColumnConstraints().addAll(columnOneConstraints, columnTwoConstrains);
+
+        return loginLayout;
+    }
+
+    private void addUIControls(GridPane gridPane, Stage currentStage, Scene menuScene, Scene loginScene) {
+        // Add Header
+        Label headerLabel = new Label("Registration Form");
+        headerLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
+        gridPane.add(headerLabel, 0,0,2,1);
+        GridPane.setHalignment(headerLabel, HPos.CENTER);
+        GridPane.setMargin(headerLabel, new Insets(20, 0,20,0));
+
+        // Add Name Label
+        Label nameLabel = new Label("Username : ");
+        gridPane.add(nameLabel, 0,1);
+
+        // Add Name Text Field
+        TextField nameField = new TextField();
+        nameField.setPrefHeight(40);
+        gridPane.add(nameField, 1,1);
+
+
+        // Add Password Label
+        Label passwordLabel = new Label("Password : ");
+        gridPane.add(passwordLabel, 0, 3);
+
+        // Add Password Field
+        PasswordField passwordField = new PasswordField();
+        passwordField.setPrefHeight(40);
+        gridPane.add(passwordField, 1, 3);
+
+        // Add Submit Button
+        Button submitButton = new Button("Submit");
+        submitButton.setPrefHeight(40);
+        submitButton.setDefaultButton(true);
+        submitButton.setPrefWidth(100);
+        gridPane.add(submitButton, 0, 4, 2, 1);
+        GridPane.setHalignment(submitButton, HPos.CENTER);
+        GridPane.setMargin(submitButton, new Insets(20, 0,20,0));
+
+        // Add Login Button
+        Button loginButton = new Button("Login");
+        loginButton.setPrefHeight(40);
+        loginButton.setPrefWidth(100);
+        gridPane.add(loginButton, 0, 5, 2, 1);
+        GridPane.setHalignment(loginButton, HPos.CENTER);
+        GridPane.setMargin(loginButton, new Insets(20, 0,20,0));
+
+
+        loginButton.setOnAction(event -> {
+            currentStage.setScene(loginScene);
+        });
+
+        submitButton.setOnAction(event -> {
+            if(nameField.getText().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(),
+                        "Form Error!", "Please enter your name!");
+                return;
+            }
+            if (gameMechanics.validNickname(nameField.getText())) {
+                validUsername = nameField.getText();
+            } else {
+                showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(),
+                        "Form Error!", "Incorrect Name!");
+                return;
+            }
+            if (UserDataStore.getInstance().isUsernameTaken(nameField.getText())) {
+                showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(),
+                        "Form Error!", "Username Taken!");
+                return;
+            }
+
+
+            if(passwordField.getText().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(),
+                        "Form Error!", "Please enter a password");
+                return;
+            }
+
+
+            showAlert(Alert.AlertType.CONFIRMATION, gridPane.getScene().getWindow(),
+                    "Registration Successful!", "Welcome " + nameField.getText());
+
+            try {
+                UserDataStore.getInstance().registerUser(nameField.getText(), passwordField.getText());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            currentStage.setScene(menuScene);
+        });
+    }
+
+
+    private void addUIControlsLogin(GridPane gridPane, Stage currentStage, Scene menuScene, Scene registrationScene) {
+        // Add Header
+        Label headerLabel = new Label("Login Form");
+        headerLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
+        gridPane.add(headerLabel, 0,0,2,1);
+        GridPane.setHalignment(headerLabel, HPos.CENTER);
+        GridPane.setMargin(headerLabel, new Insets(20, 0,20,0));
+
+        // Add Name Label
+        Label nameLabel = new Label("Username : ");
+        gridPane.add(nameLabel, 0,1);
+
+        // Add Name Text Field
+        TextField nameField = new TextField();
+        nameField.setPrefHeight(40);
+        gridPane.add(nameField, 1,1);
+
+
+        // Add Password Label
+        Label passwordLabel = new Label("Password : ");
+        gridPane.add(passwordLabel, 0, 3);
+
+        // Add Password Field
+        PasswordField passwordField = new PasswordField();
+        passwordField.setPrefHeight(40);
+        gridPane.add(passwordField, 1, 3);
+
+        // Add Submit Button
+        Button submitButton = new Button("Submit");
+        submitButton.setPrefHeight(40);
+        submitButton.setDefaultButton(true);
+        submitButton.setPrefWidth(100);
+        gridPane.add(submitButton, 0, 4, 2, 1);
+        GridPane.setHalignment(submitButton, HPos.CENTER);
+        GridPane.setMargin(submitButton, new Insets(20, 0,20,0));
+
+        // Add Register Button
+        Button loginButton = new Button("Register");
+        loginButton.setPrefHeight(40);
+        loginButton.setPrefWidth(100);
+        gridPane.add(loginButton, 0, 5, 2, 1);
+        GridPane.setHalignment(loginButton, HPos.CENTER);
+        GridPane.setMargin(loginButton, new Insets(20, 0,20,0));
+
+
+        loginButton.setOnAction(event -> {
+            currentStage.setScene(registrationScene);
+        });
+
+        submitButton.setOnAction(event -> {
+            if(nameField.getText().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(),
+                        "Form Error!", "Please enter your name!");
+                return;
+            }
+
+            if(passwordField.getText().isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(),
+                        "Form Error!", "Please enter a password");
+                return;
+            }
+
+            if (!UserDataStore.getInstance().isLoginCorrect(nameField.getText(), passwordField.getText())) {
+                showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(),
+                        "Form Error!", "Wrong Username or Password!");
+                return;
+            }
+
+
+            showAlert(Alert.AlertType.CONFIRMATION, gridPane.getScene().getWindow(),
+                    "Login Successful!", "Welcome " + nameField.getText());
+
+            currentStage.setScene(menuScene);
+            validUsername = nameField.getText();
+        });
+
+    }
+
+
+    private void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.initOwner(owner);
+        alert.show();
+    }
+
+
 
 
     public static void main(String[] args){

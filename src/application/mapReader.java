@@ -111,6 +111,7 @@ public class mapReader {
                             pacmanXPosStarting = pacmanXPos;
                             pacmanYPosStarting = pacmanYPos;
 
+
                             pacmanRow = row;
                             pacmanColumn = columnCounter;
 
@@ -123,16 +124,9 @@ public class mapReader {
                         } else if (value.equals("E")) {
                             // NOTHING
 
-                            //gc.setFill(Color.BLACK);
-                            //gc.fillRect(widthOneBlock * columnCounter, heightOneBlock * row, widthOneBlock, heightOneBlock);
-
                             powerPills[columnCounter][row] = false;
                             dots[columnCounter][row] = false;
                             notAllowedBox[columnCounter][row] = false;
-
-                            //gc.setStroke(Color.WHITE);
-                            //gc.strokeRect(widthOneBlock * columnCounter, heightOneBlock * row, widthOneBlock, heightOneBlock);
-
 
 
 

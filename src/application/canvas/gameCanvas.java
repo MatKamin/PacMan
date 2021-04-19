@@ -4,7 +4,7 @@ package application.canvas;
 //---------------------------------IMPORTS---------------------------------\\
 
 import application.gameMechanics;
-import application.mapReader;
+import application.ghostAI;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
@@ -47,11 +47,6 @@ public class gameCanvas {
         gc.setTextAlign(TextAlignment.CENTER);       // Align text to center
 
 
-        //::::::::::: Read Map :::::::::::\\
-
-        mapReader.readMap();
-
-
 
         //::::::::::: High score :::::::::::\\
 
@@ -80,8 +75,8 @@ public class gameCanvas {
 
             //::::::::::: Ghosts Movement :::::::::::\\
 
-            gameMechanics.ghostMove();
-            gameMechanics.wallGhost();
+            ghostAI.ghostMove();
+            ghostAI.wallGhost();
 
             //::::::::::: Pac-Man Movement :::::::::::\\
 
@@ -97,6 +92,7 @@ public class gameCanvas {
 
             gameMechanics.drawLifes(gameLayout);                    // Draws Life Counter in UI
             gameMechanics.drawLevelCounter(gameLayout);             // Draws Level Counter in UI
+
 
 
         } else {    // If Round is Over
@@ -134,46 +130,7 @@ public class gameCanvas {
             }
 
 
-            firstRead = true;
-
-            score = 0;
-            lifesCounter = 3;
-            lifesOriginally = 3;
-
-            levelCounter = 0;
-            startingLevel = 1;
-
-            wallCount = 0;
-            dotCount = 0;
-            dotCountAtStart = 0;
-            powerPillCount = 0;
-            railVerticalCount = 0;
-            railHorizontalCount = 0;
-            railUpRightCount = 0;
-            railUpLeftCount = 0;
-            railRightUpCount = 0;
-            railLeftUpCount = 0;
-
-            pacmanXPos = pacmanXPosStarting;
-            pacmanYPos = pacmanYPosStarting;
-
-            velocityPacmanHorizontal = 0;
-            velocityPacmanVertical = 0;
-
-            allowNextMoveDown = false;
-            allowNextMoveUp = false;
-            allowNextMoveRight = true;
-            allowNextMoveLeft = true;
-
-            fruitSpawned1 = false;
-            fruitSpawned2 = false;
-
-            doOnce = true;
-            doOnce2 = true;
-            mapReader.readMap();
-
-            nextLevel = true;
-            //gameMechanics.gameOver(gameLayout, gc);
+            gameMechanics.resetGame();
 
 
         }
