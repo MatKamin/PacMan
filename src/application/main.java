@@ -22,9 +22,11 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.effect.Bloom;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -520,7 +522,7 @@ public class main extends Application {
                             startingStatus = true;
                             gameStarted = false;
                             primaryStage.setScene(menuScene);
-                            gameMechanics.resetGame();
+                            gameMechanics.resetGame(gameLayout);
                             //start(primaryStage);            // Restart with new settings
 
                         } catch (Exception exception) {
@@ -541,7 +543,7 @@ public class main extends Application {
                 try {
                     startingStatus = true;
                     gameStarted = false;
-                    gameMechanics.resetGame();
+                    gameMechanics.resetGame(gameLayout);
                     primaryStage.setScene(menuScene);
                     //start(primaryStage);                 // Restart with new settings
 
@@ -584,10 +586,10 @@ public class main extends Application {
 
         // columnOneConstraints will be applied to all the nodes placed in column one.
         ColumnConstraints columnOneConstraints = new ColumnConstraints(400, 400, Double.MAX_VALUE);
-        columnOneConstraints.setHalignment(HPos.RIGHT);
+        columnOneConstraints.setHalignment(HPos.CENTER);
 
         // columnTwoConstraints will be applied to all the nodes placed in column two.
-        ColumnConstraints columnTwoConstrains = new ColumnConstraints(200,200, Double.MAX_VALUE);
+        ColumnConstraints columnTwoConstrains = new ColumnConstraints(200,200, 400);
         columnTwoConstrains.setHgrow(Priority.ALWAYS);
 
         gridPane.getColumnConstraints().addAll(columnOneConstraints, columnTwoConstrains);
@@ -619,13 +621,15 @@ public class main extends Application {
 
         // columnOneConstraints will be applied to all the nodes placed in column one.
         ColumnConstraints columnOneConstraints = new ColumnConstraints(400, 400, Double.MAX_VALUE);
-        columnOneConstraints.setHalignment(HPos.RIGHT);
+        columnOneConstraints.setHalignment(HPos.CENTER);
 
         // columnTwoConstraints will be applied to all the nodes placed in column two.
-        ColumnConstraints columnTwoConstrains = new ColumnConstraints(200,200, Double.MAX_VALUE);
+        ColumnConstraints columnTwoConstrains = new ColumnConstraints(200,200, 400);
         columnTwoConstrains.setHgrow(Priority.ALWAYS);
 
         loginLayout.getColumnConstraints().addAll(columnOneConstraints, columnTwoConstrains);
+
+        //loginLayout.gridLinesVisibleProperty().set(true);
 
         return loginLayout;
     }
@@ -661,7 +665,9 @@ public class main extends Application {
         TextField nameField = new TextField();
         nameField.setPrefHeight(40);
         nameField.setFont(pacmanFontUI);
+        textfieldCustom(nameField);
         gridPane.add(nameField, 1,2);
+
 
 
         // Add Password Label
@@ -673,6 +679,7 @@ public class main extends Application {
         // Add Password Field
         PasswordField passwordField = new PasswordField();
         passwordField.setPrefHeight(40);
+        textfieldCustom(passwordField);
         gridPane.add(passwordField, 1, 4);
 
 
@@ -685,14 +692,15 @@ public class main extends Application {
         // Add Password Confirm Field
         PasswordField passwordConfirmField = new PasswordField();
         passwordConfirmField.setPrefHeight(40);
+        textfieldCustom(passwordConfirmField);
         gridPane.add(passwordConfirmField, 1, 6);
 
         // Add Submit Button
-        Button submitButton = new Button("Submit");
+        Button submitButton = new Button("Register");
         buttonHover(submitButton);
         submitButton.setPrefHeight(40);
         submitButton.setDefaultButton(true);
-        submitButton.setPrefWidth(300);
+        submitButton.setPrefWidth(350);
         submitButton.setFont(pacmanFontUI);
         submitButton.setTextFill(Paint.valueOf("Yellow"));
         submitButton.setBackground(new Background(new BackgroundFill(Paint.valueOf("Blue"), CornerRadii.EMPTY, Insets.EMPTY)));
@@ -701,10 +709,10 @@ public class main extends Application {
         GridPane.setMargin(submitButton, new Insets(20, 0,20,0));
 
         // Add Login Button
-        Button loginButton = new Button("Login");
+        Button loginButton = new Button("Login Instead");
         buttonHover(loginButton);
         loginButton.setPrefHeight(40);
-        loginButton.setPrefWidth(300);
+        loginButton.setPrefWidth(350);
         loginButton.setFont(pacmanFontUI);
         loginButton.setTextFill(Paint.valueOf("Yellow"));
         loginButton.setBackground(new Background(new BackgroundFill(Paint.valueOf("Blue"), CornerRadii.EMPTY, Insets.EMPTY)));
@@ -727,10 +735,11 @@ public class main extends Application {
                 validUsername = nameField.getText();
             } else {
                 showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(),
-                        "Form Error!", "Incorrect Name!");
+                        "Form Error!", "Not allowed Username!");
+
                 return;
             }
-            if (UserDataStore.getInstance().isUsernameTaken(nameField.getText())) {
+            if (UserDataStore.getInstance().isUsernameTaken(nameField.getText().toUpperCase())) {
                 showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(),
                         "Form Error!", "Username Taken!");
                 return;
@@ -755,11 +764,10 @@ public class main extends Application {
                 return;
             }
 
-            showAlert(Alert.AlertType.CONFIRMATION, gridPane.getScene().getWindow(),
-                    "Registration Successful!", "Welcome " + nameField.getText());
+
 
             try {
-                UserDataStore.getInstance().registerUser(nameField.getText(), passwordField.getText());
+                UserDataStore.getInstance().registerUser(nameField.getText().toUpperCase(), passwordField.getText());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -791,6 +799,27 @@ public class main extends Application {
                 });
     }
 
+    private void textfieldCustom(TextField field){
+
+        DropShadow shadow = new DropShadow();
+        shadow.setColor(Color.BLUE);
+        shadow.setRadius(20);
+
+        field.addEventHandler(MouseEvent.MOUSE_ENTERED,
+                new EventHandler<MouseEvent>() {
+                    @Override public void handle(MouseEvent e) {
+                        field.setEffect(shadow);
+                    }
+                });
+        //Removing the shadow when the mouse cursor is off
+        field.addEventHandler(MouseEvent.MOUSE_EXITED,
+                new EventHandler<MouseEvent>() {
+                    @Override public void handle(MouseEvent e) {
+                        field.setEffect(null);
+                    }
+                });
+    }
+
     private void addUIControlsLogin(GridPane gridPane, Stage currentStage, Scene menuScene, Scene registrationScene, GraphicsContext gcMenu) {
 
 
@@ -799,6 +828,7 @@ public class main extends Application {
         pacmanHeader.setFont(pacmanFont);
         gridPane.add(pacmanHeader, 0, 0, 2, 1);
         GridPane.setHalignment(pacmanHeader, HPos.CENTER);
+
 
         // Add Header
         Label headerLabel = new Label("Login");
@@ -820,6 +850,7 @@ public class main extends Application {
         TextField nameField = new TextField();
         nameField.setPrefHeight(40);
         nameField.setFont(pacmanFontUI);
+        textfieldCustom(nameField);
         gridPane.add(nameField, 1,2);
 
 
@@ -832,14 +863,15 @@ public class main extends Application {
         // Add Password Field
         PasswordField passwordField = new PasswordField();
         passwordField.setPrefHeight(40);
+        textfieldCustom(passwordField);
         gridPane.add(passwordField, 1, 4);
 
         // Add Submit Button
-        Button submitButton = new Button("Submit");
+        Button submitButton = new Button("Login");
         buttonHover(submitButton);
         submitButton.setPrefHeight(40);
         submitButton.setDefaultButton(true);
-        submitButton.setPrefWidth(300);
+        submitButton.setPrefWidth(350);
         submitButton.setFont(pacmanFontUI);
         submitButton.setTextFill(Paint.valueOf("Yellow"));
         submitButton.setBackground(new Background(new BackgroundFill(Paint.valueOf("Blue"), CornerRadii.EMPTY, Insets.EMPTY)));
@@ -851,10 +883,10 @@ public class main extends Application {
 
 
         // Add Login Button
-        Button loginButton = new Button("Register");
+        Button loginButton = new Button("Create account");
         buttonHover(loginButton);
         loginButton.setPrefHeight(40);
-        loginButton.setPrefWidth(300);
+        loginButton.setPrefWidth(350);
         loginButton.setFont(pacmanFontUI);
         loginButton.setTextFill(Paint.valueOf("Yellow"));
         loginButton.setBackground(new Background(new BackgroundFill(Paint.valueOf("Blue"), CornerRadii.EMPTY, Insets.EMPTY)));
@@ -880,15 +912,12 @@ public class main extends Application {
                 return;
             }
 
-            if (!UserDataStore.getInstance().isLoginCorrect(nameField.getText(), passwordField.getText())) {
+            if (!UserDataStore.getInstance().isLoginCorrect(nameField.getText().toUpperCase(), passwordField.getText())) {
                 showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(),
                         "Form Error!", "Wrong Username or Password!");
                 return;
             }
 
-
-            showAlert(Alert.AlertType.CONFIRMATION, gridPane.getScene().getWindow(),
-                    "Login Successful!", "Welcome " + nameField.getText());
 
             currentStage.setScene(menuScene);
             validUsername = nameField.getText();

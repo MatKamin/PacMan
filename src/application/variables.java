@@ -27,7 +27,7 @@ public class variables {
     public static boolean startingStatus = true;
     public static boolean nextLevel = true;
 
-    public static final int width = 1000;       // Window width
+    public static final int width = 1300;       // Window width
     public static final int height = 1000;      // Window height
 
     public static int score = 0;    // player score

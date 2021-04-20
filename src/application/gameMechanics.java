@@ -34,7 +34,9 @@ public class gameMechanics {
     }
 
 
-    public static void resetGame(){
+    public static void resetGame(Group gameLayout){
+        removeMap(gameLayout);
+        gameLayout.getChildren().removeAll(viewCherry);
         firstRead = true;
 
         score = 0;
@@ -131,7 +133,6 @@ public class gameMechanics {
      */
     public static void drawLifes(Group gameLayout) {
         if (lifesCounter != lifesOriginally) {
-
             for (int i = 1; i <= lifesCounter; i++) {
                 viewLifes = new ImageView(lifes);
 
@@ -155,6 +156,7 @@ public class gameMechanics {
         // TODO
 
         if (levelCounter != startingLevel) {
+
             viewCherry = new ImageView(cherry);
 
             viewCherry.setX((blockCountHorizontally - 2) * widthOneBlock);
@@ -166,14 +168,63 @@ public class gameMechanics {
             gameLayout.getChildren().remove(viewCherry);
             gameLayout.getChildren().add(viewCherry);
 
-            levelCounter++;
+        }
+    }
+
+
+    private static void removeMap(Group gameLayout){
+        // Remove Dots to Map
+        for (int i = 0; i < dotCount; i++) {
+            gameLayout.getChildren().remove(viewDot[i]);
+        }
+
+
+        // Remove Power Pills to Map
+        for(int i = 0; i < powerPillCount; i++){
+            gameLayout.getChildren().remove(viewPowerPill[i]);
+        }
+
+
+        // Remove Walls to Map
+        for(int i = 0; i < wallCount; i++){
+            gameLayout.getChildren().remove(viewWall[i]);
+        }
+
+        // Remove Vertical Rails to Map
+        for(int i = 0; i < railVerticalCount; i++){
+            gameLayout.getChildren().remove(viewRailVertical[i]);
+        }
+
+        // Remove Horizontal Rails to Map
+        for(int i = 0; i < railHorizontalCount; i++){
+            gameLayout.getChildren().remove(viewRailHorizontal[i]);
+        }
+
+        // Remove Up Right Rails to Map
+        for(int i = 0; i < railUpRightCount; i++){
+            gameLayout.getChildren().remove(viewRailUpRight[i]);
+        }
+
+        // Remove Up Left Rails to Map
+        for(int i = 0; i < railUpLeftCount; i++){
+            gameLayout.getChildren().remove(viewRailUpLeft[i]);
+        }
+
+        // Remove Right Up Rails to Map
+        for(int i = 0; i < railRightUpCount; i++){
+            gameLayout.getChildren().remove(viewRailRightUp[i]);
+        }
+
+        // Remove Left Up Rails to Map
+        for(int i = 0; i < railLeftUpCount; i++){
+            gameLayout.getChildren().remove(viewRailLeftUp[i]);
         }
     }
 
     /**
      * All Dots have been eaten -> Next Level
      */
-    public static void gameOver(Group gameLayout, GraphicsContext gc) {
+    public static void levelUp(Group gameLayout, GraphicsContext gc) {
         // TODO:
 
         if (dotCount == 0) {
@@ -187,53 +238,8 @@ public class gameMechanics {
             mapFile = "resources/levels/level" + levelCounter + ".txt";
             System.out.println(mapFile);
 
+            removeMap(gameLayout);
 
-            // Remove Dots to Map
-            for (int i = 0; i < dotCount; i++) {
-                gameLayout.getChildren().remove(viewDot[i]);
-            }
-
-
-            // Remove Power Pills to Map
-            for(int i = 0; i < powerPillCount; i++){
-                gameLayout.getChildren().remove(viewPowerPill[i]);
-            }
-
-
-            // Remove Walls to Map
-            for(int i = 0; i < wallCount; i++){
-                gameLayout.getChildren().remove(viewWall[i]);
-            }
-
-            // Remove Vertical Rails to Map
-            for(int i = 0; i < railVerticalCount; i++){
-                gameLayout.getChildren().remove(viewRailVertical[i]);
-            }
-
-            // Remove Horizontal Rails to Map
-            for(int i = 0; i < railHorizontalCount; i++){
-                gameLayout.getChildren().remove(viewRailHorizontal[i]);
-            }
-
-            // Remove Up Right Rails to Map
-            for(int i = 0; i < railUpRightCount; i++){
-                gameLayout.getChildren().remove(viewRailUpRight[i]);
-            }
-
-            // Remove Up Left Rails to Map
-            for(int i = 0; i < railUpLeftCount; i++){
-                gameLayout.getChildren().remove(viewRailUpLeft[i]);
-            }
-
-            // Remove Right Up Rails to Map
-            for(int i = 0; i < railRightUpCount; i++){
-                gameLayout.getChildren().remove(viewRailRightUp[i]);
-            }
-
-            // Remove Left Up Rails to Map
-            for(int i = 0; i < railLeftUpCount; i++){
-                gameLayout.getChildren().remove(viewRailLeftUp[i]);
-            }
 
             gameLayout.getChildren().removeAll(viewBlinky, viewPinky);
 
@@ -358,6 +364,10 @@ public class gameMechanics {
 
 
             gameLayout.getChildren().addAll(viewBlinky, viewPinky);
+
+            System.out.println(levelCounter);
+            System.out.println(startingLevel);
+            System.out.println();
         }
     }
 
@@ -523,21 +533,21 @@ public class gameMechanics {
         if (pacmanFacingRight) {
 
             // Check if Up is possible
-            if (!notAllowedBox[(int) pacmanColumn][(int) pacmanRow - 1]) {
+            if (!notAllowedBox[(int) pacmanColumn + 1][(int) pacmanRow - 1]) {
                 if (waitingForTurn == 'u' && !stop) {
                     stop = true;
-                    pacmanXPosCenter = pacmanXPos + (int) (characterWidth / 2);
-                    pacmanYPosCenter = pacmanYPos;
+                    pacmanXPosCenter = (pacmanColumn * widthOneBlock) + widthOneBlock;
+                    pacmanYPosCenter = (pacmanRow * heightOneBlock);
                     allowNextMoveUp = true;
                 }
             }
 
             // Check if Down is possible
-            if (!notAllowedBox[(int) pacmanColumn][(int) pacmanRow + 1]) {
+            if (!notAllowedBox[(int) pacmanColumn + 1][(int) pacmanRow + 1]) {
                 if (waitingForTurn == 'd' && !stop) {
                     stop = true;
-                    pacmanXPosCenter = pacmanXPos + (int) (characterWidth / 2);
-                    pacmanYPosCenter = pacmanYPos;
+                    pacmanXPosCenter = (pacmanColumn * widthOneBlock) + widthOneBlock;
+                    pacmanYPosCenter = (pacmanRow * heightOneBlock);
                     allowNextMoveUp = true;
                 }
             }
@@ -573,7 +583,7 @@ public class gameMechanics {
                         velocityPacmanHorizontal = 0;
                         velocityPacmanVertical = -1;
 
-                        hitDownWall = false;
+                        hitUpWall = false;
                         stop = false;
                         waitingForTurn = '1';
                     }
@@ -667,21 +677,21 @@ public class gameMechanics {
         } else if (pacmanFacingLeft) {
 
             // Check if Up is possible
-            if (!notAllowedBox[(int) pacmanColumn][(int) pacmanRow - 1]) {
+            if (!notAllowedBox[(int) pacmanColumn - 1][(int) pacmanRow - 1]) {
                 if (waitingForTurn == 'u' && !stop) {
                     stop = true;
-                    pacmanXPosCenter = pacmanXPos - (int) (characterWidth / 2);
-                    pacmanYPosCenter = pacmanYPos;
+                    pacmanXPosCenter = (pacmanColumn * widthOneBlock) - widthOneBlock;
+                    pacmanYPosCenter = (pacmanRow * heightOneBlock);
                     allowNextMoveUp = true;
                 }
             }
 
             // Check if Down is possible
-            if (!notAllowedBox[(int) pacmanColumn][(int) pacmanRow + 1]) {
+            if (!notAllowedBox[(int) pacmanColumn - 1][(int) pacmanRow + 1]) {
                 if (waitingForTurn == 'd' && !stop) {
                     stop = true;
-                    pacmanXPosCenter = pacmanXPos - (int) (characterWidth / 2);
-                    pacmanYPosCenter = pacmanYPos;
+                    pacmanXPosCenter = (pacmanColumn * widthOneBlock) - widthOneBlock;
+                    pacmanYPosCenter = (pacmanRow * heightOneBlock);
                     allowNextMoveDown = true;
                 }
             }
@@ -807,21 +817,21 @@ public class gameMechanics {
         } else if (pacmanFacingUp) {
 
             // Check if Left is possible
-            if (!notAllowedBox[(int) pacmanColumn - 1][(int) pacmanRow]) {
+            if (!notAllowedBox[(int) pacmanColumn - 1][(int) pacmanRow - 1]) {
                 if (waitingForTurn == 'l' && !stop) {
                     stop = true;
-                    pacmanXPosCenter = pacmanXPos;
-                    pacmanYPosCenter = pacmanYPos - (int) (characterWidth / 2);
+                    pacmanXPosCenter = (pacmanColumn * widthOneBlock);
+                    pacmanYPosCenter = (pacmanRow * heightOneBlock) - heightOneBlock;
                     allowNextMoveLeft = true;
                 }
             }
 
             // Check if Right is possible
-            if (!notAllowedBox[(int) pacmanColumn + 1][(int) pacmanRow]) {
+            if (!notAllowedBox[(int) pacmanColumn + 1][(int) pacmanRow - 1]) {
                 if (waitingForTurn == 'r' && !stop) {
                     stop = true;
-                    pacmanXPosCenter = pacmanXPos;
-                    pacmanYPosCenter = pacmanYPos - (int) (characterWidth / 2);
+                    pacmanXPosCenter = (pacmanColumn * widthOneBlock);
+                    pacmanYPosCenter = (pacmanRow * heightOneBlock) - heightOneBlock;
                     allowNextMoveRight = true;
                 }
             }
@@ -939,21 +949,21 @@ public class gameMechanics {
         } else if (pacmanFacingDown) {
 
             // Check if Left is possible
-            if (!notAllowedBox[(int) pacmanColumn - 1][(int) pacmanRow]) {
+            if (!notAllowedBox[(int) pacmanColumn - 1][(int) pacmanRow + 1]) {
                 if (waitingForTurn == 'l' && !stop) {
                     stop = true;
-                    pacmanXPosCenter = pacmanXPos;
-                    pacmanYPosCenter = pacmanYPos + (int) (characterWidth / 2);
+                    pacmanXPosCenter = (pacmanColumn * widthOneBlock);
+                    pacmanYPosCenter = (pacmanRow * heightOneBlock) + heightOneBlock;
                     allowNextMoveLeft = true;
                 }
             }
 
             // Check if Right is possible
-            if (!notAllowedBox[(int) pacmanColumn + 1][(int) pacmanRow]) {
+            if (!notAllowedBox[(int) pacmanColumn + 1][(int) pacmanRow + 1]) {
                 if (waitingForTurn == 'r' && !stop) {
                     stop = true;
-                    pacmanXPosCenter = pacmanXPos;
-                    pacmanYPosCenter = pacmanYPos + (int) (characterWidth / 2);
+                    pacmanXPosCenter = (pacmanColumn * widthOneBlock);
+                    pacmanYPosCenter = (pacmanRow * heightOneBlock) + heightOneBlock;
                     allowNextMoveRight = true;
                 }
             }

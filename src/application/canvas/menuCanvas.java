@@ -43,7 +43,7 @@ public class menuCanvas {
 
         gc.setFill(Color.YELLOW);
         gc.setFont(pacmanFontUI);
-        gc.fillText("Wellcome " + validUsername + "!!! ", width/2, pacmanFontSize * 3);
+        gc.fillText("Welcome " + validUsername + "!!! ", width/2, pacmanFontSize * 3);
 
     }
 }

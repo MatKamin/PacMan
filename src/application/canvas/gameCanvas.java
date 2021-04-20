@@ -86,13 +86,13 @@ public class gameCanvas {
             gameMechanics.collectPoints(gameLayout);                // Allows collecting points
             gameMechanics.collectPowerPill(gameLayout);             // Allows collecting Power Pills
 
-            gameMechanics.gameOver(gameLayout, gc);                     // TODO: Level UP
             gameMechanics.spawnFruit(gameLayout);                   // Spawns Fruit
             gameMechanics.collectFruit(gameLayout);                 // Allows collecting Fruit & makes it disappear after some time
 
             gameMechanics.drawLifes(gameLayout);                    // Draws Life Counter in UI
             gameMechanics.drawLevelCounter(gameLayout);             // Draws Level Counter in UI
 
+            gameMechanics.levelUp(gameLayout, gc);                     // TODO: Level UP
 
 
         } else {    // If Round is Over
@@ -130,7 +130,7 @@ public class gameCanvas {
             }
 
 
-            gameMechanics.resetGame();
+            gameMechanics.resetGame(gameLayout);
 
 
         }
