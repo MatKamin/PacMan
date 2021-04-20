@@ -42,6 +42,7 @@ public class variables {
 
 
     public static String validUsername = "Player 1";
+    public static String finalUsername = "";
     static final String regexp = "\\w{1,10}" + "\\s?+" + "\\d{0,3}";
 
 

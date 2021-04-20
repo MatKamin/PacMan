@@ -100,9 +100,17 @@ public class UserDataStore {
     /**
      * Deletes the user, if wanted
      * @param username username to delete
-     * @param password password to delete
      */
-    public void deleteUser(String username, String password){
-        userPasswordMap.remove(username, userPasswordMap.get(username));
+    public void deleteUser(String username){
+        userPasswordMap.remove(username.toUpperCase(), userPasswordMap.get(username.toUpperCase()));
+
+        Properties properties = new Properties();
+        properties.putAll(userPasswordMap);
+
+        try {
+            properties.store(new FileOutputStream("data.properties"), null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -42,6 +42,7 @@ public class main extends Application {
 
     /**
      * Launching Game
+     *
      * @param currentStage -> current Stage
      */
 
@@ -73,7 +74,6 @@ public class main extends Application {
         gameLayout.getChildren().add(canvasGame);
 
 
-
         //::::::::::: Timeline :::::::::::\\
 
         // JavaFX Timeline = Free form animation defined by KeyFrames and their duration
@@ -82,7 +82,6 @@ public class main extends Application {
 
         // number of cycles in animation INDEFINITE = repeat indefinitely
         tl.setCycleCount(Timeline.INDEFINITE);
-
 
 
         //------------------------------------------------------ SETTINGS WINDOW ------------------------------------------------------\\
@@ -101,9 +100,31 @@ public class main extends Application {
         Scene settingsScene = new Scene(settingsLayout, width, height);
 
 
-        // Adds Canvas to Layout
-        settingsLayout.getChildren().addAll(canvasSettings);
+        //::::::::::: Logoff Button :::::::::::\\
 
+        // Label
+        Text logoffButton = new Text("Log out");
+        logoffButton.setStroke(Color.YELLOW);
+        logoffButton.setFont(pacmanFontUI);
+
+        // Option Label Position
+        logoffButton.setLayoutY(height - 50);
+        logoffButton.setLayoutX(50);
+
+
+        //::::::::::: Delete Account Button :::::::::::\\
+
+        // Label
+        Text deleteAccountButton = new Text("Delete account");
+        deleteAccountButton.setStroke(Color.YELLOW);
+        deleteAccountButton.setFont(pacmanFontUI);
+
+        // Option Label Position
+        deleteAccountButton.setLayoutY(height - 50);
+        deleteAccountButton.setLayoutX(width - 300); // TODO: Improve "- 300"
+
+        // Adds Canvas to Layout
+        settingsLayout.getChildren().addAll(canvasSettings, logoffButton, deleteAccountButton);
 
 
         //------------------------------------------------------ HIGHSCORE WINDOW ------------------------------------------------------\\
@@ -140,8 +161,9 @@ public class main extends Application {
 
         //Setting the position of the image
         viewMenuAnimation.setX(10);
-        viewMenuAnimation.setY((height / 10) * 2);
+        viewMenuAnimation.setY((height / 10) * 3);
         viewMenuAnimation.setFitWidth(width);
+        viewMenuAnimation.setFitHeight(150);
 
 
         //::::::::::: PLAY Button :::::::::::\\
@@ -155,8 +177,6 @@ public class main extends Application {
         // Option Label Position
         playButton.setLayoutY(height - (height / 10) * 3);
         playButton.setLayoutX((width / 2) - playButton.getBoundsInParent().getWidth() / 2);
-
-
 
 
         //::::::::::: SETTINGS Button :::::::::::\\
@@ -181,7 +201,7 @@ public class main extends Application {
 
         // Option Label Position
         highscoreButton.setLayoutY(height - (height / 10));
-        highscoreButton.setLayoutX((width / 2) - highscoreButton.getBoundsInParent().getWidth() / 2 );
+        highscoreButton.setLayoutX((width / 2) - highscoreButton.getBoundsInParent().getWidth() / 2);
 
 
         // FUNCTIONALITY
@@ -194,35 +214,31 @@ public class main extends Application {
         menuLayout.getChildren().addAll(canvasMenu, playButton, viewMenuAnimation, settingsButton, highscoreButton);
 
 
+        //------------------------------------------------------ REGISTRATION FORM ------------------------------------------------------\\
 
+        // Create the registration form grid pane
+        GridPane registrationLayout = createRegistrationFormPane();
+
+        // Create a scene with registration form grid pane as the root node
+        Scene registrationScene = new Scene(registrationLayout, width, height);
+
+
+        //------------------------------------------------------ LOGIN FORM ------------------------------------------------------\\
+
+        // Create the registration form grid pane
+        GridPane loginLayout = createLoginFormPane();
+
+        // Create a scene with registration form grid pane as the root node
+        Scene loginScene = new Scene(loginLayout, width, height);
+
+
+        // Add UI controls to the registration form grid pane
+        addUIControls(registrationLayout, currentStage, menuScene, loginScene, gcMenu);
+
+        // Add UI controls to the registration form grid pane
+        addUIControlsLogin(loginLayout, currentStage, menuScene, registrationScene, gcMenu);
 
         if (!isLoggedIn) {
-
-            //------------------------------------------------------ REGISTRATION FORM ------------------------------------------------------\\
-
-            // Create the registration form grid pane
-            GridPane registrationLayout = createRegistrationFormPane();
-
-            // Create a scene with registration form grid pane as the root node
-            Scene registrationScene = new Scene(registrationLayout, width, height);
-
-
-            //------------------------------------------------------ LOGIN FORM ------------------------------------------------------\\
-
-            // Create the registration form grid pane
-            GridPane loginLayout = createLoginFormPane();
-
-            // Create a scene with registration form grid pane as the root node
-            Scene loginScene = new Scene(loginLayout, width, height);
-
-
-            // Add UI controls to the registration form grid pane
-            addUIControls(registrationLayout, currentStage, menuScene, loginScene, gcMenu);
-
-            // Add UI controls to the registration form grid pane
-            addUIControlsLogin(loginLayout, currentStage, menuScene, registrationScene, gcMenu);
-
-
             // Set the scene in primary stage
             currentStage.setScene(loginScene);
 
@@ -231,6 +247,10 @@ public class main extends Application {
             currentStage.setScene(menuScene);
         }
         currentStage.show();
+
+        logoff(logoffButton, currentStage);
+        deleteAccount(deleteAccountButton, currentStage);
+
 
 
         //----------------------------------------------------------------------------------------CONTROLS----------------------------------------------------------------------------------------\\
@@ -266,14 +286,37 @@ public class main extends Application {
 
         controls(gameScene, gameLayout, tl, gcGame, currentStage, menuScene);     // Controls
 
+
     }
 
 
 
+    public void logoff(Text logoffButton, Stage currentStage) {
+        logoffButton.setOnMouseClicked(e -> {
+            isLoggedIn = false;
+            try {
+                start(currentStage);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        });
+    }
+
+    public void deleteAccount(Text deleteButton, Stage currentStage){
+        deleteButton.setOnMouseClicked(e -> {
+            isLoggedIn = false;
+            UserDataStore.getInstance().deleteUser(finalUsername);
+            try {
+                start(currentStage);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        });
+    }
 
     public void controls(Scene gameScene, Group gameLayout, Timeline tl, GraphicsContext gc, Stage primaryStage, Scene menuScene) {
 
-        if(startingStatus){
+        if (startingStatus) {
             //::::::::::: Pac-Man GIF :::::::::::\\
 
             //Setting the position of the image
@@ -334,9 +377,6 @@ public class main extends Application {
             }
 
 
-
-
-
             //::::::::::: "RIGHT" KEY & "D" KEY :::::::::::\\
 
             if ((e.getCode() == KeyCode.D || e.getCode() == KeyCode.RIGHT)) {
@@ -372,15 +412,12 @@ public class main extends Application {
             }
 
 
-
-
-
             //::::::::::: "LEFT" KEY & "A" KEY :::::::::::\\
 
             if ((e.getCode() == KeyCode.A || e.getCode() == KeyCode.LEFT)) {
                 waitingForTurn = 'l';
 
-                if (allowNextMoveLeft){
+                if (allowNextMoveLeft) {
 
 
                     //::::::::::: Pac-Man GIF :::::::::::\\
@@ -413,21 +450,18 @@ public class main extends Application {
             }
 
 
-
-
             //::::::::::: "DOWN" KEY & "S" KEY :::::::::::\\
 
             if ((e.getCode() == KeyCode.S || e.getCode() == KeyCode.DOWN)) {
                 waitingForTurn = 'd';
 
-                if (allowNextMoveDown){
+                if (allowNextMoveDown) {
 
                     //::::::::::: Pac-Man GIF :::::::::::\\
 
                     //Setting the position of the image
                     viewPacmanDown.setX(pacmanXPos);
                     viewPacmanDown.setY(pacmanYPos);
-
 
 
                     //setting the fit height and width of the image view
@@ -453,7 +487,6 @@ public class main extends Application {
             }
 
 
-
             //::::::::::: DEBUG :::::::::::\\
 
             if (e.getCode() == KeyCode.SPACE) {
@@ -461,12 +494,6 @@ public class main extends Application {
                 lifesCounter--;
                 gameMechanics.drawLifes(gameLayout);
             }
-
-
-
-
-
-
 
 
             // Pause Game when "P" Pressed
@@ -478,9 +505,9 @@ public class main extends Application {
 
                 //::::::::::: Pause Menu :::::::::::\\
 
-                gc.fillText("PAUSED",(blockCountHorizontally / 2) * widthOneBlock , blockCountVertically * heightOneBlock);
-                gc.fillText("Press P to resume", (blockCountHorizontally / 2) * widthOneBlock, ( blockCountVertically + 1 ) * heightOneBlock);
-                gc.fillText("Press Esc to leave", (blockCountHorizontally / 2) * widthOneBlock, ( blockCountVertically  + 2 ) * heightOneBlock);
+                gc.fillText("PAUSED", (blockCountHorizontally / 2) * widthOneBlock, blockCountVertically * heightOneBlock);
+                gc.fillText("Press P to resume", (blockCountHorizontally / 2) * widthOneBlock, (blockCountVertically + 1) * heightOneBlock);
+                gc.fillText("Press Esc to leave", (blockCountHorizontally / 2) * widthOneBlock, (blockCountVertically + 2) * heightOneBlock);
 
 
                 gameScene.setOnKeyPressed(el -> {
@@ -537,7 +564,6 @@ public class main extends Application {
     }
 
 
-
     private GridPane createRegistrationFormPane() {
         // Instantiate a new Grid Pane
         GridPane gridPane = new GridPane();
@@ -564,7 +590,7 @@ public class main extends Application {
         columnOneConstraints.setHalignment(HPos.CENTER);
 
         // columnTwoConstraints will be applied to all the nodes placed in column two.
-        ColumnConstraints columnTwoConstrains = new ColumnConstraints(200,200, 400);
+        ColumnConstraints columnTwoConstrains = new ColumnConstraints(200, 200, 400);
         columnTwoConstrains.setHgrow(Priority.ALWAYS);
 
         gridPane.getColumnConstraints().addAll(columnOneConstraints, columnTwoConstrains);
@@ -599,7 +625,7 @@ public class main extends Application {
         columnOneConstraints.setHalignment(HPos.CENTER);
 
         // columnTwoConstraints will be applied to all the nodes placed in column two.
-        ColumnConstraints columnTwoConstrains = new ColumnConstraints(200,200, 400);
+        ColumnConstraints columnTwoConstrains = new ColumnConstraints(200, 200, 400);
         columnTwoConstrains.setHgrow(Priority.ALWAYS);
 
         loginLayout.getColumnConstraints().addAll(columnOneConstraints, columnTwoConstrains);
@@ -614,6 +640,7 @@ public class main extends Application {
         // Add PacMan Header
         Label pacmanHeader = new Label("Pac-Man");
         pacmanHeader.setFont(pacmanFont);
+        pacmanHeader.setTextFill(Color.WHITE);
         gridPane.add(pacmanHeader, 0, 0, 2, 1);
         GridPane.setHalignment(pacmanHeader, HPos.CENTER);
 
@@ -621,9 +648,9 @@ public class main extends Application {
         Label headerLabel = new Label("Registration");
         headerLabel.setFont(pacmanFontUI);
         headerLabel.setTextFill(Paint.valueOf("Yellow"));
-        gridPane.add(headerLabel, 0,1,2,1);
+        gridPane.add(headerLabel, 0, 1, 2, 1);
         GridPane.setHalignment(headerLabel, HPos.CENTER);
-        GridPane.setMargin(headerLabel, new Insets(20, 0,20,0));
+        GridPane.setMargin(headerLabel, new Insets(20, 0, 20, 0));
 
         gridPane.setBackground(new Background(new BackgroundFill(Paint.valueOf("Black"), CornerRadii.EMPTY, Insets.EMPTY)));
 
@@ -631,14 +658,14 @@ public class main extends Application {
         Label nameLabel = new Label("Username : ");
         nameLabel.setFont(pacmanFontUI);
         nameLabel.setTextFill(Paint.valueOf("Yellow"));
-        gridPane.add(nameLabel, 0,2);
+        gridPane.add(nameLabel, 0, 2);
 
         // Add Name Text Field
         TextField nameField = new TextField();
         nameField.setPrefHeight(40);
         nameField.setFont(pacmanFontUI);
         textfieldCustom(nameField);
-        gridPane.add(nameField, 1,2);
+        gridPane.add(nameField, 1, 2);
 
         // Add Password Label
         Label passwordLabel = new Label("Password : ");
@@ -672,10 +699,10 @@ public class main extends Application {
         submitButton.setPrefWidth(350);
         submitButton.setFont(pacmanFontUI);
         submitButton.setTextFill(Paint.valueOf("Yellow"));
-        submitButton.setBackground(new Background(new BackgroundFill(Paint.valueOf("Blue"), CornerRadii.EMPTY, Insets.EMPTY)));
+        submitButton.setBackground(new Background(new BackgroundFill(Paint.valueOf("Blue"), new CornerRadii(10), Insets.EMPTY)));
         gridPane.add(submitButton, 0, 7, 2, 1);
         GridPane.setHalignment(submitButton, HPos.CENTER);
-        GridPane.setMargin(submitButton, new Insets(20, 0,20,0));
+        GridPane.setMargin(submitButton, new Insets(20, 0, 20, 0));
 
         // Add Login Button
         Button loginButton = new Button("Login Instead");
@@ -684,16 +711,16 @@ public class main extends Application {
         loginButton.setPrefWidth(350);
         loginButton.setFont(pacmanFontUI);
         loginButton.setTextFill(Paint.valueOf("Yellow"));
-        loginButton.setBackground(new Background(new BackgroundFill(Paint.valueOf("Blue"), CornerRadii.EMPTY, Insets.EMPTY)));
+        loginButton.setBackground(new Background(new BackgroundFill(Paint.valueOf("Blue"), new CornerRadii(10), Insets.EMPTY)));
         gridPane.add(loginButton, 0, 8, 2, 1);
         GridPane.setHalignment(loginButton, HPos.CENTER);
-        GridPane.setMargin(loginButton, new Insets(20, 0,20,0));
+        GridPane.setMargin(loginButton, new Insets(20, 0, 20, 0));
 
 
         loginButton.setOnAction(event -> currentStage.setScene(loginScene));
 
         submitButton.setOnAction(event -> {
-            if(nameField.getText().isEmpty()) {
+            if (nameField.getText().isEmpty()) {
                 showAlert(gridPane.getScene().getWindow(),
                         "Please enter your name!");
                 return;
@@ -710,12 +737,12 @@ public class main extends Application {
                         "Username Taken!");
                 return;
             }
-            if(passwordField.getText().isEmpty()) {
+            if (passwordField.getText().isEmpty()) {
                 showAlert(gridPane.getScene().getWindow(),
                         "Please enter a password");
                 return;
             }
-            if(passwordConfirmField.getText().isEmpty()) {
+            if (passwordConfirmField.getText().isEmpty()) {
                 showAlert(gridPane.getScene().getWindow(),
                         "Please confirm your password!");
                 return;
@@ -732,32 +759,32 @@ public class main extends Application {
                 e.printStackTrace();
             }
             isLoggedIn = true;
-
+            finalUsername = nameField.getText();
             menuCanvas.play(gcMenu);
             currentStage.setScene(menuScene);
         });
     }
 
-    private void buttonHover(Button button){
+    private void buttonHover(Button button) {
         Bloom bloom = new Bloom();
         //Adding the shadow when the mouse cursor is on
         button.addEventHandler(MouseEvent.MOUSE_ENTERED,
                 e -> {
                     button.setEffect(bloom);
-                    button.setBackground(new Background(new BackgroundFill(Paint.valueOf("Darkblue"), CornerRadii.EMPTY, Insets.EMPTY)));
+                    button.setBackground(new Background(new BackgroundFill(Paint.valueOf("Darkblue"), new CornerRadii(10), Insets.EMPTY)));
                 });
         //Removing the shadow when the mouse cursor is off
         button.addEventHandler(MouseEvent.MOUSE_EXITED,
                 e -> {
                     button.setEffect(null);
-                    button.setBackground(new Background(new BackgroundFill(Paint.valueOf("Blue"), CornerRadii.EMPTY, Insets.EMPTY)));
+                    button.setBackground(new Background(new BackgroundFill(Paint.valueOf("Blue"), new CornerRadii(10), Insets.EMPTY)));
                 });
     }
 
-    private void textfieldCustom(TextField field){
+    private void textfieldCustom(TextField field) {
         DropShadow shadow = new DropShadow();
         shadow.setColor(Color.BLUE);
-        shadow.setRadius(20);
+        shadow.setRadius(30);
 
         field.addEventHandler(MouseEvent.MOUSE_ENTERED,
                 e -> field.setEffect(shadow));
@@ -767,12 +794,12 @@ public class main extends Application {
     }
 
 
-
     private void addUIControlsLogin(GridPane gridPane, Stage currentStage, Scene menuScene, Scene registrationScene, GraphicsContext gcMenu) {
 
         // Add PacMan Header
         Label pacmanHeader = new Label("Pac-Man");
         pacmanHeader.setFont(pacmanFont);
+        pacmanHeader.setTextFill(Color.WHITE);
         gridPane.add(pacmanHeader, 0, 0, 2, 1);
         GridPane.setHalignment(pacmanHeader, HPos.CENTER);
 
@@ -780,9 +807,9 @@ public class main extends Application {
         Label headerLabel = new Label("Login");
         headerLabel.setFont(pacmanFontUI);
         headerLabel.setTextFill(Paint.valueOf("Yellow"));
-        gridPane.add(headerLabel, 0,1,2,1);
+        gridPane.add(headerLabel, 0, 1, 2, 1);
         GridPane.setHalignment(headerLabel, HPos.CENTER);
-        GridPane.setMargin(headerLabel, new Insets(20, 0,20,0));
+        GridPane.setMargin(headerLabel, new Insets(20, 0, 20, 0));
 
         gridPane.setBackground(new Background(new BackgroundFill(Paint.valueOf("Black"), CornerRadii.EMPTY, Insets.EMPTY)));
 
@@ -790,14 +817,14 @@ public class main extends Application {
         Label nameLabel = new Label("Username : ");
         nameLabel.setFont(pacmanFontUI);
         nameLabel.setTextFill(Paint.valueOf("Yellow"));
-        gridPane.add(nameLabel, 0,2);
+        gridPane.add(nameLabel, 0, 2);
 
         // Add Name Text Field
         TextField nameField = new TextField();
         nameField.setPrefHeight(40);
         nameField.setFont(pacmanFontUI);
         textfieldCustom(nameField);
-        gridPane.add(nameField, 1,2);
+        gridPane.add(nameField, 1, 2);
 
         // Add Password Label
         Label passwordLabel = new Label("Password : ");
@@ -819,10 +846,10 @@ public class main extends Application {
         submitButton.setPrefWidth(350);
         submitButton.setFont(pacmanFontUI);
         submitButton.setTextFill(Paint.valueOf("Yellow"));
-        submitButton.setBackground(new Background(new BackgroundFill(Paint.valueOf("Blue"), CornerRadii.EMPTY, Insets.EMPTY)));
+        submitButton.setBackground(new Background(new BackgroundFill(Paint.valueOf("Blue"), new CornerRadii(10), Insets.EMPTY)));
         gridPane.add(submitButton, 0, 5, 2, 1);
         GridPane.setHalignment(submitButton, HPos.CENTER);
-        GridPane.setMargin(submitButton, new Insets(20, 0,20,0));
+        GridPane.setMargin(submitButton, new Insets(20, 0, 20, 0));
 
         // Add Login Button
         Button loginButton = new Button("Create account");
@@ -831,21 +858,22 @@ public class main extends Application {
         loginButton.setPrefWidth(350);
         loginButton.setFont(pacmanFontUI);
         loginButton.setTextFill(Paint.valueOf("Yellow"));
-        loginButton.setBackground(new Background(new BackgroundFill(Paint.valueOf("Blue"), CornerRadii.EMPTY, Insets.EMPTY)));
+        loginButton.setBackground(new Background(new BackgroundFill(Paint.valueOf("Blue"), new CornerRadii(10), Insets.EMPTY)));
+
         gridPane.add(loginButton, 0, 6, 2, 1);
         GridPane.setHalignment(loginButton, HPos.CENTER);
-        GridPane.setMargin(loginButton, new Insets(20, 0,20,0));
+        GridPane.setMargin(loginButton, new Insets(20, 0, 20, 0));
 
 
         loginButton.setOnAction(event -> currentStage.setScene(registrationScene));
 
         submitButton.setOnAction(event -> {
-            if(nameField.getText().isEmpty()) {
+            if (nameField.getText().isEmpty()) {
                 showAlert(gridPane.getScene().getWindow(),
                         "Please enter your name!");
                 return;
             }
-            if(passwordField.getText().isEmpty()) {
+            if (passwordField.getText().isEmpty()) {
                 showAlert(gridPane.getScene().getWindow(),
                         "Please enter a password");
                 return;
@@ -858,6 +886,7 @@ public class main extends Application {
 
             currentStage.setScene(menuScene);
             validUsername = nameField.getText();
+            finalUsername = validUsername;
             isLoggedIn = true;
             menuCanvas.play(gcMenu);
         });
@@ -875,9 +904,7 @@ public class main extends Application {
     }
 
 
-
-
-    public static void main(String[] args){
+    public static void main(String[] args) {
 
         // TODO: Music
         // Sets Background Music
