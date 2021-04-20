@@ -3,6 +3,7 @@ package application.canvas;
 //---------------------------------IMPORTS---------------------------------\\
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 
 import static application.variables.*;
@@ -38,6 +39,11 @@ public class menuCanvas {
         //::::::::::: Text :::::::::::\\
 
         gc.fillText("Pac-Man", width/2 , pacmanFontSize * 1.5);
+
+
+        gc.setFill(Color.YELLOW);
+        gc.setFont(pacmanFontUI);
+        gc.fillText("Wellcome " + validUsername + "!!! ", width/2, pacmanFontSize * 3);
 
     }
 }
