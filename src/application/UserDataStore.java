@@ -20,7 +20,7 @@ public class UserDataStore {
 
     /**
      * Method to read the input data
-     * @throws IOException
+     * @throws IOException Exception
      */
     private void loadMap() throws IOException {
         Properties properties = new Properties();
@@ -35,13 +35,12 @@ public class UserDataStore {
         return instance;
     }
 
-    // This class is a singleton. Call getInstance() instead.
     private UserDataStore(){}
 
     /**
      * Checks if the username is already taken
-     * @param username
-     * @return
+     * @param username Username to check
+     * @return  true or false
      */
     public boolean isUsernameTaken(String username){
         try {
@@ -55,9 +54,9 @@ public class UserDataStore {
 
     /**
      * Registration of the user
-     * @param username
-     * @param password
-     * @throws IOException
+     * @param username username to register
+     * @param password password to register
+     * @throws IOException Exception
      */
     public void registerUser(String username, String password) throws IOException {
 
@@ -76,9 +75,9 @@ public class UserDataStore {
 
     /**
      * Checks if the Login information is correct
-     * @param username
-     * @param password
-     * @return
+     * @param username username to check
+     * @param password password to check
+     * @return true or false
      */
     public boolean isLoginCorrect(String username, String password) {
 
@@ -100,8 +99,8 @@ public class UserDataStore {
 
     /**
      * Deletes the user, if wanted
-     * @param username
-     * @param password
+     * @param username username to delete
+     * @param password password to delete
      */
     public void deleteUser(String username, String password){
         userPasswordMap.remove(username, userPasswordMap.get(username));

@@ -6,7 +6,6 @@ package application.canvas;
 import application.gameMechanics;
 import application.ghostAI;
 import javafx.scene.Group;
-import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
@@ -26,11 +25,10 @@ public class gameCanvas {
     /**
      * plays the game scene
      * @param gc            GraphicsContext / gcGame of the scene
-     * @param gameScene     Game Scene
      * @param gameLayout    Game Layout Group
      */
 
-    public static void play(GraphicsContext gc, Scene gameScene, Group gameLayout) {
+    public static void play(GraphicsContext gc, Group gameLayout) {
 
         //::::::::::: Background :::::::::::\\
 
@@ -92,7 +90,7 @@ public class gameCanvas {
             gameMechanics.drawLifes(gameLayout);                    // Draws Life Counter in UI
             gameMechanics.drawLevelCounter(gameLayout);             // Draws Level Counter in UI
 
-            gameMechanics.levelUp(gameLayout, gc);                     // TODO: Level UP
+            gameMechanics.levelUp(gameLayout);                      // Level Up
 
 
         } else {    // If Round is Over
@@ -108,6 +106,7 @@ public class gameCanvas {
                 e.printStackTrace();
             }
 
+            assert sc != null;
             sc.useDelimiter(",empty,0");
             String paste = sc.next();
             try {

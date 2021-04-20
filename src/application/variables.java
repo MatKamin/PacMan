@@ -33,8 +33,7 @@ public class variables {
     public static int score = 0;    // player score
     public static int highscore;    // Highest score
 
-    // TODO: Level
-    //static int level = 1;      // level counter
+
 
     public static boolean gameStarted;    // has the game started? true/false
 
@@ -42,11 +41,8 @@ public class variables {
     public static Color fontColor = Color.WHITE;          // Font Color
 
 
-    // TODO: Threads
-    static String USERNAME = "Player 1";
     public static String validUsername = "Player 1";
     static final String regexp = "\\w{1,10}" + "\\s?+" + "\\d{0,3}";
-    static boolean nameChosen = false;
 
 
     public static String mapFile = "resources/levels/level1.txt";
@@ -68,7 +64,6 @@ public class variables {
     public static long characterHeight = heightOneBlock;
 
     public static boolean firstRead = true;     // First time reading Map
-    public static boolean secondRead = false;     // Second time reading Map
 
     public static boolean[][] dots = new boolean[blockCountHorizontally + 1][blockCountVertically];
     public static boolean[][] powerPills = new boolean[blockCountHorizontally + 1][blockCountVertically];

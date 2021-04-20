@@ -38,7 +38,7 @@ public class menuCanvas {
 
         //::::::::::: Text :::::::::::\\
 
-        gc.fillText("Pac-Man", width/2 , pacmanFontSize * 1.5);
+        gc.fillText("Pac-Man", width/2, pacmanFontSize * 1.5);
 
 
         gc.setFill(Color.YELLOW);

@@ -4,7 +4,6 @@ package application;
 //---------------------------------IMPORTS---------------------------------\\
 
 import javafx.scene.Group;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 
 import java.util.regex.Matcher;
@@ -26,11 +25,7 @@ public class gameMechanics {
     public static boolean validNickname(String USERNAME) {
         Pattern p = Pattern.compile(regexp);
         Matcher m = p.matcher(USERNAME);
-        if (m.matches()) {
-            return true;
-        } else {
-            return false;
-        }
+        return m.matches();
     }
 
 
@@ -38,15 +33,11 @@ public class gameMechanics {
         removeMap(gameLayout);
         gameLayout.getChildren().removeAll(viewCherry);
         firstRead = true;
-
         score = 0;
         lifesCounter = 3;
         lifesOriginally = 3;
-
         levelCounter = 0;
         startingLevel = 1;
-
-
         wallCount = 0;
         dotCount = 0;
         dotCountAtStart = 0;
@@ -57,26 +48,19 @@ public class gameMechanics {
         railUpLeftCount = 0;
         railRightUpCount = 0;
         railLeftUpCount = 0;
-
         pacmanXPos = pacmanXPosStarting;
         pacmanYPos = pacmanYPosStarting;
-
         velocityPacmanHorizontal = 0;
         velocityPacmanVertical = 0;
-
         allowNextMoveDown = false;
         allowNextMoveUp = false;
         allowNextMoveRight = true;
         allowNextMoveLeft = true;
-
         fruitSpawned1 = false;
         fruitSpawned2 = false;
-
         doOnce = true;
         doOnce2 = true;
-
         mapReader.readMap();
-
         nextLevel = true;
     }
 
@@ -90,34 +74,25 @@ public class gameMechanics {
      */
     public static void spawnFruit(Group gameLayout) {
         if (dotCount == dotCountAtStart - 70 && !fruitSpawned1) {
-
             viewSpawningFruit = new ImageView(spawningFruit);
-
             viewSpawningFruit.setX(14 * widthOneBlock + 2.5);
             viewSpawningFruit.setY(20 * heightOneBlock + 2.5);
-
             viewSpawningFruit.setFitWidth(widthOneBlock - 5);
             viewSpawningFruit.setFitHeight(heightOneBlock - 5);
-
             gameLayout.getChildren().remove(viewSpawningFruit);
             gameLayout.getChildren().add(viewSpawningFruit);
-
             collectableFruit = true;
             fruitSpawned1 = true;
         }
 
         if (dotCount == dotCountAtStart - 170 && !fruitSpawned2) {
             viewSpawningFruit = new ImageView(spawningFruit);
-
             viewSpawningFruit.setX(14 * widthOneBlock + 2.5);
             viewSpawningFruit.setY(20 * heightOneBlock + 2.5);
-
             viewSpawningFruit.setFitWidth(widthOneBlock - 5);
             viewSpawningFruit.setFitHeight(heightOneBlock - 5);
-
             gameLayout.getChildren().remove(viewSpawningFruit);
             gameLayout.getChildren().add(viewSpawningFruit);
-
             collectableFruit = true;
             fruitSpawned2 = true;
             doOnce2 = true;
@@ -135,12 +110,10 @@ public class gameMechanics {
         if (lifesCounter != lifesOriginally) {
             for (int i = 1; i <= lifesCounter; i++) {
                 viewLifes = new ImageView(lifes);
-
                 viewLifes.setX(i * (widthOneBlock + 10));
                 viewLifes.setY(blockCountVertically * heightOneBlock);
                 viewLifes.setFitWidth(widthOneBlock);
                 viewLifes.setFitHeight(heightOneBlock);
-
                 gameLayout.getChildren().addAll(viewLifes);
             }
             lifesOriginally--;
@@ -153,21 +126,16 @@ public class gameMechanics {
      * @param gameLayout Group with the gameLayout
      */
     public static void drawLevelCounter(Group gameLayout) {
-        // TODO
+        // TODO: More Level Icons
 
         if (levelCounter != startingLevel) {
-
             viewCherry = new ImageView(cherry);
-
             viewCherry.setX((blockCountHorizontally - 2) * widthOneBlock);
             viewCherry.setY(blockCountVertically * heightOneBlock);
-
             viewCherry.setFitWidth(widthOneBlock);
             viewCherry.setFitHeight(heightOneBlock);
-
             gameLayout.getChildren().remove(viewCherry);
             gameLayout.getChildren().add(viewCherry);
-
         }
     }
 
@@ -224,8 +192,7 @@ public class gameMechanics {
     /**
      * All Dots have been eaten -> Next Level
      */
-    public static void levelUp(Group gameLayout, GraphicsContext gc) {
-        // TODO:
+    public static void levelUp(Group gameLayout) {
 
         if (dotCount == 0) {
             nextLevel = true;
@@ -239,19 +206,12 @@ public class gameMechanics {
             System.out.println(mapFile);
 
             removeMap(gameLayout);
-
-
             gameLayout.getChildren().removeAll(viewBlinky, viewPinky);
 
-
             nextLevel = false;
-
             firstRead = true;
-
             lifesOriginally = 3;
-
             startingLevel = 1;
-
             wallCount = 0;
             dotCount = 0;
             dotCountAtStart = 0;
@@ -262,24 +222,18 @@ public class gameMechanics {
             railUpLeftCount = 0;
             railRightUpCount = 0;
             railLeftUpCount = 0;
-
             pacmanXPos = pacmanXPosStarting;
             pacmanYPos = pacmanYPosStarting;
-
             velocityPacmanHorizontal = 0;
             velocityPacmanVertical = 0;
-
             allowNextMoveDown = false;
             allowNextMoveUp = false;
             allowNextMoveRight = true;
             allowNextMoveLeft = true;
-
             fruitSpawned1 = false;
             fruitSpawned2 = false;
-
             doOnce = true;
             doOnce2 = true;
-
 
             mapReader.readMap();
 
@@ -339,6 +293,7 @@ public class gameMechanics {
                 gameLayout.getChildren().add(viewRailLeftUp[i]);
             }
 
+
             //::::::::::: Red Ghost (Blinky) GIF :::::::::::\\
 
             //Setting the position of the image
@@ -370,6 +325,8 @@ public class gameMechanics {
             System.out.println();
         }
     }
+
+
 
     /**
      * makes collecting the spawned fruits possible
@@ -413,6 +370,8 @@ public class gameMechanics {
             doOnce = true;
         }
     }
+
+
 
     /**
      * Makes Collecting Dots possible
@@ -498,7 +457,6 @@ public class gameMechanics {
 
     /**
      * Makes Pac-Man movement possible
-     * TODO: Fix Some Glitches
      *
      * @param gameLayout Group with the gameLayout
      */

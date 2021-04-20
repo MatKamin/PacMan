@@ -7,7 +7,6 @@ import javafx.scene.Scene;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import static application.variables.ANSI_GREEN;
 import static application.variables.*;
 
 

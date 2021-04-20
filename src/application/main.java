@@ -12,7 +12,6 @@ import application.functionality.settingsButtonFunction;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -49,10 +48,9 @@ public class main extends Application {
     @Override
     public void start(Stage currentStage) throws Exception {
 
-
-
         currentStage.setTitle("Pac-Man");      // Window title
         gameStarted = false;
+
 
         //----------------------------------------------------------------------------------------WINDOWS----------------------------------------------------------------------------------------\\
 
@@ -69,30 +67,21 @@ public class main extends Application {
         // Scene
         Scene gameScene = new Scene(gameLayout, width, height);
 
-        gameCanvas.play(gcGame, gameScene, gameLayout);
+        gameCanvas.play(gcGame, gameLayout);
 
 
         gameLayout.getChildren().add(canvasGame);
 
 
 
-
         //::::::::::: Timeline :::::::::::\\
 
         // JavaFX Timeline = Free form animation defined by KeyFrames and their duration
-        KeyFrame kf = new KeyFrame(Duration.millis(10), e -> gameCanvas.play(gcGame, gameScene, gameLayout));
+        KeyFrame kf = new KeyFrame(Duration.millis(10), e -> gameCanvas.play(gcGame, gameLayout));
         Timeline tl = new Timeline(kf);
 
         // number of cycles in animation INDEFINITE = repeat indefinitely
         tl.setCycleCount(Timeline.INDEFINITE);
-
-
-
-        //::::::::::: Nickname Input :::::::::::\\
-
-        TextInputDialog inputDialog = new TextInputDialog("Nickname");
-        inputDialog.setContentText("Nickname");
-        inputDialog.setHeaderText("Choose your Nickname!");
 
 
 
@@ -118,8 +107,6 @@ public class main extends Application {
 
 
         //------------------------------------------------------ HIGHSCORE WINDOW ------------------------------------------------------\\
-
-        // TODO: Multiple Players
 
         // Canvas
         Canvas canvasHighscore = new Canvas(width, height);
@@ -153,7 +140,7 @@ public class main extends Application {
 
         //Setting the position of the image
         viewMenuAnimation.setX(10);
-        viewMenuAnimation.setY((int)(height / 10) * 2);
+        viewMenuAnimation.setY((height / 10) * 2);
         viewMenuAnimation.setFitWidth(width);
 
 
@@ -166,8 +153,8 @@ public class main extends Application {
         playButton.setFont(pacmanFont);
 
         // Option Label Position
-        playButton.setLayoutY(height - (int)(height / 10) * 3);
-        playButton.setLayoutX((int)(width / 2) - playButton.getBoundsInParent().getWidth() / 2);
+        playButton.setLayoutY(height - (height / 10) * 3);
+        playButton.setLayoutX((width / 2) - playButton.getBoundsInParent().getWidth() / 2);
 
 
 
@@ -181,8 +168,8 @@ public class main extends Application {
         settingsButton.setFont(pacmanFont);
 
         // Option Label Position
-        settingsButton.setLayoutY(height - (int)(height / 10) * 2);
-        settingsButton.setLayoutX((int)(width / 2) - settingsButton.getBoundsInParent().getWidth() / 2);
+        settingsButton.setLayoutY(height - (height / 10) * 2);
+        settingsButton.setLayoutX((width / 2) - settingsButton.getBoundsInParent().getWidth() / 2);
 
 
         //::::::::::: HIGHSCORES Button :::::::::::\\
@@ -193,8 +180,8 @@ public class main extends Application {
         highscoreButton.setFont(pacmanFont);
 
         // Option Label Position
-        highscoreButton.setLayoutY(height - (int)(height / 10));
-        highscoreButton.setLayoutX((int)(width / 2) - highscoreButton.getBoundsInParent().getWidth() / 2 );
+        highscoreButton.setLayoutY(height - (height / 10));
+        highscoreButton.setLayoutX((width / 2) - highscoreButton.getBoundsInParent().getWidth() / 2 );
 
 
         // FUNCTIONALITY
@@ -239,17 +226,14 @@ public class main extends Application {
             // Set the scene in primary stage
             currentStage.setScene(loginScene);
 
-            currentStage.show();
         } else {
             menuCanvas.play(gcMenu);
-
             currentStage.setScene(menuScene);
-            currentStage.show();
         }
+        currentStage.show();
 
 
         //----------------------------------------------------------------------------------------CONTROLS----------------------------------------------------------------------------------------\\
-
 
         //--------------------------------------------SETTINGS CONTROLS--------------------------------------------\\
 
@@ -258,17 +242,14 @@ public class main extends Application {
             //::::::::::: ESCAPE :::::::::::\\
 
             if (e.getCode() == KeyCode.ESCAPE) {      // If "Escape" Pressed
-
                 try {
                     start(currentStage);            // Restart with new settings
                     gameStarted = false;
-
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
             }
         });
-
 
         //--------------------------------------------HIGHSCORE CONTROLS--------------------------------------------\\
 
@@ -277,12 +258,9 @@ public class main extends Application {
             //::::::::::: ESCAPE :::::::::::\\
 
             if (e.getCode() == KeyCode.ESCAPE) {      // If "Escape" Pressed
-
                 currentStage.setScene(menuScene);   // Go to Menu
             }
         });
-
-
 
         //--------------------------------------------GAME CONTROLS--------------------------------------------\\
 
@@ -547,8 +525,6 @@ public class main extends Application {
                     primaryStage.setScene(menuScene);
                     //start(primaryStage);                 // Restart with new settings
 
-
-
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
@@ -557,7 +533,6 @@ public class main extends Application {
                 tl.stop();
 
             }
-
         });
     }
 
@@ -642,7 +617,6 @@ public class main extends Application {
         gridPane.add(pacmanHeader, 0, 0, 2, 1);
         GridPane.setHalignment(pacmanHeader, HPos.CENTER);
 
-
         // Add Header
         Label headerLabel = new Label("Registration");
         headerLabel.setFont(pacmanFontUI);
@@ -652,8 +626,6 @@ public class main extends Application {
         GridPane.setMargin(headerLabel, new Insets(20, 0,20,0));
 
         gridPane.setBackground(new Background(new BackgroundFill(Paint.valueOf("Black"), CornerRadii.EMPTY, Insets.EMPTY)));
-
-
 
         // Add Name Label
         Label nameLabel = new Label("Username : ");
@@ -668,8 +640,6 @@ public class main extends Application {
         textfieldCustom(nameField);
         gridPane.add(nameField, 1,2);
 
-
-
         // Add Password Label
         Label passwordLabel = new Label("Password : ");
         passwordLabel.setFont(pacmanFontUI);
@@ -681,7 +651,6 @@ public class main extends Application {
         passwordField.setPrefHeight(40);
         textfieldCustom(passwordField);
         gridPane.add(passwordField, 1, 4);
-
 
         // Add Password Confirm Label
         Label passwordConfirmLabel = new Label("Confirm Password : ");
@@ -721,50 +690,41 @@ public class main extends Application {
         GridPane.setMargin(loginButton, new Insets(20, 0,20,0));
 
 
-        loginButton.setOnAction(event -> {
-            currentStage.setScene(loginScene);
-        });
+        loginButton.setOnAction(event -> currentStage.setScene(loginScene));
 
         submitButton.setOnAction(event -> {
             if(nameField.getText().isEmpty()) {
-                showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(),
-                        "Form Error!", "Please enter your name!");
+                showAlert(gridPane.getScene().getWindow(),
+                        "Please enter your name!");
                 return;
             }
             if (gameMechanics.validNickname(nameField.getText())) {
                 validUsername = nameField.getText();
             } else {
-                showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(),
-                        "Form Error!", "Not allowed Username!");
-
+                showAlert(gridPane.getScene().getWindow(),
+                        "Not allowed Username!");
                 return;
             }
             if (UserDataStore.getInstance().isUsernameTaken(nameField.getText().toUpperCase())) {
-                showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(),
-                        "Form Error!", "Username Taken!");
+                showAlert(gridPane.getScene().getWindow(),
+                        "Username Taken!");
                 return;
             }
-
-
             if(passwordField.getText().isEmpty()) {
-                showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(),
-                        "Form Error!", "Please enter a password");
+                showAlert(gridPane.getScene().getWindow(),
+                        "Please enter a password");
                 return;
             }
-
             if(passwordConfirmField.getText().isEmpty()) {
-                showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(),
-                        "Form Error!", "Please confirm your password!");
+                showAlert(gridPane.getScene().getWindow(),
+                        "Please confirm your password!");
                 return;
             }
-
             if (!passwordField.getText().equals(passwordConfirmField.getText())) {
-                showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(),
-                        "Form Error!", "passwords do not match!");
+                showAlert(gridPane.getScene().getWindow(),
+                        "passwords do not match!");
                 return;
             }
-
-
 
             try {
                 UserDataStore.getInstance().registerUser(nameField.getText().toUpperCase(), passwordField.getText());
@@ -782,53 +742,39 @@ public class main extends Application {
         Bloom bloom = new Bloom();
         //Adding the shadow when the mouse cursor is on
         button.addEventHandler(MouseEvent.MOUSE_ENTERED,
-                new EventHandler<MouseEvent>() {
-                    @Override public void handle(MouseEvent e) {
-                        button.setEffect(bloom);
-
-                        button.setBackground(new Background(new BackgroundFill(Paint.valueOf("Darkblue"), CornerRadii.EMPTY, Insets.EMPTY)));
-                    }
+                e -> {
+                    button.setEffect(bloom);
+                    button.setBackground(new Background(new BackgroundFill(Paint.valueOf("Darkblue"), CornerRadii.EMPTY, Insets.EMPTY)));
                 });
         //Removing the shadow when the mouse cursor is off
         button.addEventHandler(MouseEvent.MOUSE_EXITED,
-                new EventHandler<MouseEvent>() {
-                    @Override public void handle(MouseEvent e) {
-                        button.setEffect(null);
-                        button.setBackground(new Background(new BackgroundFill(Paint.valueOf("Blue"), CornerRadii.EMPTY, Insets.EMPTY)));
-                    }
+                e -> {
+                    button.setEffect(null);
+                    button.setBackground(new Background(new BackgroundFill(Paint.valueOf("Blue"), CornerRadii.EMPTY, Insets.EMPTY)));
                 });
     }
 
     private void textfieldCustom(TextField field){
-
         DropShadow shadow = new DropShadow();
         shadow.setColor(Color.BLUE);
         shadow.setRadius(20);
 
         field.addEventHandler(MouseEvent.MOUSE_ENTERED,
-                new EventHandler<MouseEvent>() {
-                    @Override public void handle(MouseEvent e) {
-                        field.setEffect(shadow);
-                    }
-                });
+                e -> field.setEffect(shadow));
         //Removing the shadow when the mouse cursor is off
         field.addEventHandler(MouseEvent.MOUSE_EXITED,
-                new EventHandler<MouseEvent>() {
-                    @Override public void handle(MouseEvent e) {
-                        field.setEffect(null);
-                    }
-                });
+                e -> field.setEffect(null));
     }
 
-    private void addUIControlsLogin(GridPane gridPane, Stage currentStage, Scene menuScene, Scene registrationScene, GraphicsContext gcMenu) {
 
+
+    private void addUIControlsLogin(GridPane gridPane, Stage currentStage, Scene menuScene, Scene registrationScene, GraphicsContext gcMenu) {
 
         // Add PacMan Header
         Label pacmanHeader = new Label("Pac-Man");
         pacmanHeader.setFont(pacmanFont);
         gridPane.add(pacmanHeader, 0, 0, 2, 1);
         GridPane.setHalignment(pacmanHeader, HPos.CENTER);
-
 
         // Add Header
         Label headerLabel = new Label("Login");
@@ -852,7 +798,6 @@ public class main extends Application {
         nameField.setFont(pacmanFontUI);
         textfieldCustom(nameField);
         gridPane.add(nameField, 1,2);
-
 
         // Add Password Label
         Label passwordLabel = new Label("Password : ");
@@ -879,9 +824,6 @@ public class main extends Application {
         GridPane.setHalignment(submitButton, HPos.CENTER);
         GridPane.setMargin(submitButton, new Insets(20, 0,20,0));
 
-
-
-
         // Add Login Button
         Button loginButton = new Button("Create account");
         buttonHover(loginButton);
@@ -895,29 +837,24 @@ public class main extends Application {
         GridPane.setMargin(loginButton, new Insets(20, 0,20,0));
 
 
-        loginButton.setOnAction(event -> {
-            currentStage.setScene(registrationScene);
-        });
+        loginButton.setOnAction(event -> currentStage.setScene(registrationScene));
 
         submitButton.setOnAction(event -> {
             if(nameField.getText().isEmpty()) {
-                showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(),
-                        "Form Error!", "Please enter your name!");
+                showAlert(gridPane.getScene().getWindow(),
+                        "Please enter your name!");
                 return;
             }
-
             if(passwordField.getText().isEmpty()) {
-                showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(),
-                        "Form Error!", "Please enter a password");
+                showAlert(gridPane.getScene().getWindow(),
+                        "Please enter a password");
                 return;
             }
-
             if (!UserDataStore.getInstance().isLoginCorrect(nameField.getText().toUpperCase(), passwordField.getText())) {
-                showAlert(Alert.AlertType.ERROR, gridPane.getScene().getWindow(),
-                        "Form Error!", "Wrong Username or Password!");
+                showAlert(gridPane.getScene().getWindow(),
+                        "Wrong Username or Password!");
                 return;
             }
-
 
             currentStage.setScene(menuScene);
             validUsername = nameField.getText();
@@ -928,9 +865,9 @@ public class main extends Application {
     }
 
 
-    private void showAlert(Alert.AlertType alertType, Window owner, String title, String message) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
+    private void showAlert(Window owner, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Form Error!");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.initOwner(owner);
