@@ -18,6 +18,10 @@ public class UserDataStore {
      */
     private Map<String, String> userPasswordMap = new HashMap<>();
 
+    /**
+     * Method to read the input data
+     * @throws IOException
+     */
     private void loadMap() throws IOException {
         Properties properties = new Properties();
         properties.load(new FileInputStream("data.properties"));
@@ -34,6 +38,11 @@ public class UserDataStore {
     // This class is a singleton. Call getInstance() instead.
     private UserDataStore(){}
 
+    /**
+     * Checks if the username is already taken
+     * @param username
+     * @return
+     */
     public boolean isUsernameTaken(String username){
         try {
             loadMap();
@@ -44,6 +53,12 @@ public class UserDataStore {
         return userPasswordMap.containsKey(username);
     }
 
+    /**
+     * Registration of the user
+     * @param username
+     * @param password
+     * @throws IOException
+     */
     public void registerUser(String username, String password) throws IOException {
 
         loadMap();
@@ -59,6 +74,12 @@ public class UserDataStore {
 
     }
 
+    /**
+     * Checks if the Login information is correct
+     * @param username
+     * @param password
+     * @return
+     */
     public boolean isLoginCorrect(String username, String password) {
 
         try {
@@ -77,6 +98,11 @@ public class UserDataStore {
         return BCrypt.checkpw(password, storedPasswordHash);
     }
 
+    /**
+     * Deletes the user, if wanted
+     * @param username
+     * @param password
+     */
     public void deleteUser(String username, String password){
         userPasswordMap.remove(username, userPasswordMap.get(username));
     }
