@@ -65,8 +65,8 @@ public class mapReader {
                             case "1" -> {
                                 // BLINKY
 
-                                blinkyXPos = widthOneBlock * columnCounter;
-                                blinkyYPos = heightOneBlock * row;
+                                blinkyXPos = (widthOneBlock * columnCounter);
+                                blinkyYPos = (heightOneBlock * row);
                                 blinkyRow = row;
                                 blinkyColumn = columnCounter;
                                 powerPills[columnCounter][row] = false;

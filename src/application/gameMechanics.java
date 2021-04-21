@@ -76,7 +76,7 @@ public class gameMechanics {
         if (dotCount == dotCountAtStart - 70 && !fruitSpawned1) {
             viewSpawningFruit = new ImageView(spawningFruit);
             viewSpawningFruit.setX(14 * widthOneBlock + 2.5);
-            viewSpawningFruit.setY(20 * heightOneBlock + 2.5);
+            viewSpawningFruit.setY(21 * heightOneBlock + 2.5);
             viewSpawningFruit.setFitWidth(widthOneBlock - 5);
             viewSpawningFruit.setFitHeight(heightOneBlock - 5);
             gameLayout.getChildren().remove(viewSpawningFruit);
@@ -88,7 +88,7 @@ public class gameMechanics {
         if (dotCount == dotCountAtStart - 170 && !fruitSpawned2) {
             viewSpawningFruit = new ImageView(spawningFruit);
             viewSpawningFruit.setX(14 * widthOneBlock + 2.5);
-            viewSpawningFruit.setY(20 * heightOneBlock + 2.5);
+            viewSpawningFruit.setY(21 * heightOneBlock + 2.5);
             viewSpawningFruit.setFitWidth(widthOneBlock - 5);
             viewSpawningFruit.setFitHeight(heightOneBlock - 5);
             gameLayout.getChildren().remove(viewSpawningFruit);
@@ -335,8 +335,8 @@ public class gameMechanics {
      * @param gameLayout Group with the gameLayout
      */
     public static void collectFruit(Group gameLayout) {
-        // 14|20 is the Spawn point of the Fruits
-        if ((pacmanColumn == 14) && (pacmanRow == 20) && collectableFruit) {
+        // 14|21 is the Spawn point of the Fruits
+        if ((pacmanColumn == 14) && (pacmanRow == 21) && collectableFruit) {
             score += 100;       // Fruit gives 100 Points
             // TODO: Fruit gives points depending on current Level
 
@@ -410,6 +410,9 @@ public class gameMechanics {
                 gameLayout.getChildren().remove(viewPacmanDown);
                 gameLayout.getChildren().add(viewPacmanDown);
             }
+
+            gameLayout.getChildren().remove(viewBlinky);
+            gameLayout.getChildren().add(viewBlinky);
         }
     }
 
@@ -451,6 +454,9 @@ public class gameMechanics {
                 gameLayout.getChildren().remove(viewPacmanDown);
                 gameLayout.getChildren().add(viewPacmanDown);
             }
+
+            gameLayout.getChildren().remove(viewBlinky);
+            gameLayout.getChildren().add(viewBlinky);
         }
     }
 
@@ -722,7 +728,7 @@ public class gameMechanics {
                 }
             } else {
 
-                if ((int) pacmanColumn - 1 < 0) {
+                if ((int) pacmanColumn - 2 < 0) {
                     // Teleport left/right
                     pacmanXPos = blockCountHorizontally * widthOneBlock;
 

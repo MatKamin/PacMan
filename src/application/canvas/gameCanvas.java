@@ -73,8 +73,11 @@ public class gameCanvas {
 
             //::::::::::: Ghosts Movement :::::::::::\\
 
-            ghostAI.ghostMove();
-            ghostAI.wallGhost();
+            ghostAI.ghostAnimate();
+            gc.setFill(Color.RED);
+            gc.fillRect(26 * widthOneBlock, 1 * heightOneBlock, widthOneBlock, heightOneBlock);
+
+
 
             //::::::::::: Pac-Man Movement :::::::::::\\
 
@@ -91,6 +94,8 @@ public class gameCanvas {
             gameMechanics.drawLevelCounter(gameLayout);             // Draws Level Counter in UI
 
             gameMechanics.levelUp(gameLayout);                      // Level Up
+
+
 
 
         } else {    // If Round is Over

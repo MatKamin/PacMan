@@ -56,7 +56,7 @@ public class variables {
     public static int startingLevel = 1;
 
     public static int blockCountHorizontally = 29;
-    public static int blockCountVertically = 36;
+    public static int blockCountVertically = 37;
 
     public static long widthOneBlock = 25;
     public static long heightOneBlock = 25;
@@ -132,9 +132,18 @@ public class variables {
     static double blinkyColumn;
     static double blinkyXPos;
     static double blinkyYPos;
+    public static double blinkyXPosCenter;
+    public static double blinkyYPosCenter;
+    public static int blinkyColumnNew;
+    public static int blinkyRowNew;
 
-    static double velocityBlinky = 1;
-    static double velocityPinky = 1;
+    static boolean blinkyGoingUp;
+    static boolean blinkyGoingDown;
+    static boolean blinkyGoingLeft;
+    static boolean blinkyGoingRight;
+
+    static double velocityBlinkyVertical = 0;
+    static double velocityBlinkyHorizontal = 1;
 
 
 
