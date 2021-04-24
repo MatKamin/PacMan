@@ -207,7 +207,7 @@ public class main extends Application {
         // FUNCTIONALITY
         playButtonFunction.play(playButton, currentStage, gameScene, tl);
         settingsButtonFunction.play(settingsButton, currentStage, settingsScene);
-        highscoresButtonFunction.play(highscoreButton, currentStage, highscoreScene);
+        highscoresButtonFunction.play(highscoreButton, currentStage, highscoreScene, gcHighscore);
 
 
         // Add to Layout
@@ -505,6 +505,7 @@ public class main extends Application {
 
                 //::::::::::: Pause Menu :::::::::::\\
 
+                gc.setFill(Color.YELLOW);
                 gc.fillText("PAUSED", (blockCountHorizontally / 2) * widthOneBlock, blockCountVertically * heightOneBlock);
                 gc.fillText("Press P to resume", (blockCountHorizontally / 2) * widthOneBlock, (blockCountVertically + 1) * heightOneBlock);
                 gc.fillText("Press Esc to leave", (blockCountHorizontally / 2) * widthOneBlock, (blockCountVertically + 2) * heightOneBlock);
@@ -524,10 +525,10 @@ public class main extends Application {
                     if (el.getCode() == KeyCode.ESCAPE) {         // If "Escape" pressed
 
                         try {
+                            gameMechanics.resetGame(gameLayout);
                             startingStatus = true;
                             gameStarted = false;
                             primaryStage.setScene(menuScene);
-                            gameMechanics.resetGame(gameLayout);
                             //start(primaryStage);            // Restart with new settings
 
                         } catch (Exception exception) {
@@ -546,9 +547,9 @@ public class main extends Application {
             if (e.getCode() == KeyCode.ESCAPE) {          // If "Escape" pressed
 
                 try {
+                    gameMechanics.resetGame(gameLayout);
                     startingStatus = true;
                     gameStarted = false;
-                    gameMechanics.resetGame(gameLayout);
                     primaryStage.setScene(menuScene);
                     //start(primaryStage);                 // Restart with new settings
 

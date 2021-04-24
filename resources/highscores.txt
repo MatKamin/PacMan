@@ -1,1 +1,1 @@
-Nickname,5530,Bob,3490,Bob,1100,Nickname,1000,NextGen,650,empty,0
+Nickname,5530,Bob,3490,PROFEsion,1810,Kaminski,1510,Newuser,1240,empty,0

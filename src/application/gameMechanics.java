@@ -6,6 +6,8 @@ package application;
 import javafx.scene.Group;
 import javafx.scene.image.ImageView;
 
+import java.io.*;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,6 +32,39 @@ public class gameMechanics {
 
 
     public static void resetGame(Group gameLayout){
+
+        // Save Score
+        Scanner sc = null;
+        try {
+            sc = new Scanner(new File("resources/highscores.txt"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        assert sc != null;
+        sc.useDelimiter(",empty,0");
+        String paste = sc.next();
+        try {
+            FileWriter writer2 = new FileWriter("resources/highscores.txt", false);
+            BufferedWriter bufferedWriter = new BufferedWriter(writer2);
+            bufferedWriter.write(paste);
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            FileWriter writer = new FileWriter("resources/highscores.txt", true);
+
+            BufferedWriter bufferedWriter = new BufferedWriter(writer);
+            bufferedWriter.write("," + validUsername + "," + score);
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("SAVED");
+
         removeMap(gameLayout);
         gameLayout.getChildren().removeAll(viewCherry);
         firstRead = true;
@@ -62,6 +97,8 @@ public class gameMechanics {
         doOnce2 = true;
         mapReader.readMap();
         nextLevel = true;
+
+
     }
 
 

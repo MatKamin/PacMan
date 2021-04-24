@@ -137,6 +137,7 @@ public class variables {
     public static int blinkyColumnNew;
     public static int blinkyRowNew;
 
+
     static boolean blinkyGoingUp;
     static boolean blinkyGoingDown;
     static boolean blinkyGoingLeft;

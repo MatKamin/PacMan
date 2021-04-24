@@ -10,9 +10,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 
-import java.io.*;
-import java.util.Scanner;
-
 import static application.variables.*;
 
 
@@ -101,38 +98,6 @@ public class gameCanvas {
         } else {    // If Round is Over
 
             // TODO
-
-
-            // Save Score
-            Scanner sc = null;
-            try {
-                sc = new Scanner(new File("resources/highscores.txt"));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            assert sc != null;
-            sc.useDelimiter(",empty,0");
-            String paste = sc.next();
-            try {
-                FileWriter writer2 = new FileWriter("resources/highscores.txt", false);
-                BufferedWriter bufferedWriter = new BufferedWriter(writer2);
-                bufferedWriter.write(paste);
-                bufferedWriter.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                FileWriter writer = new FileWriter("resources/highscores.txt", true);
-
-                BufferedWriter bufferedWriter = new BufferedWriter(writer);
-                bufferedWriter.write("," + validUsername + "," + score);
-                bufferedWriter.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
 
             gameMechanics.resetGame(gameLayout);
 
