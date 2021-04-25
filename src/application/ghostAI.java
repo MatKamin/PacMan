@@ -23,6 +23,30 @@ public class ghostAI {
         blinkyYPos += velocityBlinkyVertical;
 
         calculateNextMove();
+
+        // TODO:
+        if (velocityBlinkyHorizontal > 0){
+            if (blinkyColumnNew + 1 > blockCountHorizontally) {
+                // Teleport right to left
+                blinkyXPos = widthOneBlock;
+                blinkyColumnNew = 0;
+                blinkyColumn = 0;
+                calculateNextMove();
+            }
+        }
+        if (velocityBlinkyHorizontal < 0){
+            if (blinkyColumnNew - 2 < 0) {
+                // Teleport left to right
+                blinkyXPos = blockCountHorizontally * widthOneBlock;
+                blinkyColumnNew = blockCountHorizontally - 1;
+                blinkyColumn = blockCountHorizontally - 1;
+                calculateNextMove();
+            }
+        }
+
+        // TODO
+
+
     }
 
 
@@ -31,27 +55,13 @@ public class ghostAI {
         blinkyRowNew = (int) Math.round((blinkyYPos + characterHeight/2) / widthOneBlock);
         blinkyColumnNew = (int) Math.round(((blinkyXPos - characterWidth/2) / heightOneBlock));
 
-        // TODO:
-        if (velocityBlinkyHorizontal > 0){
-            if (blinkyColumnNew + 1 > blockCountHorizontally) {
-                // Teleport left/right
-                blinkyXPos = widthOneBlock;
-                blinkyColumnNew = 0;
-            }
-        }
-        if (velocityBlinkyHorizontal < 0){
-            if (blinkyColumnNew - 2 < 0) {
-                // Teleport left/right
-                blinkyXPos = blockCountHorizontally * widthOneBlock;
-                blinkyColumnNew = blockCountHorizontally - 1;
-            }
-        }
-        // TODO
-
         if (velocityBlinkyHorizontal < 0 || velocityBlinkyVertical > 0) {
             blinkyRowNew = (int) Math.round((blinkyYPos - characterHeight/2) / widthOneBlock);
             blinkyColumnNew = (int) Math.round(((blinkyXPos + characterWidth/2) / heightOneBlock));
         }
+
+
+
 
 
         if (blinkyColumnNew == blinkyColumn + 1 || blinkyColumnNew == blinkyColumn - 1) {
@@ -110,8 +120,8 @@ public class ghostAI {
             double distance3 = 10000;
             double distance4 = 10000;
 
-            /**
-            if (blinkyColumnNew > 10 && blinkyColumnNew < 19 && blinkyRowNew > 15 && blinkyRowNew < 21){
+
+            if (blinkyColumnNew > 10 && blinkyColumnNew < 17 && blinkyRowNew > 16 && blinkyRowNew < 20){
                 if (blinkyGoRight) {
                     distance1 = Math.pow(Math.abs((blinkyColumn + 1) - 26 - 1), 2) + Math.pow(Math.abs(blinkyRow - 1), 2);
                 }
@@ -126,20 +136,22 @@ public class ghostAI {
                 }
 
             } else {
-**/
+
+
                 if (blinkyGoRight) {
-                    distance1 = Math.pow(Math.abs((blinkyColumn + 1) - 26 - 1), 2) + Math.pow(Math.abs(blinkyRow - 1), 2);
+                    distance1 = Math.pow(Math.abs((blinkyColumn + 1) - pacmanColumn - 1), 2) + Math.pow(Math.abs(blinkyRow - pacmanRow), 2);
                 }
                 if (blinkyGoUp) {
-                    distance2 = Math.pow(Math.abs(blinkyColumn - 26), 2) + Math.pow(Math.abs((blinkyRow - 1) - 1 - 1), 2);
+                    distance2 = Math.pow(Math.abs(blinkyColumn - pacmanColumn), 2) + Math.pow(Math.abs((blinkyRow - 1) - pacmanRow - 1), 2);
                 }
                 if (blinkyGoDown) {
-                    distance3 = Math.pow(Math.abs(blinkyColumn - 26), 2) + Math.pow(Math.abs((blinkyRow + 1) - 1 - 1), 2);
+                    distance3 = Math.pow(Math.abs(blinkyColumn - pacmanColumn), 2) + Math.pow(Math.abs((blinkyRow + 1) - pacmanRow - 1), 2);
                 }
                 if (blinkyGoLeft) {
-                    distance4 = Math.pow(Math.abs((blinkyColumn - 1) - 26 - 1), 2) + Math.pow(Math.abs(blinkyRow - 1), 2);
+                    distance4 = Math.pow(Math.abs((blinkyColumn - 1) - pacmanColumn - 1), 2) + Math.pow(Math.abs(blinkyRow - pacmanRow), 2);
                 }
 
+            }
 
 
 
@@ -172,6 +184,7 @@ public class ghostAI {
             }
 
 
+
             if (blinkyGoLeft){
                 velocityBlinkyVertical = 0;
                 velocityBlinkyHorizontal = -1;
@@ -187,7 +200,7 @@ public class ghostAI {
             }
 
 
-            //System.out.println(blinkyColumnNew + " | " + blinkyRowNew);
+            System.out.println(blinkyColumnNew + " | " + blinkyRowNew);
         }
 
 
@@ -253,8 +266,8 @@ public class ghostAI {
             double distance4 = 10000;
 
 
-            /**
-            if (blinkyColumnNew > 10 && blinkyColumnNew < 19 && blinkyRowNew > 15 && blinkyRowNew < 21){
+
+            if (blinkyColumnNew > 10 && blinkyColumnNew < 17 && blinkyRowNew > 15 && blinkyRowNew < 20){
                 if (blinkyGoRight) {
                     distance1 = Math.pow(Math.abs((blinkyColumn + 1) - 26 - 1), 2) + Math.pow(Math.abs(blinkyRow - 1), 2);
                 }
@@ -269,20 +282,22 @@ public class ghostAI {
                 }
 
             } else {
-**/
+
+
                 if (blinkyGoRight) {
-                    distance1 = Math.pow(Math.abs((blinkyColumn + 1) - 26 - 1), 2) + Math.pow(Math.abs(blinkyRow - 1), 2);
+                    distance1 = Math.pow(Math.abs((blinkyColumn + 1) - pacmanColumn - 1), 2) + Math.pow(Math.abs(blinkyRow - pacmanRow), 2);
                 }
                 if (blinkyGoUp) {
-                    distance2 = Math.pow(Math.abs(blinkyColumn - 26), 2) + Math.pow(Math.abs((blinkyRow - 1) - 1 - 1), 2);
+                    distance2 = Math.pow(Math.abs(blinkyColumn - pacmanColumn), 2) + Math.pow(Math.abs((blinkyRow - 1) - pacmanRow - 1), 2);
                 }
                 if (blinkyGoDown) {
-                    distance3 = Math.pow(Math.abs(blinkyColumn - 26), 2) + Math.pow(Math.abs((blinkyRow + 1) - 1 - 1), 2);
+                    distance3 = Math.pow(Math.abs(blinkyColumn - pacmanColumn), 2) + Math.pow(Math.abs((blinkyRow + 1) - pacmanRow - 1), 2);
                 }
                 if (blinkyGoLeft) {
-                    distance4 = Math.pow(Math.abs((blinkyColumn - 1) - 26 - 1), 2) + Math.pow(Math.abs(blinkyRow - 1), 2);
+                    distance4 = Math.pow(Math.abs((blinkyColumn - 1) - pacmanColumn - 1), 2) + Math.pow(Math.abs(blinkyRow - pacmanRow), 2);
                 }
 
+            }
 
 
             // Find shortest distance
@@ -327,7 +342,7 @@ public class ghostAI {
 
 
 
-            //System.out.println(blinkyColumnNew + " | " + blinkyRowNew);
+            System.out.println(blinkyColumnNew + " | " + blinkyRowNew);
         }
     }
 
