@@ -3,22 +3,43 @@ package application;
 //---------------------------------IMPORTS---------------------------------\\
 
 import javafx.scene.image.ImageView;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-import static application.variables.*;
+import static application.gameMechanics.*;
+import static application.imageViewerVariables.*;
+import static application.main.heightOneBlock;
+import static application.main.widthOneBlock;
 
 
 //---------------------------------CLASS---------------------------------\\
 
 public class mapReader {
 
+    //---------------------------------VARIABLES---------------------------------\\
+    public static int blockCountHorizontally = 29;
+    public static int blockCountVertically = 37;
+
+    static double pacmanXPosStarting;
+    static double pacmanYPosStarting;
+
+    static double blinkyRow;
+    static double blinkyColumn;
+    static double blinkyXPos;
+    static double blinkyYPos;
+
+    static double pinkyRow;
+    static double pinkyColumn;
+    static double pinkyXPos;
+    static double pinkyYPos;
+
     /**
      * reads the Map
      */
     public static void readMap() {
-        if(firstRead){
+        if (firstRead) {
 
             try {
 
@@ -103,19 +124,6 @@ public class mapReader {
                                 powerPills[columnCounter][row] = false;
                                 dots[columnCounter][row] = false;
                                 notAllowedBox[columnCounter][row] = false;
-                            }
-                            case "W" -> {
-                                // WALLS
-
-                                notAllowedBox[columnCounter][row] = true;
-                                dots[columnCounter][row] = false;
-                                powerPills[columnCounter][row] = false;
-                                viewWall[wallCount] = new ImageView(wall);
-                                viewWall[wallCount].setX(columnCounter * widthOneBlock);
-                                viewWall[wallCount].setY(row * heightOneBlock);
-                                viewWall[wallCount].setFitWidth(widthOneBlock);
-                                viewWall[wallCount].setFitHeight(heightOneBlock);
-                                wallCount++;
                             }
                             case "V" -> {
                                 // RAIL VERTICAL
@@ -204,7 +212,6 @@ public class mapReader {
                 blockCountHorizontally = column;
                 blockCountVertically = row;
 
-                System.out.println("Map Read");
             } catch (
                     FileNotFoundException e) {
                 System.out.println("An error while reading the map occurred.");

@@ -1,17 +1,29 @@
 package application;
 
-import static application.variables.*;
+import static application.gameMechanics.*;
+import static application.imageViewerVariables.viewBlinky;
+import static application.main.*;
+import static application.mapReader.*;
 
 public class ghostAI {
 
+    //---------------------------------VARIABLES---------------------------------\\
+    static int blinkyColumnNew;
+    static int blinkyRowNew;
+
+    static boolean blinkyGoingUp;
+    static boolean blinkyGoingDown;
+    static boolean blinkyGoingLeft;
+    static boolean blinkyGoingRight;
+
+    static double velocityBlinkyVertical = 0;
+    static double velocityBlinkyHorizontal = 1;
 
     /**
      * Animates Ghosts
-     * TODO: Ghost AI
+     * TODO: Ghost AI remaining
      */
     public static void ghostAnimate() {
-
-        // TODO!!!
 
         // Blinky
 
@@ -24,8 +36,7 @@ public class ghostAI {
 
         calculateNextMove();
 
-        // TODO:
-        if (velocityBlinkyHorizontal > 0){
+        if (velocityBlinkyHorizontal > 0) {
             if (blinkyColumnNew + 1 > blockCountHorizontally) {
                 // Teleport right to left
                 blinkyXPos = widthOneBlock;
@@ -34,7 +45,7 @@ public class ghostAI {
                 calculateNextMove();
             }
         }
-        if (velocityBlinkyHorizontal < 0){
+        if (velocityBlinkyHorizontal < 0) {
             if (blinkyColumnNew - 2 < 0) {
                 // Teleport left to right
                 blinkyXPos = blockCountHorizontally * widthOneBlock;
@@ -43,25 +54,18 @@ public class ghostAI {
                 calculateNextMove();
             }
         }
-
-        // TODO
-
-
     }
 
 
     public static void calculateNextMove() {
 
-        blinkyRowNew = (int) Math.round((blinkyYPos + characterHeight/2) / widthOneBlock);
-        blinkyColumnNew = (int) Math.round(((blinkyXPos - characterWidth/2) / heightOneBlock));
+        blinkyRowNew = (int) Math.round((blinkyYPos + characterHeight / 2) / widthOneBlock);
+        blinkyColumnNew = (int) Math.round(((blinkyXPos - characterWidth / 2) / heightOneBlock));
 
         if (velocityBlinkyHorizontal < 0 || velocityBlinkyVertical > 0) {
-            blinkyRowNew = (int) Math.round((blinkyYPos - characterHeight/2) / widthOneBlock);
-            blinkyColumnNew = (int) Math.round(((blinkyXPos + characterWidth/2) / heightOneBlock));
+            blinkyRowNew = (int) Math.round((blinkyYPos - characterHeight / 2) / widthOneBlock);
+            blinkyColumnNew = (int) Math.round(((blinkyXPos + characterWidth / 2) / heightOneBlock));
         }
-
-
-
 
 
         if (blinkyColumnNew == blinkyColumn + 1 || blinkyColumnNew == blinkyColumn - 1) {
@@ -96,17 +100,16 @@ public class ghostAI {
             }
 
 
-
-            if (!ghostPossibleUp()) {
+            if (ghostNotPossibleUp()) {
                 blinkyGoUp = false;
             }
-            if (!ghostPossibleDown()) {
+            if (ghostNotPossibleDown()) {
                 blinkyGoDown = false;
             }
-            if (!ghostPossibleLeft()) {
+            if (ghostNotPossibleLeft()) {
                 blinkyGoLeft = false;
             }
-            if (!ghostPossibleRight()) {
+            if (ghostNozPossibleRight()) {
                 blinkyGoRight = false;
             }
 
@@ -121,7 +124,7 @@ public class ghostAI {
             double distance4 = 10000;
 
 
-            if (blinkyColumnNew > 10 && blinkyColumnNew < 17 && blinkyRowNew > 16 && blinkyRowNew < 20){
+            if (blinkyColumnNew > 10 && blinkyColumnNew < 17 && blinkyRowNew > 16 && blinkyRowNew < 20) {
                 if (blinkyGoRight) {
                     distance1 = Math.pow(Math.abs((blinkyColumn + 1) - 26 - 1), 2) + Math.pow(Math.abs(blinkyRow - 1), 2);
                 }
@@ -154,38 +157,34 @@ public class ghostAI {
             }
 
 
-
-
             // Find shortest distance
             double smallest = distance1;
-            if (distance2 < smallest){
+            if (distance2 < smallest) {
                 smallest = distance2;
             }
-            if (distance3 < smallest){
+            if (distance3 < smallest) {
                 smallest = distance3;
             }
-            if (distance4 < smallest){
+            if (distance4 < smallest) {
                 smallest = distance4;
             }
 
 
-
-            if (smallest != distance1){
+            if (smallest != distance1) {
                 blinkyGoRight = false;
             }
-            if (smallest != distance2){
+            if (smallest != distance2) {
                 blinkyGoUp = false;
             }
             if (smallest != distance3) {
-              blinkyGoDown = false;
+                blinkyGoDown = false;
             }
             if (smallest != distance4) {
                 blinkyGoLeft = false;
             }
 
 
-
-            if (blinkyGoLeft){
+            if (blinkyGoLeft) {
                 velocityBlinkyVertical = 0;
                 velocityBlinkyHorizontal = -1;
             } else if (blinkyGoRight) {
@@ -199,13 +198,7 @@ public class ghostAI {
                 velocityBlinkyHorizontal = 0;
             }
 
-
-            System.out.println(blinkyColumnNew + " | " + blinkyRowNew);
         }
-
-
-
-
 
 
         if (blinkyRowNew == blinkyRow + 1 || blinkyRowNew == blinkyRow - 1) {
@@ -240,17 +233,16 @@ public class ghostAI {
             }
 
 
-
-            if (!ghostPossibleUp()) {
+            if (ghostNotPossibleUp()) {
                 blinkyGoUp = false;
             }
-            if (!ghostPossibleDown()) {
+            if (ghostNotPossibleDown()) {
                 blinkyGoDown = false;
             }
-            if (!ghostPossibleLeft()) {
+            if (ghostNotPossibleLeft()) {
                 blinkyGoLeft = false;
             }
-            if (!ghostPossibleRight()) {
+            if (ghostNozPossibleRight()) {
                 blinkyGoRight = false;
             }
 
@@ -266,8 +258,7 @@ public class ghostAI {
             double distance4 = 10000;
 
 
-
-            if (blinkyColumnNew > 10 && blinkyColumnNew < 17 && blinkyRowNew > 15 && blinkyRowNew < 20){
+            if (blinkyColumnNew > 10 && blinkyColumnNew < 17 && blinkyRowNew > 15 && blinkyRowNew < 20) {
                 if (blinkyGoRight) {
                     distance1 = Math.pow(Math.abs((blinkyColumn + 1) - 26 - 1), 2) + Math.pow(Math.abs(blinkyRow - 1), 2);
                 }
@@ -302,20 +293,20 @@ public class ghostAI {
 
             // Find shortest distance
             double smallest = distance1;
-            if (distance2 < smallest){
+            if (distance2 < smallest) {
                 smallest = distance2;
             }
-            if (distance3 < smallest){
+            if (distance3 < smallest) {
                 smallest = distance3;
             }
-            if (distance4 < smallest){
+            if (distance4 < smallest) {
                 smallest = distance4;
             }
 
-            if (smallest != distance1){
+            if (smallest != distance1) {
                 blinkyGoRight = false;
             }
-            if (smallest != distance2){
+            if (smallest != distance2) {
                 blinkyGoUp = false;
             }
             if (smallest != distance3) {
@@ -326,7 +317,7 @@ public class ghostAI {
             }
 
 
-            if (blinkyGoLeft){
+            if (blinkyGoLeft) {
                 velocityBlinkyVertical = 0;
                 velocityBlinkyHorizontal = -1;
             } else if (blinkyGoRight) {
@@ -339,66 +330,27 @@ public class ghostAI {
                 velocityBlinkyVertical = -1;
                 velocityBlinkyHorizontal = 0;
             }
-
-
-
-            System.out.println(blinkyColumnNew + " | " + blinkyRowNew);
         }
     }
 
 
-    public static boolean ghostPossibleUp() {
+    public static boolean ghostNotPossibleUp() {
         // Check if Up is possible
-        if (!notAllowedBox[(int) blinkyColumn][(int) blinkyRow - 1]) {
-            return true;
-        } else {
-            return false;
-        }
+        return notAllowedBox[(int) blinkyColumn][(int) blinkyRow - 1];
     }
 
-    public static boolean ghostPossibleDown() {
+    public static boolean ghostNotPossibleDown() {
         // Check if Down is possible
-        if (!notAllowedBox[(int) blinkyColumn][(int) blinkyRow + 1]) {
-            return true;
-        } else {
-            return false;
-        }
+        return notAllowedBox[(int) blinkyColumn][(int) blinkyRow + 1];
     }
 
-    public static boolean ghostPossibleLeft() {
+    public static boolean ghostNotPossibleLeft() {
         // Check if Left is possible
-        if (!notAllowedBox[(int) blinkyColumn - 1][(int) blinkyRow]) {
-            return true;
-        } else {
-            return false;
-        }
+        return notAllowedBox[(int) blinkyColumn - 1][(int) blinkyRow];
     }
 
-    public static boolean ghostPossibleRight() {
+    public static boolean ghostNozPossibleRight() {
         // Check if Right is possible
-        if (!notAllowedBox[(int) blinkyColumn + 1][(int) blinkyRow]) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-
-    /**
-     * Ghosts Bouncing left / right
-     * TODO: Ghost AI
-     */
-    public static void wallGhost() {
-
-        if (velocityBlinkyHorizontal < 0) {
-            if (notAllowedBox[(int) blinkyXPos / (int) widthOneBlock][(int) blinkyRow]) {
-                velocityBlinkyHorizontal *= -1;
-            }
-        } else {
-            if (notAllowedBox[(int) blinkyXPos / (int) widthOneBlock + 1][(int) blinkyRow]) {
-                velocityBlinkyHorizontal *= -1;
-            }
-        }
-
+        return notAllowedBox[(int) blinkyColumn + 1][(int) blinkyRow];
     }
 }

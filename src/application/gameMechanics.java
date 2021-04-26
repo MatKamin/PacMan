@@ -11,12 +11,67 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static application.variables.*;
+import static application.imageViewerVariables.*;
+import static application.main.*;
+import static application.mapReader.*;
 
 
 //---------------------------------CLASS---------------------------------\\
 
 public class gameMechanics {
+
+    //---------------------------------VARIABLES---------------------------------\\
+
+    private static boolean nextLevel = true;
+    public static int score = 0;    // player score
+    public static int highscore;    // Highest score
+
+    private static final int maxLevel = 2;
+
+    static String mapFile = "resources/levels/level1.txt";
+
+    static int levelCounter = 0;
+    static final int startingLevel = 1;
+
+    static boolean firstRead = true;
+
+    static boolean[][] dots = new boolean[blockCountHorizontally + 1][blockCountVertically];
+    static boolean[][] powerPills = new boolean[blockCountHorizontally + 1][blockCountVertically];
+    static boolean[][] notAllowedBox = new boolean[blockCountHorizontally + 1][blockCountVertically];
+
+    static int dotCount = 0;
+    static int dotCountAtStart = 0;
+    static int powerPillCount = 0;
+    static int wallCount = 0;
+    static int railVerticalCount = 0;
+    static int railHorizontalCount = 0;
+    static int railUpRightCount = 0;
+    static int railUpLeftCount = 0;
+    static int railRightUpCount = 0;
+    static int railLeftUpCount = 0;
+
+    public static double pacmanRow;
+    public static double pacmanColumn;
+    public static double pacmanXPos;
+    public static double pacmanYPos;
+
+    static double pacmanXPosCenter = pacmanXPos + (int) (characterWidth / 2);
+    static double pacmanYPosCenter = pacmanYPos + (int) (characterWidth / 2);
+
+    static boolean allowNextMoveUp = true;
+    static boolean allowNextMoveDown = true;
+    public static boolean allowNextMoveLeft = true;
+    public static boolean allowNextMoveRight = true;
+
+    static boolean stop = false;
+
+    static boolean collectableFruit = false;
+    static boolean fruitSpawned1 = false;
+    static boolean fruitSpawned2 = false;
+
+    static boolean doOnce = true;
+    static boolean doOnce2 = true;
+    static int delayFruit = 1;
 
 
     /**
@@ -31,7 +86,7 @@ public class gameMechanics {
     }
 
 
-    public static void resetGame(Group gameLayout){
+    public static void resetGame(Group gameLayout) {
 
         // Save Score
         Scanner sc = null;
@@ -43,36 +98,30 @@ public class gameMechanics {
 
         assert sc != null;
         sc.useDelimiter(",empty,0");
-        String paste = sc.next();
+        String old = sc.next();
+        String newScore = "," + validUsername + "," + score;
+        String paste = old + newScore;
+
+        paste = paste.replaceAll("," + validUsername + ",0", "");
+
         try {
-            FileWriter writer2 = new FileWriter("resources/highscores.txt", false);
-            BufferedWriter bufferedWriter = new BufferedWriter(writer2);
+            FileWriter writer = new FileWriter("resources/highscores.txt", false);
+
+            BufferedWriter bufferedWriter = new BufferedWriter(writer);
             bufferedWriter.write(paste);
             bufferedWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        try {
-            FileWriter writer = new FileWriter("resources/highscores.txt", true);
-
-            BufferedWriter bufferedWriter = new BufferedWriter(writer);
-            bufferedWriter.write("," + validUsername + "," + score);
-            bufferedWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("SAVED");
 
         removeMap(gameLayout);
         gameLayout.getChildren().removeAll(viewCherry);
         firstRead = true;
         score = 0;
         lifesCounter = 3;
-        lifesOriginally = 3;
+        lifesAtLevelStart = 3;
         levelCounter = 0;
-        startingLevel = 1;
         wallCount = 0;
         dotCount = 0;
         dotCountAtStart = 0;
@@ -97,11 +146,8 @@ public class gameMechanics {
         doOnce2 = true;
         mapReader.readMap();
         nextLevel = true;
-
-
+        isPacmanStartingPosVisible = true;
     }
-
-
 
 
     /**
@@ -137,14 +183,13 @@ public class gameMechanics {
     }
 
 
-
     /**
      * draws the Life Counter in the UI
      *
      * @param gameLayout Group with the gameLayout
      */
     public static void drawLifes(Group gameLayout) {
-        if (lifesCounter != lifesOriginally) {
+        if (lifesCounter != lifesAtLevelStart) {
             for (int i = 1; i <= lifesCounter; i++) {
                 viewLifes = new ImageView(lifes);
                 viewLifes.setX(i * (widthOneBlock + 10));
@@ -153,7 +198,7 @@ public class gameMechanics {
                 viewLifes.setFitHeight(heightOneBlock);
                 gameLayout.getChildren().addAll(viewLifes);
             }
-            lifesOriginally--;
+            lifesAtLevelStart--;
         }
     }
 
@@ -177,7 +222,7 @@ public class gameMechanics {
     }
 
 
-    private static void removeMap(Group gameLayout){
+    private static void removeMap(Group gameLayout) {
         // Remove Dots to Map
         for (int i = 0; i < dotCount; i++) {
             gameLayout.getChildren().remove(viewDot[i]);
@@ -185,43 +230,38 @@ public class gameMechanics {
 
 
         // Remove Power Pills to Map
-        for(int i = 0; i < powerPillCount; i++){
+        for (int i = 0; i < powerPillCount; i++) {
             gameLayout.getChildren().remove(viewPowerPill[i]);
         }
 
 
-        // Remove Walls to Map
-        for(int i = 0; i < wallCount; i++){
-            gameLayout.getChildren().remove(viewWall[i]);
-        }
-
         // Remove Vertical Rails to Map
-        for(int i = 0; i < railVerticalCount; i++){
+        for (int i = 0; i < railVerticalCount; i++) {
             gameLayout.getChildren().remove(viewRailVertical[i]);
         }
 
         // Remove Horizontal Rails to Map
-        for(int i = 0; i < railHorizontalCount; i++){
+        for (int i = 0; i < railHorizontalCount; i++) {
             gameLayout.getChildren().remove(viewRailHorizontal[i]);
         }
 
         // Remove Up Right Rails to Map
-        for(int i = 0; i < railUpRightCount; i++){
+        for (int i = 0; i < railUpRightCount; i++) {
             gameLayout.getChildren().remove(viewRailUpRight[i]);
         }
 
         // Remove Up Left Rails to Map
-        for(int i = 0; i < railUpLeftCount; i++){
+        for (int i = 0; i < railUpLeftCount; i++) {
             gameLayout.getChildren().remove(viewRailUpLeft[i]);
         }
 
         // Remove Right Up Rails to Map
-        for(int i = 0; i < railRightUpCount; i++){
+        for (int i = 0; i < railRightUpCount; i++) {
             gameLayout.getChildren().remove(viewRailRightUp[i]);
         }
 
         // Remove Left Up Rails to Map
-        for(int i = 0; i < railLeftUpCount; i++){
+        for (int i = 0; i < railLeftUpCount; i++) {
             gameLayout.getChildren().remove(viewRailLeftUp[i]);
         }
     }
@@ -236,19 +276,17 @@ public class gameMechanics {
         }
         if (nextLevel) {
             levelCounter++;
-            if (levelCounter > maxLevel){
+            if (levelCounter > maxLevel) {
                 return;
             }
             mapFile = "resources/levels/level" + levelCounter + ".txt";
-            System.out.println(mapFile);
 
             removeMap(gameLayout);
             gameLayout.getChildren().removeAll(viewBlinky, viewPinky);
 
             nextLevel = false;
             firstRead = true;
-            lifesOriginally = 3;
-            startingLevel = 1;
+            lifesAtLevelStart = 3;
             wallCount = 0;
             dotCount = 0;
             dotCountAtStart = 0;
@@ -282,50 +320,44 @@ public class gameMechanics {
 
 
             // Add Power Pills to Map
-            for(int i = 0; i < powerPillCount; i++){
+            for (int i = 0; i < powerPillCount; i++) {
                 gameLayout.getChildren().remove(viewPowerPill[i]);
                 gameLayout.getChildren().add(viewPowerPill[i]);
             }
 
 
-            // Add Walls to Map
-            for(int i = 0; i < wallCount; i++){
-                gameLayout.getChildren().remove(viewWall[i]);
-                gameLayout.getChildren().add(viewWall[i]);
-            }
-
             // Add Vertical Rails to Map
-            for(int i = 0; i < railVerticalCount; i++){
+            for (int i = 0; i < railVerticalCount; i++) {
                 gameLayout.getChildren().remove(viewRailVertical[i]);
                 gameLayout.getChildren().add(viewRailVertical[i]);
             }
 
             // Add Horizontal Rails to Map
-            for(int i = 0; i < railHorizontalCount; i++){
+            for (int i = 0; i < railHorizontalCount; i++) {
                 gameLayout.getChildren().remove(viewRailHorizontal[i]);
                 gameLayout.getChildren().add(viewRailHorizontal[i]);
             }
 
             // Add Up Right Rails to Map
-            for(int i = 0; i < railUpRightCount; i++){
+            for (int i = 0; i < railUpRightCount; i++) {
                 gameLayout.getChildren().remove(viewRailUpRight[i]);
                 gameLayout.getChildren().add(viewRailUpRight[i]);
             }
 
             // Add Up Left Rails to Map
-            for(int i = 0; i < railUpLeftCount; i++){
+            for (int i = 0; i < railUpLeftCount; i++) {
                 gameLayout.getChildren().remove(viewRailUpLeft[i]);
                 gameLayout.getChildren().add(viewRailUpLeft[i]);
             }
 
             // Add Right Up Rails to Map
-            for(int i = 0; i < railRightUpCount; i++){
+            for (int i = 0; i < railRightUpCount; i++) {
                 gameLayout.getChildren().remove(viewRailRightUp[i]);
                 gameLayout.getChildren().add(viewRailRightUp[i]);
             }
 
             // Add Left Up Rails to Map
-            for(int i = 0; i < railLeftUpCount; i++){
+            for (int i = 0; i < railLeftUpCount; i++) {
                 gameLayout.getChildren().remove(viewRailLeftUp[i]);
                 gameLayout.getChildren().add(viewRailLeftUp[i]);
             }
@@ -334,8 +366,8 @@ public class gameMechanics {
             //::::::::::: Red Ghost (Blinky) GIF :::::::::::\\
 
             //Setting the position of the image
-            viewBlinky.setX((blinkyColumn * widthOneBlock) + (int)((widthOneBlock - characterWidth) / 2));
-            viewBlinky.setY((blinkyRow * heightOneBlock) + (int)((heightOneBlock - characterHeight) / 2));
+            viewBlinky.setX((blinkyColumn * widthOneBlock) + (int) ((widthOneBlock - characterWidth) / 2));
+            viewBlinky.setY((blinkyRow * heightOneBlock) + (int) ((heightOneBlock - characterHeight) / 2));
 
 
             //setting the fit height and width of the image view
@@ -346,8 +378,8 @@ public class gameMechanics {
             //::::::::::: Pink Ghost (Pinky) GIF :::::::::::\\
 
             //Setting the position of the image
-            viewPinky.setX((pinkyColumn * widthOneBlock) + (int)((widthOneBlock - characterWidth) / 2));
-            viewPinky.setY((pinkyRow * heightOneBlock) + (int)((heightOneBlock - characterHeight) / 2));
+            viewPinky.setX((pinkyColumn * widthOneBlock) + (int) ((widthOneBlock - characterWidth) / 2));
+            viewPinky.setY((pinkyRow * heightOneBlock) + (int) ((heightOneBlock - characterHeight) / 2));
 
 
             //setting the fit height and width of the image view
@@ -356,13 +388,8 @@ public class gameMechanics {
 
 
             gameLayout.getChildren().addAll(viewBlinky, viewPinky);
-
-            System.out.println(levelCounter);
-            System.out.println(startingLevel);
-            System.out.println();
         }
     }
-
 
 
     /**
@@ -407,7 +434,6 @@ public class gameMechanics {
             doOnce = true;
         }
     }
-
 
 
     /**
@@ -507,28 +533,6 @@ public class gameMechanics {
 
         pacmanRow = (int) Math.round(pacmanYPos / widthOneBlock);
         pacmanColumn = (int) Math.round((pacmanXPos / heightOneBlock));
-
-        // Info Output for debugging
-        // Press SPACE to Output
-        if (debug) {
-            System.out.println(notAllowedBox[(int) ((pacmanXPos / widthOneBlock))][(int) (pacmanYPos / heightOneBlock)]);
-            System.out.println("COLUMN: ");
-            System.out.println("ROW: ");
-            System.out.println();
-            System.out.println("COLUMN front LEFT: " + (pacmanColumn - 1));
-            System.out.println("ROW front LEFT: " + pacmanRow);
-            System.out.println();
-            System.out.println("COLUMN front RIGHT: " + pacmanColumn);
-            System.out.println("ROW front RIGHT: " + pacmanRow);
-            System.out.println();
-            System.out.println("COLUMN front DOWN: " + pacmanColumn);
-            System.out.println("ROW front DOWN: " + (pacmanRow + 1));
-            System.out.println();
-            System.out.println("COLUMN front UP: " + pacmanColumn);
-            System.out.println("ROW front UP: " + (pacmanRow - 1));
-            System.out.println();
-            debug = false;
-        }
 
 
         if (pacmanFacingRight) {

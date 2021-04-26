@@ -10,19 +10,24 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 
-import static application.variables.*;
+import static application.gameMechanics.highscore;
+import static application.gameMechanics.score;
+import static application.main.*;
+import static application.mapReader.blockCountHorizontally;
 
 
 //---------------------------------CLASS---------------------------------\\
 
 public class gameCanvas {
 
+
     //--------------------------------------------GAME CANVAS--------------------------------------------\\
 
     /**
      * plays the game scene
-     * @param gc            GraphicsContext / gcGame of the scene
-     * @param gameLayout    Game Layout Group
+     *
+     * @param gc         GraphicsContext / gcGame of the scene
+     * @param gameLayout Game Layout Group
      */
 
     public static void play(GraphicsContext gc, Group gameLayout) {
@@ -42,28 +47,23 @@ public class gameCanvas {
         gc.setTextAlign(TextAlignment.CENTER);       // Align text to center
 
 
-
         //::::::::::: High score :::::::::::\\
 
         gc.setFill(Color.YELLOW);
-        if (score > highscore){
+        if (score > highscore) {
             highscore = score;
         }
-        gc.fillText("Highscore: " + highscore, (int)((widthOneBlock * blockCountHorizontally)/2) + (int)((widthOneBlock * blockCountHorizontally)/6), heightOneBlock * 2);
+        gc.fillText("Highscore: " + highscore, (int) ((widthOneBlock * blockCountHorizontally) / 2) + (int) ((widthOneBlock * blockCountHorizontally) / 6), heightOneBlock * 2);
 
 
         //::::::::::: Nickname :::::::::::\\
 
-        gc.fillText(validUsername, (int)(widthOneBlock * (blockCountHorizontally + 6)), heightOneBlock * 2);
+        gc.fillText(validUsername, (int) (widthOneBlock * (blockCountHorizontally + 6)), heightOneBlock * 2);
 
 
         //::::::::::: Score :::::::::::\\
 
-        gc.fillText("Score: " + score, (int)((widthOneBlock * blockCountHorizontally)/6), heightOneBlock * 2);
-
-
-
-
+        gc.fillText("Score: " + score, (int) ((widthOneBlock * blockCountHorizontally) / 6), heightOneBlock * 2);
 
 
         if (gameStarted) {               // When the round starts
@@ -72,8 +72,7 @@ public class gameCanvas {
 
             ghostAI.ghostAnimate();
             gc.setFill(Color.RED);
-            gc.fillRect(26 * widthOneBlock, 1 * heightOneBlock, widthOneBlock, heightOneBlock);
-
+            gc.fillRect(26 * widthOneBlock, heightOneBlock, widthOneBlock, heightOneBlock);
 
 
             //::::::::::: Pac-Man Movement :::::::::::\\
@@ -93,14 +92,11 @@ public class gameCanvas {
             gameMechanics.levelUp(gameLayout);                      // Level Up
 
 
-
-
         } else {    // If Round is Over
 
             // TODO
 
             gameMechanics.resetGame(gameLayout);
-
 
         }
     }

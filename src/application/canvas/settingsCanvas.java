@@ -6,8 +6,7 @@ package application.canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.TextAlignment;
 
-
-import static application.variables.*;
+import static application.main.*;
 
 
 //---------------------------------CLASS---------------------------------\\
@@ -30,7 +29,6 @@ public class settingsCanvas {
         gc.fillRect(0, 0, width, height);    // Draw background
 
 
-
         //::::::::::: Text Settings  :::::::::::\\
 
         gc.setFill(fontColor);          // Set font color
@@ -41,7 +39,7 @@ public class settingsCanvas {
 
         //::::::::::: Text :::::::::::\\
 
-        gc.fillText("SETTINGS", width/2 , pacmanFontSize * 1.5);
+        gc.fillText("SETTINGS", width / 2, pacmanFontSize * 1.5);
 
 
     }

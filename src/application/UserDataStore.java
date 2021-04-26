@@ -11,12 +11,12 @@ import java.util.Properties;
 
 public class UserDataStore {
 
-    private static UserDataStore instance = new UserDataStore();
+    private static final UserDataStore instance = new UserDataStore();
 
     /**
      * Map of usernames to their password hashes.
      */
-    private Map<String, String> userPasswordMap = new HashMap<>();
+    private final Map<String, String> userPasswordMap = new HashMap<>();
 
     /**
      * Method to read the input data
@@ -31,18 +31,20 @@ public class UserDataStore {
         }
     }
 
-    public static UserDataStore getInstance(){
+    public static UserDataStore getInstance() {
         return instance;
     }
 
-    private UserDataStore(){}
+    private UserDataStore() {
+    }
 
     /**
      * Checks if the username is already taken
+     *
      * @param username Username to check
-     * @return  true or false
+     * @return true or false
      */
-    public boolean isUsernameTaken(String username){
+    public boolean isUsernameTaken(String username) {
         try {
             loadMap();
         } catch (IOException e) {
@@ -54,6 +56,7 @@ public class UserDataStore {
 
     /**
      * Registration of the user
+     *
      * @param username username to register
      * @param password password to register
      * @throws IOException Exception
@@ -75,6 +78,7 @@ public class UserDataStore {
 
     /**
      * Checks if the Login information is correct
+     *
      * @param username username to check
      * @param password password to check
      * @return true or false
@@ -88,7 +92,7 @@ public class UserDataStore {
         }
 
         // username isn't registered
-        if(!userPasswordMap.containsKey(username)){
+        if (!userPasswordMap.containsKey(username)) {
             return false;
         }
 
@@ -99,9 +103,10 @@ public class UserDataStore {
 
     /**
      * Deletes the user, if wanted
+     *
      * @param username username to delete
      */
-    public void deleteUser(String username){
+    public void deleteUser(String username) {
         userPasswordMap.remove(username.toUpperCase(), userPasswordMap.get(username.toUpperCase()));
 
         Properties properties = new Properties();

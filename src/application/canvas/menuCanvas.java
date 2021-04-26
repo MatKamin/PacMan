@@ -6,7 +6,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 
-import static application.variables.*;
+import static application.main.*;
 
 
 //---------------------------------CLASS---------------------------------\\
@@ -17,6 +17,7 @@ public class menuCanvas {
 
     /**
      * Canvas Menu
+     *
      * @param gc graphics context for Menu
      */
 
@@ -38,12 +39,12 @@ public class menuCanvas {
 
         //::::::::::: Text :::::::::::\\
 
-        gc.fillText("Pac-Man", width/2, pacmanFontSize * 1.5);
+        gc.fillText("Pac-Man", width / 2, pacmanFontSize * 1.5);
 
 
         gc.setFill(Color.YELLOW);
         gc.setFont(pacmanFontUI);
-        gc.fillText("Welcome " + validUsername + "!!! ", width/2, pacmanFontSize * 3);
+        gc.fillText("Welcome " + validUsername + "!!! ", width / 2, pacmanFontSize * 3);
 
     }
 }

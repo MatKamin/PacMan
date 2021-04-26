@@ -3,9 +3,7 @@ package application;
 //---------------------------------IMPORTS---------------------------------\\
 
 import application.canvas.gameCanvas;
-import application.canvas.highscoreCanvas;
 import application.canvas.menuCanvas;
-import application.canvas.settingsCanvas;
 import application.functionality.highscoresButtonFunction;
 import application.functionality.playButtonFunction;
 import application.functionality.settingsButtonFunction;
@@ -27,6 +25,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -34,10 +33,62 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 
-import static application.variables.*;
+import static application.gameMechanics.*;
+import static application.imageViewerVariables.*;
+import static application.mapReader.*;
 
 
 public class main extends Application {
+
+    //---------------------------------VARIABLES---------------------------------\\
+
+    public static final int width = 1300;       // Window width
+    public static final int height = 1000;      // Window height
+
+    private static final String ANSI_RESET = "\u001B[0m";
+    private static final String ANSI_GREEN = "\u001B[32m";
+
+    private static boolean isLoggedIn = false;
+
+    public static boolean isPacmanStartingPosVisible = true;
+
+    public static boolean gameStarted;    // has the game started? true/false
+
+    public static Color backgroundColor = Color.BLACK;    // Background Color
+    public static Color fontColor = Color.WHITE;          // Font Color
+
+    public static String validUsername = "Player 1";
+    static String finalUsername = "";
+    static final String regexp = "\\w{1,10}" + "\\s?+" + "\\d{0,3}";
+
+    public static int lifesCounter = 3;
+    static int lifesAtLevelStart = 3;
+
+    public static final long widthOneBlock = 25;
+    public static final long heightOneBlock = 25;
+
+    public static final long characterWidth = widthOneBlock;
+    public static final long characterHeight = heightOneBlock;
+
+    public static int pacmanFontSize = 80;
+    public static int pacmanFontSizeUI = 20;
+    public static final Font pacmanFont = Font.loadFont("file:resources/fonts/pacman.ttf", pacmanFontSize);                  // Loading Pac-Man Font
+    public static final Font pacmanFontUI = Font.loadFont("file:resources/fonts/emulogic.ttf", pacmanFontSizeUI);            // Loading Pac-Man UI Font
+
+    static boolean pacmanFacingUp = false;
+    static boolean pacmanFacingDown = false;
+    static boolean pacmanFacingLeft = false;
+    static boolean pacmanFacingRight = true;
+
+    static char waitingForTurn;
+
+    static double velocityPacmanHorizontal = 0;
+    static double velocityPacmanVertical = 0;
+
+    static boolean hitRightWall = false;
+    static boolean hitLeftWall = false;
+    static boolean hitUpWall = false;
+    static boolean hitDownWall = false;
 
 
     /**
@@ -47,7 +98,7 @@ public class main extends Application {
      */
 
     @Override
-    public void start(Stage currentStage) throws Exception {
+    public void start(Stage currentStage) {
 
         currentStage.setTitle("Pac-Man");      // Window title
         gameStarted = false;
@@ -67,8 +118,6 @@ public class main extends Application {
 
         // Scene
         Scene gameScene = new Scene(gameLayout, width, height);
-
-        gameCanvas.play(gcGame, gameLayout);
 
 
         gameLayout.getChildren().add(canvasGame);
@@ -94,7 +143,6 @@ public class main extends Application {
         // Canvas
         Canvas canvasSettings = new Canvas(width, height);
         GraphicsContext gcSettings = canvasSettings.getGraphicsContext2D();
-        settingsCanvas.play(gcSettings);
 
         // Scene
         Scene settingsScene = new Scene(settingsLayout, width, height);
@@ -132,7 +180,6 @@ public class main extends Application {
         // Canvas
         Canvas canvasHighscore = new Canvas(width, height);
         GraphicsContext gcHighscore = canvasHighscore.getGraphicsContext2D();
-        highscoreCanvas.play(gcHighscore);
 
         // Layout
         Group highscoreLayout = new Group();
@@ -205,8 +252,8 @@ public class main extends Application {
 
 
         // FUNCTIONALITY
-        playButtonFunction.play(playButton, currentStage, gameScene, tl);
-        settingsButtonFunction.play(settingsButton, currentStage, settingsScene);
+        playButtonFunction.play(playButton, currentStage, gameScene, tl, gcGame, gameLayout);
+        settingsButtonFunction.play(settingsButton, currentStage, settingsScene, gcSettings);
         highscoresButtonFunction.play(highscoreButton, currentStage, highscoreScene, gcHighscore);
 
 
@@ -252,7 +299,6 @@ public class main extends Application {
         deleteAccount(deleteAccountButton, currentStage);
 
 
-
         //----------------------------------------------------------------------------------------CONTROLS----------------------------------------------------------------------------------------\\
 
         //--------------------------------------------SETTINGS CONTROLS--------------------------------------------\\
@@ -290,7 +336,6 @@ public class main extends Application {
     }
 
 
-
     public void logoff(Text logoffButton, Stage currentStage) {
         logoffButton.setOnMouseClicked(e -> {
             isLoggedIn = false;
@@ -302,7 +347,7 @@ public class main extends Application {
         });
     }
 
-    public void deleteAccount(Text deleteButton, Stage currentStage){
+    public void deleteAccount(Text deleteButton, Stage currentStage) {
         deleteButton.setOnMouseClicked(e -> {
             isLoggedIn = false;
             UserDataStore.getInstance().deleteUser(finalUsername);
@@ -314,29 +359,31 @@ public class main extends Application {
         });
     }
 
-    public void controls(Scene gameScene, Group gameLayout, Timeline tl, GraphicsContext gc, Stage primaryStage, Scene menuScene) {
+    public static void setPacmanStartingPos(Group gameLayout){
+        //Setting the position of the image
+        viewPacmanLeft.setX((pacmanXPosStarting));
+        viewPacmanLeft.setY((pacmanYPosStarting));
 
-        if (startingStatus) {
-            //::::::::::: Pac-Man GIF :::::::::::\\
+        //setting the fit height and width of the image view
+        viewPacmanLeft.setFitHeight(characterHeight);
+        viewPacmanLeft.setFitWidth(characterWidth);
 
-            //Setting the position of the image
-            viewPacmanLeft.setX((pacmanXPos));
-            viewPacmanLeft.setY((pacmanYPos));
+        gameLayout.getChildren().remove(viewPacmanUp);
+        gameLayout.getChildren().remove(viewPacmanRight);
+        gameLayout.getChildren().remove(viewPacmanLeft);
+        gameLayout.getChildren().remove(viewPacmanDown);
 
-            //setting the fit height and width of the image view
-            viewPacmanLeft.setFitHeight(characterHeight);
-            viewPacmanLeft.setFitWidth(characterWidth);
+        gameLayout.getChildren().addAll(viewPacmanLeft);
 
-            gameLayout.getChildren().remove(viewPacmanUp);
-            gameLayout.getChildren().remove(viewPacmanRight);
-            gameLayout.getChildren().remove(viewPacmanLeft);
-            gameLayout.getChildren().remove(viewPacmanDown);
+        isPacmanStartingPosVisible = false;
+        allowNextMoveRight = true;
+        allowNextMoveLeft = true;
+    }
 
-            gameLayout.getChildren().addAll(viewPacmanLeft);
+    private void controls(Scene gameScene, Group gameLayout, Timeline tl, GraphicsContext gc, Stage primaryStage, Scene menuScene) {
 
-            startingStatus = false;
-            allowNextMoveRight = true;
-            allowNextMoveLeft = true;
+        if (isPacmanStartingPosVisible) {
+            setPacmanStartingPos(gameLayout);
         }
 
         gameScene.setOnKeyPressed(e -> {
@@ -487,19 +534,10 @@ public class main extends Application {
             }
 
 
-            //::::::::::: DEBUG :::::::::::\\
-
-            if (e.getCode() == KeyCode.SPACE) {
-                debug = true;
-                lifesCounter--;
-                gameMechanics.drawLifes(gameLayout);
-            }
-
-
             // Pause Game when "P" Pressed
             if (e.getCode() == KeyCode.P) {   // If "P" Pressed
 
-                startingStatus = false;
+                isPacmanStartingPosVisible = false;
                 tl.stop();    // Stop Timeline/Animation
 
 
@@ -526,7 +564,7 @@ public class main extends Application {
 
                         try {
                             gameMechanics.resetGame(gameLayout);
-                            startingStatus = true;
+                            isPacmanStartingPosVisible = true;
                             gameStarted = false;
                             primaryStage.setScene(menuScene);
                             //start(primaryStage);            // Restart with new settings
@@ -548,7 +586,7 @@ public class main extends Application {
 
                 try {
                     gameMechanics.resetGame(gameLayout);
-                    startingStatus = true;
+                    isPacmanStartingPosVisible = true;
                     gameStarted = false;
                     primaryStage.setScene(menuScene);
                     //start(primaryStage);                 // Restart with new settings
@@ -911,7 +949,7 @@ public class main extends Application {
         // Sets Background Music
         // sounds.playBackgroundMusic();
 
-        System.out.println(ANSI_GREEN + "--- Application Started ---");
+        System.out.println(ANSI_GREEN);
         launch(args);
         System.out.println(ANSI_RESET);
     }

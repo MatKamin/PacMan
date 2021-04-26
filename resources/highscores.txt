@@ -1,1 +1,1 @@
-Nickname,5530,Bob,3490,PROFEsion,1810,Kaminski,1510,Newuser,1240,empty,0
+Joshua,740,a,520,Mateusz,400,a,320,Jan,300,empty,0

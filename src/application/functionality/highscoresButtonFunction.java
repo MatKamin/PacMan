@@ -17,6 +17,7 @@ public class highscoresButtonFunction {
 
     /**
      * Settings Button Functionality
+     *
      * @param highscoreText clickable Text
      */
 
@@ -32,7 +33,6 @@ public class highscoresButtonFunction {
             // Primary Stage -> Settings Canvas
             currentStage.setScene(highscoreScene);
             currentStage.show();
-            System.out.println("--- HIGHSCORES OPENED ---");
         });
 
     }
