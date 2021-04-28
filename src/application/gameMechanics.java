@@ -8,7 +8,6 @@ import javafx.scene.image.ImageView;
 
 import java.io.*;
 import java.util.Scanner;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static application.imageViewerVariables.*;
@@ -69,20 +68,33 @@ public class gameMechanics {
     static boolean fruitSpawned1 = false;
     static boolean fruitSpawned2 = false;
 
-    static boolean doOnce = true;
-    static boolean doOnce2 = true;
+    static boolean getRandomLifespan = true;
+    static boolean collectFruitOnce = true;
     static int delayFruit = 1;
 
 
-    /**
-     * Checks if nickname is valid
-     *
-     * @param USERNAME input username
-     */
-    public static boolean validNickname(String USERNAME) {
-        Pattern p = Pattern.compile(regexp);
-        Matcher m = p.matcher(USERNAME);
-        return m.matches();
+    public static boolean isValidNickname(String USERNAME) {
+        return Pattern.compile(regexp).matcher(USERNAME).matches();
+    }
+
+
+    public static void setPacmanStartingPos(Group gameLayout) {
+        viewPacmanLeft.setX((pacmanXPosStarting));
+        viewPacmanLeft.setY((pacmanYPosStarting));
+
+        viewPacmanLeft.setFitHeight(characterHeight);
+        viewPacmanLeft.setFitWidth(characterWidth);
+
+        gameLayout.getChildren().remove(viewPacmanUp);
+        gameLayout.getChildren().remove(viewPacmanRight);
+        gameLayout.getChildren().remove(viewPacmanLeft);
+        gameLayout.getChildren().remove(viewPacmanDown);
+
+        gameLayout.getChildren().add(viewPacmanLeft);
+
+        isPacmanStartingPosVisible = false;
+        allowNextMoveRight = true;
+        allowNextMoveLeft = true;
     }
 
 
@@ -142,52 +154,40 @@ public class gameMechanics {
         allowNextMoveLeft = true;
         fruitSpawned1 = false;
         fruitSpawned2 = false;
-        doOnce = true;
-        doOnce2 = true;
+        getRandomLifespan = true;
+        collectFruitOnce = true;
         mapReader.readMap();
         nextLevel = true;
         isPacmanStartingPosVisible = true;
     }
 
 
-    /**
-     * Spawns a fruit after eating 70 and 170 dots
-     *
-     * @param gameLayout Group with the gameLayout
-     */
+    private static void drawFruit(Group gameLayout) {
+        viewSpawningFruit = new ImageView(spawningFruit);
+        viewSpawningFruit.setX(spawningFruitColumn * widthOneBlock + 2.5);
+        viewSpawningFruit.setY(spawningFruitRow * heightOneBlock + 2.5);
+        viewSpawningFruit.setFitWidth(widthOneBlock - 5);
+        viewSpawningFruit.setFitHeight(heightOneBlock - 5);
+        gameLayout.getChildren().remove(viewSpawningFruit);
+        gameLayout.getChildren().add(viewSpawningFruit);
+    }
+
+
     public static void spawnFruit(Group gameLayout) {
         if (dotCount == dotCountAtStart - 70 && !fruitSpawned1) {
-            viewSpawningFruit = new ImageView(spawningFruit);
-            viewSpawningFruit.setX(14 * widthOneBlock + 2.5);
-            viewSpawningFruit.setY(21 * heightOneBlock + 2.5);
-            viewSpawningFruit.setFitWidth(widthOneBlock - 5);
-            viewSpawningFruit.setFitHeight(heightOneBlock - 5);
-            gameLayout.getChildren().remove(viewSpawningFruit);
-            gameLayout.getChildren().add(viewSpawningFruit);
+            drawFruit(gameLayout);
             collectableFruit = true;
             fruitSpawned1 = true;
         }
-
         if (dotCount == dotCountAtStart - 170 && !fruitSpawned2) {
-            viewSpawningFruit = new ImageView(spawningFruit);
-            viewSpawningFruit.setX(14 * widthOneBlock + 2.5);
-            viewSpawningFruit.setY(21 * heightOneBlock + 2.5);
-            viewSpawningFruit.setFitWidth(widthOneBlock - 5);
-            viewSpawningFruit.setFitHeight(heightOneBlock - 5);
-            gameLayout.getChildren().remove(viewSpawningFruit);
-            gameLayout.getChildren().add(viewSpawningFruit);
+            drawFruit(gameLayout);
             collectableFruit = true;
             fruitSpawned2 = true;
-            doOnce2 = true;
+            collectFruitOnce = true;
         }
     }
 
 
-    /**
-     * draws the Life Counter in the UI
-     *
-     * @param gameLayout Group with the gameLayout
-     */
     public static void drawLifes(Group gameLayout) {
         if (lifesCounter != lifesAtLevelStart) {
             for (int i = 1; i <= lifesCounter; i++) {
@@ -202,11 +202,7 @@ public class gameMechanics {
         }
     }
 
-    /**
-     * Draws the LevelCounter as Fruit Symbols
-     *
-     * @param gameLayout Group with the gameLayout
-     */
+
     public static void drawLevelCounter(Group gameLayout) {
         // TODO: More Level Icons
 
@@ -228,12 +224,10 @@ public class gameMechanics {
             gameLayout.getChildren().remove(viewDot[i]);
         }
 
-
         // Remove Power Pills to Map
         for (int i = 0; i < powerPillCount; i++) {
             gameLayout.getChildren().remove(viewPowerPill[i]);
         }
-
 
         // Remove Vertical Rails to Map
         for (int i = 0; i < railVerticalCount; i++) {
@@ -266,24 +260,89 @@ public class gameMechanics {
         }
     }
 
-    /**
-     * All Dots have been eaten -> Next Level
-     */
+    private static void drawNextMap(Group gameLayout) {
+        // Add Dots to Map
+        for (int i = 0; i < dotCount; i++) {
+            gameLayout.getChildren().remove(viewDot[i]);
+            gameLayout.getChildren().add(viewDot[i]);
+        }
+
+
+        // Add Power Pills to Map
+        for (int i = 0; i < powerPillCount; i++) {
+            gameLayout.getChildren().remove(viewPowerPill[i]);
+            gameLayout.getChildren().add(viewPowerPill[i]);
+        }
+
+
+        // Add Vertical Rails to Map
+        for (int i = 0; i < railVerticalCount; i++) {
+            gameLayout.getChildren().remove(viewRailVertical[i]);
+            gameLayout.getChildren().add(viewRailVertical[i]);
+        }
+
+        // Add Horizontal Rails to Map
+        for (int i = 0; i < railHorizontalCount; i++) {
+            gameLayout.getChildren().remove(viewRailHorizontal[i]);
+            gameLayout.getChildren().add(viewRailHorizontal[i]);
+        }
+
+        // Add Up Right Rails to Map
+        for (int i = 0; i < railUpRightCount; i++) {
+            gameLayout.getChildren().remove(viewRailUpRight[i]);
+            gameLayout.getChildren().add(viewRailUpRight[i]);
+        }
+
+        // Add Up Left Rails to Map
+        for (int i = 0; i < railUpLeftCount; i++) {
+            gameLayout.getChildren().remove(viewRailUpLeft[i]);
+            gameLayout.getChildren().add(viewRailUpLeft[i]);
+        }
+
+        // Add Right Up Rails to Map
+        for (int i = 0; i < railRightUpCount; i++) {
+            gameLayout.getChildren().remove(viewRailRightUp[i]);
+            gameLayout.getChildren().add(viewRailRightUp[i]);
+        }
+
+        // Add Left Up Rails to Map
+        for (int i = 0; i < railLeftUpCount; i++) {
+            gameLayout.getChildren().remove(viewRailLeftUp[i]);
+            gameLayout.getChildren().add(viewRailLeftUp[i]);
+        }
+
+        //Setting the position of the image
+        viewBlinky.setX((blinkyColumn * widthOneBlock) + (int) ((widthOneBlock - characterWidth) / 2));
+        viewBlinky.setY((blinkyRow * heightOneBlock) + (int) ((heightOneBlock - characterHeight) / 2));
+
+        //setting the fit height and width of the image view
+        viewBlinky.setFitHeight(characterHeight);
+        viewBlinky.setFitWidth(characterWidth);
+
+
+        //Setting the position of the image
+        viewPinky.setX((pinkyColumn * widthOneBlock) + (int) ((widthOneBlock - characterWidth) / 2));
+        viewPinky.setY((pinkyRow * heightOneBlock) + (int) ((heightOneBlock - characterHeight) / 2));
+
+        //setting the fit height and width of the image view
+        viewPinky.setFitHeight(characterHeight);
+        viewPinky.setFitWidth(characterWidth);
+
+        gameLayout.getChildren().addAll(viewBlinky, viewPinky);
+    }
+
+
     public static void levelUp(Group gameLayout) {
 
-        if (dotCount == 0) {
-            nextLevel = true;
-        }
+        if (dotCount == 0) nextLevel = true;
+
         if (nextLevel) {
             levelCounter++;
-            if (levelCounter > maxLevel) {
-                return;
-            }
+            if (levelCounter > maxLevel) return;
             mapFile = "resources/levels/level" + levelCounter + ".txt";
 
             removeMap(gameLayout);
             gameLayout.getChildren().removeAll(viewBlinky, viewPinky);
-
             nextLevel = false;
             firstRead = true;
             lifesAtLevelStart = 3;
@@ -307,228 +366,207 @@ public class gameMechanics {
             allowNextMoveLeft = true;
             fruitSpawned1 = false;
             fruitSpawned2 = false;
-            doOnce = true;
-            doOnce2 = true;
+            getRandomLifespan = true;
+            collectFruitOnce = true;
 
             mapReader.readMap();
-
-            // Add Dots to Map
-            for (int i = 0; i < dotCount; i++) {
-                gameLayout.getChildren().remove(viewDot[i]);
-                gameLayout.getChildren().add(viewDot[i]);
-            }
-
-
-            // Add Power Pills to Map
-            for (int i = 0; i < powerPillCount; i++) {
-                gameLayout.getChildren().remove(viewPowerPill[i]);
-                gameLayout.getChildren().add(viewPowerPill[i]);
-            }
-
-
-            // Add Vertical Rails to Map
-            for (int i = 0; i < railVerticalCount; i++) {
-                gameLayout.getChildren().remove(viewRailVertical[i]);
-                gameLayout.getChildren().add(viewRailVertical[i]);
-            }
-
-            // Add Horizontal Rails to Map
-            for (int i = 0; i < railHorizontalCount; i++) {
-                gameLayout.getChildren().remove(viewRailHorizontal[i]);
-                gameLayout.getChildren().add(viewRailHorizontal[i]);
-            }
-
-            // Add Up Right Rails to Map
-            for (int i = 0; i < railUpRightCount; i++) {
-                gameLayout.getChildren().remove(viewRailUpRight[i]);
-                gameLayout.getChildren().add(viewRailUpRight[i]);
-            }
-
-            // Add Up Left Rails to Map
-            for (int i = 0; i < railUpLeftCount; i++) {
-                gameLayout.getChildren().remove(viewRailUpLeft[i]);
-                gameLayout.getChildren().add(viewRailUpLeft[i]);
-            }
-
-            // Add Right Up Rails to Map
-            for (int i = 0; i < railRightUpCount; i++) {
-                gameLayout.getChildren().remove(viewRailRightUp[i]);
-                gameLayout.getChildren().add(viewRailRightUp[i]);
-            }
-
-            // Add Left Up Rails to Map
-            for (int i = 0; i < railLeftUpCount; i++) {
-                gameLayout.getChildren().remove(viewRailLeftUp[i]);
-                gameLayout.getChildren().add(viewRailLeftUp[i]);
-            }
-
-
-            //::::::::::: Red Ghost (Blinky) GIF :::::::::::\\
-
-            //Setting the position of the image
-            viewBlinky.setX((blinkyColumn * widthOneBlock) + (int) ((widthOneBlock - characterWidth) / 2));
-            viewBlinky.setY((blinkyRow * heightOneBlock) + (int) ((heightOneBlock - characterHeight) / 2));
-
-
-            //setting the fit height and width of the image view
-            viewBlinky.setFitHeight(characterHeight);
-            viewBlinky.setFitWidth(characterWidth);
-
-
-            //::::::::::: Pink Ghost (Pinky) GIF :::::::::::\\
-
-            //Setting the position of the image
-            viewPinky.setX((pinkyColumn * widthOneBlock) + (int) ((widthOneBlock - characterWidth) / 2));
-            viewPinky.setY((pinkyRow * heightOneBlock) + (int) ((heightOneBlock - characterHeight) / 2));
-
-
-            //setting the fit height and width of the image view
-            viewPinky.setFitHeight(characterHeight);
-            viewPinky.setFitWidth(characterWidth);
-
-
-            gameLayout.getChildren().addAll(viewBlinky, viewPinky);
+            drawNextMap(gameLayout);
         }
     }
 
 
-    /**
-     * makes collecting the spawned fruits possible
-     * -> After 9 to 10 seconds the fruit disappears
-     *
-     * @param gameLayout Group with the gameLayout
-     */
     public static void collectFruit(Group gameLayout) {
-        // 14|21 is the Spawn point of the Fruits
-        if ((pacmanColumn == 14) && (pacmanRow == 21) && collectableFruit) {
+        if (!collectableFruit) {
+            gameLayout.getChildren().remove(viewSpawningFruit);
+            getRandomLifespan = true;
+            return;
+        }
+
+        if ((pacmanColumn == spawningFruitColumn) && (pacmanRow == spawningFruitRow)) {
             score += 100;       // Fruit gives 100 Points
             // TODO: Fruit gives points depending on current Level
 
             collectableFruit = false;
             gameLayout.getChildren().remove(viewSpawningFruit);
+            return;
+        }
 
-        } else if (collectableFruit) {
+        // Get Random Lifespan of the Fruit
+        if (getRandomLifespan) {
+            delayFruit = (int) (Math.random() * (10000 - 9000 + 1)) + 9000;
+            getRandomLifespan = false;
+        }
 
-            // Get Random Lifespan of the Fruit
-            if (doOnce) {
-                delayFruit = (int) (Math.random() * (10000 - 9000 + 1)) + 9000;
-                doOnce = false;
-            }
-
-            // Timer
-            new java.util.Timer().schedule(
-                    new java.util.TimerTask() {
-                        @Override
-                        public void run() {
-                            if (doOnce2) {
-                                collectableFruit = false;
-                                doOnce2 = false;
-                            }
+        // Timer
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        if (collectFruitOnce) {
+                            collectableFruit = false;
+                            collectFruitOnce = false;
                         }
-                    },
-                    delayFruit
-            );
-
-        } else {
-            gameLayout.getChildren().remove(viewSpawningFruit);
-            doOnce = true;
-        }
+                    }
+                },
+                delayFruit
+        );
     }
 
+    private static void clearer(Group gameLayout) {
+        viewClearer = new ImageView(clearer);
+        viewClearer.setFitWidth(widthOneBlock - 5);
+        viewClearer.setFitHeight(heightOneBlock - 5);
+        viewClearer.setX(pacmanColumn * widthOneBlock + 2.5);
+        viewClearer.setY(pacmanRow * heightOneBlock + 2.5);
 
-    /**
-     * Makes Collecting Dots possible
-     *
-     * @param gameLayout Group with the gameLayout
-     */
+        gameLayout.getChildren().add(viewClearer);
+
+        // Override with Pac-Man
+        if (pacmanFacingRight) {
+            gameLayout.getChildren().remove(viewPacmanRight);
+            gameLayout.getChildren().add(viewPacmanRight);
+        }
+        if (pacmanFacingLeft) {
+            gameLayout.getChildren().remove(viewPacmanLeft);
+            gameLayout.getChildren().add(viewPacmanLeft);
+        }
+        if (pacmanFacingUp) {
+            gameLayout.getChildren().remove(viewPacmanUp);
+            gameLayout.getChildren().add(viewPacmanUp);
+        }
+        if (pacmanFacingDown) {
+            gameLayout.getChildren().remove(viewPacmanDown);
+            gameLayout.getChildren().add(viewPacmanDown);
+        }
+
+        gameLayout.getChildren().remove(viewBlinky);
+        gameLayout.getChildren().add(viewBlinky);
+    }
+
     public static void collectPoints(Group gameLayout) {
-        if (dots[(int) pacmanColumn][(int) pacmanRow]) {
-            dots[(int) pacmanColumn][(int) pacmanRow] = false;
-            dotCount--;
-            score += 10;    // A dot is worth 10 Points
+        if (!dots[(int) pacmanColumn][(int) pacmanRow]) return;
 
-            viewClearer = new ImageView(clearer);
-            viewClearer.setFitWidth((int) (widthOneBlock / 2));
-            viewClearer.setFitHeight((int) (heightOneBlock / 2));
-            viewClearer.setX(pacmanColumn * widthOneBlock + viewClearer.getFitWidth() / 2);
-            viewClearer.setY(pacmanRow * heightOneBlock + viewClearer.getFitHeight() / 2);
+        dots[(int) pacmanColumn][(int) pacmanRow] = false;
+        dotCount--;
+        score += 10;    // A dot is worth 10 Points
 
-            gameLayout.getChildren().remove(viewClearer);
-            gameLayout.getChildren().add(viewClearer);
-
-            // Override with Pac-Man
-            if (pacmanFacingRight) {
-                gameLayout.getChildren().remove(viewPacmanRight);
-                gameLayout.getChildren().add(viewPacmanRight);
-            }
-            if (pacmanFacingLeft) {
-                gameLayout.getChildren().remove(viewPacmanLeft);
-                gameLayout.getChildren().add(viewPacmanLeft);
-            }
-            if (pacmanFacingUp) {
-                gameLayout.getChildren().remove(viewPacmanUp);
-                gameLayout.getChildren().add(viewPacmanUp);
-            }
-            if (pacmanFacingDown) {
-                gameLayout.getChildren().remove(viewPacmanDown);
-                gameLayout.getChildren().add(viewPacmanDown);
-            }
-
-            gameLayout.getChildren().remove(viewBlinky);
-            gameLayout.getChildren().add(viewBlinky);
-        }
+        clearer(gameLayout);
     }
 
-    /**
-     * Makes collecting Power Pills possible
-     * TODO: Power Pill Effect
-     *
-     * @param gameLayout Group with the gameLayout
-     */
+
     public static void collectPowerPill(Group gameLayout) {
-        if (powerPills[(int) pacmanColumn][(int) pacmanRow]) {
-            powerPills[(int) pacmanColumn][(int) pacmanRow] = false;
-            powerPillCount--;
-            score += 50;        // A Power Pill gives 50 points
+        if (!powerPills[(int) pacmanColumn][(int) pacmanRow]) return;
 
-            viewClearer = new ImageView(clearer);
-            viewClearer.setFitWidth(widthOneBlock - 5);
-            viewClearer.setFitHeight(heightOneBlock - 5);
-            viewClearer.setX(pacmanColumn * widthOneBlock + 2.5);
-            viewClearer.setY(pacmanRow * heightOneBlock + 2.5);
+        powerPills[(int) pacmanColumn][(int) pacmanRow] = false;
+        powerPillCount--;
+        score += 50;        // A Power Pill gives 50 points
 
-            //gameLayout.getChildren().remove(viewClearer);
-            gameLayout.getChildren().addAll(viewClearer);
-
-            // Override with Pac-Man
-            if (pacmanFacingRight) {
-                gameLayout.getChildren().remove(viewPacmanRight);
-                gameLayout.getChildren().add(viewPacmanRight);
-            }
-            if (pacmanFacingLeft) {
-                gameLayout.getChildren().remove(viewPacmanLeft);
-                gameLayout.getChildren().add(viewPacmanLeft);
-            }
-            if (pacmanFacingUp) {
-                gameLayout.getChildren().remove(viewPacmanUp);
-                gameLayout.getChildren().add(viewPacmanUp);
-            }
-            if (pacmanFacingDown) {
-                gameLayout.getChildren().remove(viewPacmanDown);
-                gameLayout.getChildren().add(viewPacmanDown);
-            }
-
-            gameLayout.getChildren().remove(viewBlinky);
-            gameLayout.getChildren().add(viewBlinky);
-        }
+        clearer(gameLayout);
     }
 
 
-    /**
-     * Makes Pac-Man movement possible
-     *
-     * @param gameLayout Group with the gameLayout
-     */
+    private static void checkUpPossible(int direction) {
+        if (!notAllowedBox[(int) pacmanColumn + direction][(int) pacmanRow - 1]) {
+            if (waitingForTurn == 'u' && !stop) {
+                stop = true;
+                pacmanXPosCenter = (pacmanColumn * widthOneBlock) + widthOneBlock * direction;
+                pacmanYPosCenter = (pacmanRow * heightOneBlock);
+                allowNextMoveUp = true;
+            }
+        }
+    }
+
+    private static void checkDownPossible(int direction) {
+        // Check if Down is possible
+        if (!notAllowedBox[(int) pacmanColumn + direction][(int) pacmanRow + 1]) {
+            if (waitingForTurn == 'd' && !stop) {
+                stop = true;
+                pacmanXPosCenter = (pacmanColumn * widthOneBlock) + widthOneBlock * direction;
+                pacmanYPosCenter = (pacmanRow * heightOneBlock);
+                allowNextMoveUp = true;
+            }
+        }
+    }
+
+    private static void turnPacmanUp(Group gameLayout) {
+        //Setting the position of the image
+        viewPacmanUp.setX((pacmanXPos));
+        viewPacmanUp.setY((pacmanYPos));
+
+        //setting the fit height and width of the image view
+        viewPacmanUp.setFitHeight(characterHeight);
+        viewPacmanUp.setFitWidth(characterWidth);
+
+        gameLayout.getChildren().remove(viewPacmanRight);
+        gameLayout.getChildren().remove(viewPacmanUp);
+        gameLayout.getChildren().remove(viewPacmanLeft);
+        gameLayout.getChildren().remove(viewPacmanDown);
+
+        gameLayout.getChildren().addAll(viewPacmanUp);
+
+        pacmanFacingUp = true;
+        pacmanFacingDown = false;
+        pacmanFacingLeft = false;
+        pacmanFacingRight = false;
+        velocityPacmanHorizontal = 0;
+        velocityPacmanVertical = -1;
+
+        hitUpWall = false;
+        stop = false;
+        waitingForTurn = '1';
+    }
+
+    private static void turnPacmanDown(Group gameLayout) {
+        //Setting the position of the image
+        viewPacmanDown.setX((pacmanXPos));
+        viewPacmanDown.setY((pacmanYPos));
+
+        //setting the fit height and width of the image view
+        viewPacmanDown.setFitHeight(characterHeight);
+        viewPacmanDown.setFitWidth(characterWidth);
+
+        gameLayout.getChildren().remove(viewPacmanRight);
+        gameLayout.getChildren().remove(viewPacmanUp);
+        gameLayout.getChildren().remove(viewPacmanLeft);
+        gameLayout.getChildren().remove(viewPacmanDown);
+
+        gameLayout.getChildren().addAll(viewPacmanDown);
+
+        pacmanFacingUp = false;
+        pacmanFacingDown = true;
+        pacmanFacingLeft = false;
+        pacmanFacingRight = false;
+        velocityPacmanHorizontal = 0;
+        velocityPacmanVertical = 1;
+
+        hitDownWall = false;
+        stop = false;
+        waitingForTurn = '1';
+    }
+
+    private static void rightWallHit(){
+        if (pacmanXPos >= pacmanXPosCenter) {
+            velocityPacmanHorizontal = 0;
+            velocityPacmanVertical = 0;
+            waitingForTurn = '1';
+
+            pacmanFacingLeft = false;
+            pacmanFacingRight = false;
+            pacmanFacingDown = false;
+            pacmanFacingUp = false;
+
+            if (!notAllowedBox[(int) pacmanColumn][(int) pacmanRow - 1]) allowNextMoveUp = true;
+            if (!notAllowedBox[(int) pacmanColumn][(int) pacmanRow + 1]) allowNextMoveDown = true;
+
+            allowNextMoveRight = false;
+            return;
+        }
+        viewPacmanRight.setX(pacmanXPos);
+        viewPacmanRight.setY(pacmanYPos);
+        pacmanXPos += velocityPacmanHorizontal;
+    }
+
+
     public static void pacmanMove(Group gameLayout) {
 
         pacmanRow = (int) Math.round(pacmanYPos / widthOneBlock);
@@ -536,170 +574,48 @@ public class gameMechanics {
 
 
         if (pacmanFacingRight) {
+            checkUpPossible(1);
+            checkDownPossible(1);
+            if (!stop) {
+                // Teleport Right to Left
+                if (pacmanColumn + 1 > blockCountHorizontally) pacmanXPos = widthOneBlock;
 
-            // Check if Up is possible
-            if (!notAllowedBox[(int) pacmanColumn + 1][(int) pacmanRow - 1]) {
-                if (waitingForTurn == 'u' && !stop) {
-                    stop = true;
-                    pacmanXPosCenter = (pacmanColumn * widthOneBlock) + widthOneBlock;
-                    pacmanYPosCenter = (pacmanRow * heightOneBlock);
-                    allowNextMoveUp = true;
+                // Check if Wall got Hit
+                if (notAllowedBox[(int) pacmanColumn + 1][(int) pacmanRow] && !hitRightWall) {
+                    hitRightWall = true;
+                    pacmanXPosCenter = pacmanXPos + (int) (characterWidth / 2);
+                    pacmanYPosCenter = pacmanYPos;
                 }
-            }
 
-            // Check if Down is possible
-            if (!notAllowedBox[(int) pacmanColumn + 1][(int) pacmanRow + 1]) {
-                if (waitingForTurn == 'd' && !stop) {
-                    stop = true;
-                    pacmanXPosCenter = (pacmanColumn * widthOneBlock) + widthOneBlock;
-                    pacmanYPosCenter = (pacmanRow * heightOneBlock);
-                    allowNextMoveUp = true;
-                }
-            }
+                if (!hitRightWall) {
+                    allowNextMoveLeft = true;
+                    allowNextMoveUp = false;
+                    allowNextMoveDown = false;
+                    allowNextMoveRight = true;
 
-
-            if (stop) {                                     // If Up or Down turn is wanted
-                if (pacmanXPos < pacmanXPosCenter) {
                     viewPacmanRight.setX(pacmanXPos);
                     viewPacmanRight.setY(pacmanYPos);
                     pacmanXPos += velocityPacmanHorizontal;
-                } else {
-                    if (waitingForTurn == 'u') {
-
-                        //Setting the position of the image
-                        viewPacmanUp.setX((pacmanXPos));
-                        viewPacmanUp.setY((pacmanYPos));
-
-                        //setting the fit height and width of the image view
-                        viewPacmanUp.setFitHeight(characterHeight);
-                        viewPacmanUp.setFitWidth(characterWidth);
-
-                        gameLayout.getChildren().remove(viewPacmanRight);
-                        gameLayout.getChildren().remove(viewPacmanUp);
-                        gameLayout.getChildren().remove(viewPacmanLeft);
-                        gameLayout.getChildren().remove(viewPacmanDown);
-
-                        gameLayout.getChildren().addAll(viewPacmanUp);
-
-                        pacmanFacingUp = true;
-                        pacmanFacingDown = false;
-                        pacmanFacingLeft = false;
-                        pacmanFacingRight = false;
-                        velocityPacmanHorizontal = 0;
-                        velocityPacmanVertical = -1;
-
-                        hitUpWall = false;
-                        stop = false;
-                        waitingForTurn = '1';
-                    }
-
-                    if (waitingForTurn == 'd') {
-
-                        //Setting the position of the image
-                        viewPacmanDown.setX((pacmanXPos));
-                        viewPacmanDown.setY((pacmanYPos));
-
-                        //setting the fit height and width of the image view
-                        viewPacmanDown.setFitHeight(characterHeight);
-                        viewPacmanDown.setFitWidth(characterWidth);
-
-                        gameLayout.getChildren().remove(viewPacmanRight);
-                        gameLayout.getChildren().remove(viewPacmanUp);
-                        gameLayout.getChildren().remove(viewPacmanLeft);
-                        gameLayout.getChildren().remove(viewPacmanDown);
-
-                        gameLayout.getChildren().addAll(viewPacmanDown);
-
-                        pacmanFacingUp = false;
-                        pacmanFacingDown = true;
-                        pacmanFacingLeft = false;
-                        pacmanFacingRight = false;
-                        velocityPacmanHorizontal = 0;
-                        velocityPacmanVertical = 1;
-
-                        hitDownWall = false;
-                        stop = false;
-                        waitingForTurn = '1';
-                    }
+                    return;
                 }
-
-            } else {
-
-                if (pacmanColumn + 1 > blockCountHorizontally) {
-                    // Teleport left/right
-                    pacmanXPos = widthOneBlock;
-
-                } else {
-                    // Check if Wall got Hit
-                    if (notAllowedBox[(int) pacmanColumn + 1][(int) pacmanRow] && !hitRightWall) {
-                        hitRightWall = true;
-                        pacmanXPosCenter = pacmanXPos + (int) (characterWidth / 2);
-                        pacmanYPosCenter = pacmanYPos;
-                    }
-
-
-                    // If Wall hit
-                    if (hitRightWall) {
-                        if (pacmanXPos < pacmanXPosCenter) {    // Go a little bit further
-                            viewPacmanRight.setX(pacmanXPos);
-                            viewPacmanRight.setY(pacmanYPos);
-                            pacmanXPos += velocityPacmanHorizontal;
-                        } else {
-                            velocityPacmanHorizontal = 0;
-                            velocityPacmanVertical = 0;
-                            waitingForTurn = '1';
-
-                            pacmanFacingLeft = false;
-                            pacmanFacingRight = false;
-                            pacmanFacingDown = false;
-                            pacmanFacingUp = false;
-
-                            if (!notAllowedBox[(int) pacmanColumn][(int) pacmanRow - 1]) {
-                                allowNextMoveUp = true;
-                            }
-                            if (!notAllowedBox[(int) pacmanColumn][(int) pacmanRow + 1]) {
-                                allowNextMoveDown = true;
-                            }
-
-                            allowNextMoveRight = false;
-                        }
-
-                    } else {
-                        allowNextMoveLeft = true;
-                        allowNextMoveUp = false;
-                        allowNextMoveDown = false;
-                        allowNextMoveRight = true;
-
-                        viewPacmanRight.setX(pacmanXPos);
-                        viewPacmanRight.setY(pacmanYPos);
-                        pacmanXPos += velocityPacmanHorizontal;
-                    }
-                }
-
+                rightWallHit();
             }
-
-
-        } else if (pacmanFacingLeft) {
-
-            // Check if Up is possible
-            if (!notAllowedBox[(int) pacmanColumn - 1][(int) pacmanRow - 1]) {
-                if (waitingForTurn == 'u' && !stop) {
-                    stop = true;
-                    pacmanXPosCenter = (pacmanColumn * widthOneBlock) - widthOneBlock;
-                    pacmanYPosCenter = (pacmanRow * heightOneBlock);
-                    allowNextMoveUp = true;
+            if (pacmanXPos >= pacmanXPosCenter) {        // Move a little bit further
+                switch (waitingForTurn) {
+                    case 'u' -> turnPacmanUp(gameLayout);
+                    case 'd' -> turnPacmanDown(gameLayout);
                 }
+                return;
             }
+            viewPacmanRight.setX(pacmanXPos);
+            viewPacmanRight.setY(pacmanYPos);
+            pacmanXPos += velocityPacmanHorizontal;
+            return;
+        }
 
-            // Check if Down is possible
-            if (!notAllowedBox[(int) pacmanColumn - 1][(int) pacmanRow + 1]) {
-                if (waitingForTurn == 'd' && !stop) {
-                    stop = true;
-                    pacmanXPosCenter = (pacmanColumn * widthOneBlock) - widthOneBlock;
-                    pacmanYPosCenter = (pacmanRow * heightOneBlock);
-                    allowNextMoveDown = true;
-                }
-            }
+        if (pacmanFacingLeft) {
+            checkUpPossible(-1);
+            checkDownPossible(-1);
 
             if (stop) {
                 if (pacmanXPos > pacmanXPosCenter) {
@@ -817,9 +733,10 @@ public class gameMechanics {
                     }
                 }
             }
+            return;
+        }
 
-
-        } else if (pacmanFacingUp) {
+        if (pacmanFacingUp) {
 
             // Check if Left is possible
             if (!notAllowedBox[(int) pacmanColumn - 1][(int) pacmanRow - 1]) {
@@ -949,9 +866,9 @@ public class gameMechanics {
                     pacmanYPos += velocityPacmanVertical;
                 }
             }
-
-
-        } else if (pacmanFacingDown) {
+            return;
+        }
+        if (pacmanFacingDown) {
 
             // Check if Left is possible
             if (!notAllowedBox[(int) pacmanColumn - 1][(int) pacmanRow + 1]) {

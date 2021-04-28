@@ -15,12 +15,6 @@ public class settingsCanvas {
 
     //--------------------------------------------MENU CANVAS--------------------------------------------\\
 
-    /**
-     * Canvas Menu
-     *
-     * @param gc graphics context for Menu
-     */
-
     public static void play(GraphicsContext gc) {
 
         //::::::::::: Background :::::::::::\\
@@ -40,9 +34,5 @@ public class settingsCanvas {
         //::::::::::: Text :::::::::::\\
 
         gc.fillText("SETTINGS", width / 2, pacmanFontSize * 1.5);
-
-
     }
-
-
 }

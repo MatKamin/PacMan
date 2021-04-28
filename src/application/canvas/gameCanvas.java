@@ -23,12 +23,6 @@ public class gameCanvas {
 
     //--------------------------------------------GAME CANVAS--------------------------------------------\\
 
-    /**
-     * plays the game scene
-     *
-     * @param gc         GraphicsContext / gcGame of the scene
-     * @param gameLayout Game Layout Group
-     */
 
     public static void play(GraphicsContext gc, Group gameLayout) {
 
@@ -66,17 +60,13 @@ public class gameCanvas {
         gc.fillText("Score: " + score, (int) ((widthOneBlock * blockCountHorizontally) / 6), heightOneBlock * 2);
 
 
-        if (gameStarted) {               // When the round starts
+        if (gameStarted) {
 
             //::::::::::: Ghosts Movement :::::::::::\\
 
             ghostAI.ghostAnimate();
-            gc.setFill(Color.RED);
-            gc.fillRect(26 * widthOneBlock, heightOneBlock, widthOneBlock, heightOneBlock);
-
 
             //::::::::::: Pac-Man Movement :::::::::::\\
-
 
             gameMechanics.pacmanMove(gameLayout);                   // Allows moving
 
@@ -92,10 +82,9 @@ public class gameCanvas {
             gameMechanics.levelUp(gameLayout);                      // Level Up
 
 
-        } else {    // If Round is Over
+        } else {
 
             // TODO
-
             gameMechanics.resetGame(gameLayout);
 
         }

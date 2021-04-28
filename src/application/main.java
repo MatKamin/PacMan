@@ -3,10 +3,9 @@ package application;
 //---------------------------------IMPORTS---------------------------------\\
 
 import application.canvas.gameCanvas;
+import application.canvas.highscoreCanvas;
 import application.canvas.menuCanvas;
-import application.functionality.highscoresButtonFunction;
-import application.functionality.playButtonFunction;
-import application.functionality.settingsButtonFunction;
+import application.canvas.settingsCanvas;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -31,6 +30,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.Duration;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import static application.gameMechanics.*;
@@ -58,7 +58,6 @@ public class main extends Application {
     public static Color fontColor = Color.WHITE;          // Font Color
 
     public static String validUsername = "Player 1";
-    static String finalUsername = "";
     static final String regexp = "\\w{1,10}" + "\\s?+" + "\\d{0,3}";
 
     public static int lifesCounter = 3;
@@ -91,6 +90,200 @@ public class main extends Application {
     static boolean hitDownWall = false;
 
 
+    private static GraphicsContext gcSettings;
+    private static Scene settingsScene;
+    private static Text logoffButton;
+    private static Text deleteAccountButton;
+
+
+    private void createSettingsWindow(){
+        // TODO: Settings
+
+        // Canvas
+        Canvas canvasSettings = new Canvas(width, height);
+        gcSettings = canvasSettings.getGraphicsContext2D();
+
+        // Layout
+        Group settingsLayout = new Group();
+
+        // Scene
+        settingsScene = new Scene(settingsLayout, width, height);
+
+        // Adds Canvas to Layout
+        settingsLayout.getChildren().addAll(canvasSettings, logoffButton, deleteAccountButton);
+    }
+
+    private void createLogoffButton(){
+        // Label
+        logoffButton = new Text("Log out");
+        logoffButton.setStroke(Color.YELLOW);
+        logoffButton.setFont(pacmanFontUI);
+
+        // Option Label Position
+        logoffButton.setLayoutY(height - 50);
+        logoffButton.setLayoutX(50);
+    }
+
+    private void createDeleteAccountButton(){
+        // Label
+        deleteAccountButton = new Text("Delete account");
+        deleteAccountButton.setStroke(Color.YELLOW);
+        deleteAccountButton.setFont(pacmanFontUI);
+
+        // Option Label Position
+        deleteAccountButton.setLayoutY(height - 50);
+        deleteAccountButton.setLayoutX(width - 300); // TODO: Improve "- 300"
+    }
+
+
+    private static GraphicsContext gcGame;
+    private static Group gameLayout;
+    private static Scene gameScene;
+    private static Timeline tl;
+
+    private void createGameWindow(){
+        // Canvas
+        Canvas canvasGame = new Canvas(width, height);
+        gcGame = canvasGame.getGraphicsContext2D();
+
+        // Layout
+        gameLayout = new Group();
+
+        // Scene
+        gameScene = new Scene(gameLayout, width, height);
+
+
+        gameLayout.getChildren().add(canvasGame);
+    }
+
+    private void createTimeline(){
+        // JavaFX Timeline = Free form animation defined by KeyFrames and their duration
+        KeyFrame kf = new KeyFrame(Duration.millis(10), e -> gameCanvas.play(gcGame, gameLayout));
+        tl = new Timeline(kf);
+
+        // number of cycles in animation INDEFINITE = repeat indefinitely
+        tl.setCycleCount(Timeline.INDEFINITE);
+    }
+
+    private static GraphicsContext gcHighscore;
+    private static Scene highscoreScene;
+
+    private void createHighscoreWindow(){
+        // Canvas
+        Canvas canvasHighscore = new Canvas(width, height);
+        gcHighscore = canvasHighscore.getGraphicsContext2D();
+
+        // Layout
+        Group highscoreLayout = new Group();
+
+        // Scene
+        highscoreScene = new Scene(highscoreLayout, width, height);
+
+        // Adds Canvas to Layout
+        highscoreLayout.getChildren().addAll(canvasHighscore);
+    }
+
+    private static GraphicsContext gcMenu;
+    private static Scene menuScene;
+    private static Text playButton;
+    private static Text settingsButton;
+    private static Text highscoreButton;
+
+    private void createMenuWindow(){
+        // Canvas
+        Canvas canvasMenu = new Canvas(width, height);
+        gcMenu = canvasMenu.getGraphicsContext2D();
+
+        // Layout
+        Group menuLayout = new Group();
+
+        // Scene
+        menuScene = new Scene(menuLayout, width, height);
+
+        // Add to Layout
+        menuLayout.getChildren().addAll(canvasMenu, playButton, viewMenuAnimation, settingsButton, highscoreButton);
+    }
+
+    private void createMenuAnimation(){
+        //Setting the position of the image
+        viewMenuAnimation.setX(10);
+        viewMenuAnimation.setY((height / 10) * 3);
+        viewMenuAnimation.setFitWidth(width);
+        viewMenuAnimation.setFitHeight(150);
+    }
+
+    private void createPlayButton(Stage currentStage){
+        // Label
+        playButton = new Text("play");
+        playButton.setStroke(fontColor);
+        pacmanFontSize = 80;
+        playButton.setFont(pacmanFont);
+
+        // Option Label Position
+        playButton.setLayoutY(height - (height / 10) * 3);
+        playButton.setLayoutX((width / 2) - playButton.getBoundsInParent().getWidth() / 2);
+
+
+        playButton.setOnMouseClicked(e -> {            // If clicked
+            gameCanvas.play(gcGame, gameLayout);
+            gameStarted = true;
+            setPacmanStartingPos(gameLayout);
+
+            // Primary Stage -> Game Canvas
+            currentStage.setScene(gameScene);
+            currentStage.show();
+
+            tl.playFromStart();                            // Start Animation
+
+            lifesCounter--;
+        });
+    }
+
+    private void createSettingsButton(Stage currentStage){
+        // Label
+        settingsButton = new Text("settings");
+        settingsButton.setStroke(fontColor);
+        pacmanFontSize = 60;
+        settingsButton.setFont(pacmanFont);
+
+        // Option Label Position
+        settingsButton.setLayoutY(height - (height / 10) * 2);
+        settingsButton.setLayoutX((width / 2) - settingsButton.getBoundsInParent().getWidth() / 2);
+
+        settingsButton.setOnMouseClicked(e -> {            // If clicked
+
+            settingsCanvas.play(gcSettings);
+
+            // Primary Stage -> Settings Canvas
+            currentStage.setScene(settingsScene);
+            currentStage.show();
+        });
+    }
+
+    private void createHighscoreButton(Stage currentStage){
+        // Label
+        highscoreButton = new Text("highscores");
+        highscoreButton.setStroke(fontColor);
+        highscoreButton.setFont(pacmanFont);
+
+        // Option Label Position
+        highscoreButton.setLayoutY(height - (height / 10));
+        highscoreButton.setLayoutX((width / 2) - highscoreButton.getBoundsInParent().getWidth() / 2);
+
+        highscoreButton.setOnMouseClicked(e -> {            // If clicked
+            try {
+                highscoreCanvas.play(gcHighscore);
+            } catch (FileNotFoundException fileNotFoundException) {
+                fileNotFoundException.printStackTrace();
+            }
+
+            // Primary Stage -> Settings Canvas
+            currentStage.setScene(highscoreScene);
+            currentStage.show();
+        });
+    }
+
+
     /**
      * Launching Game
      *
@@ -109,190 +302,51 @@ public class main extends Application {
 
         //------------------------------------------------------ GAME WINDOW ------------------------------------------------------\\
 
-        // Canvas
-        Canvas canvasGame = new Canvas(width, height);
-        GraphicsContext gcGame = canvasGame.getGraphicsContext2D();
-
-        // Layout
-        Group gameLayout = new Group();
-
-        // Scene
-        Scene gameScene = new Scene(gameLayout, width, height);
-
-
-        gameLayout.getChildren().add(canvasGame);
-
-
-        //::::::::::: Timeline :::::::::::\\
-
-        // JavaFX Timeline = Free form animation defined by KeyFrames and their duration
-        KeyFrame kf = new KeyFrame(Duration.millis(10), e -> gameCanvas.play(gcGame, gameLayout));
-        Timeline tl = new Timeline(kf);
-
-        // number of cycles in animation INDEFINITE = repeat indefinitely
-        tl.setCycleCount(Timeline.INDEFINITE);
+        createGameWindow();
+        createTimeline();
 
 
         //------------------------------------------------------ SETTINGS WINDOW ------------------------------------------------------\\
 
-        // TODO: Settings
-
-        // Layout
-        Group settingsLayout = new Group();
-
-        // Canvas
-        Canvas canvasSettings = new Canvas(width, height);
-        GraphicsContext gcSettings = canvasSettings.getGraphicsContext2D();
-
-        // Scene
-        Scene settingsScene = new Scene(settingsLayout, width, height);
-
-
-        //::::::::::: Logoff Button :::::::::::\\
-
-        // Label
-        Text logoffButton = new Text("Log out");
-        logoffButton.setStroke(Color.YELLOW);
-        logoffButton.setFont(pacmanFontUI);
-
-        // Option Label Position
-        logoffButton.setLayoutY(height - 50);
-        logoffButton.setLayoutX(50);
-
-
-        //::::::::::: Delete Account Button :::::::::::\\
-
-        // Label
-        Text deleteAccountButton = new Text("Delete account");
-        deleteAccountButton.setStroke(Color.YELLOW);
-        deleteAccountButton.setFont(pacmanFontUI);
-
-        // Option Label Position
-        deleteAccountButton.setLayoutY(height - 50);
-        deleteAccountButton.setLayoutX(width - 300); // TODO: Improve "- 300"
-
-        // Adds Canvas to Layout
-        settingsLayout.getChildren().addAll(canvasSettings, logoffButton, deleteAccountButton);
-
+        createLogoffButton();
+        createDeleteAccountButton();
+        createSettingsWindow();
 
         //------------------------------------------------------ HIGHSCORE WINDOW ------------------------------------------------------\\
 
-        // Canvas
-        Canvas canvasHighscore = new Canvas(width, height);
-        GraphicsContext gcHighscore = canvasHighscore.getGraphicsContext2D();
-
-        // Layout
-        Group highscoreLayout = new Group();
-
-        // Scene
-        Scene highscoreScene = new Scene(highscoreLayout, width, height);
-
-        // Adds Canvas to Layout
-        highscoreLayout.getChildren().addAll(canvasHighscore);
+        createHighscoreWindow();
 
 
         //------------------------------------------------------ MENU WINDOW ------------------------------------------------------\\
 
-        // Canvas
-        Canvas canvasMenu = new Canvas(width, height);
-        GraphicsContext gcMenu = canvasMenu.getGraphicsContext2D();
+        createMenuAnimation();
+        createPlayButton(currentStage);
+        createSettingsButton(currentStage);
+        createHighscoreButton(currentStage);
+        createMenuWindow();
 
-        // Layout
-        Group menuLayout = new Group();
-
-        // Scene
-        Scene menuScene = new Scene(menuLayout, width, height);
-
-
-        //::::::::::: MENU GIF :::::::::::\\
-
-        //Setting the position of the image
-        viewMenuAnimation.setX(10);
-        viewMenuAnimation.setY((height / 10) * 3);
-        viewMenuAnimation.setFitWidth(width);
-        viewMenuAnimation.setFitHeight(150);
-
-
-        //::::::::::: PLAY Button :::::::::::\\
-
-        // Label
-        Text playButton = new Text("play");
-        playButton.setStroke(fontColor);
-        pacmanFontSize = 80;
-        playButton.setFont(pacmanFont);
-
-        // Option Label Position
-        playButton.setLayoutY(height - (height / 10) * 3);
-        playButton.setLayoutX((width / 2) - playButton.getBoundsInParent().getWidth() / 2);
-
-
-        //::::::::::: SETTINGS Button :::::::::::\\
-
-        // Label
-        Text settingsButton = new Text("settings");
-        settingsButton.setStroke(fontColor);
-        pacmanFontSize = 60;
-        settingsButton.setFont(pacmanFont);
-
-        // Option Label Position
-        settingsButton.setLayoutY(height - (height / 10) * 2);
-        settingsButton.setLayoutX((width / 2) - settingsButton.getBoundsInParent().getWidth() / 2);
-
-
-        //::::::::::: HIGHSCORES Button :::::::::::\\
-
-        // Label
-        Text highscoreButton = new Text("highscores");
-        highscoreButton.setStroke(fontColor);
-        highscoreButton.setFont(pacmanFont);
-
-        // Option Label Position
-        highscoreButton.setLayoutY(height - (height / 10));
-        highscoreButton.setLayoutX((width / 2) - highscoreButton.getBoundsInParent().getWidth() / 2);
-
-
-        // FUNCTIONALITY
-        playButtonFunction.play(playButton, currentStage, gameScene, tl, gcGame, gameLayout);
-        settingsButtonFunction.play(settingsButton, currentStage, settingsScene, gcSettings);
-        highscoresButtonFunction.play(highscoreButton, currentStage, highscoreScene, gcHighscore);
-
-
-        // Add to Layout
-        menuLayout.getChildren().addAll(canvasMenu, playButton, viewMenuAnimation, settingsButton, highscoreButton);
 
 
         //------------------------------------------------------ REGISTRATION FORM ------------------------------------------------------\\
 
-        // Create the registration form grid pane
         GridPane registrationLayout = createRegistrationFormPane();
-
-        // Create a scene with registration form grid pane as the root node
         Scene registrationScene = new Scene(registrationLayout, width, height);
-
 
         //------------------------------------------------------ LOGIN FORM ------------------------------------------------------\\
 
-        // Create the registration form grid pane
         GridPane loginLayout = createLoginFormPane();
 
-        // Create a scene with registration form grid pane as the root node
         Scene loginScene = new Scene(loginLayout, width, height);
 
-
-        // Add UI controls to the registration form grid pane
         addUIControls(registrationLayout, currentStage, menuScene, loginScene, gcMenu);
 
-        // Add UI controls to the registration form grid pane
         addUIControlsLogin(loginLayout, currentStage, menuScene, registrationScene, gcMenu);
 
-        if (!isLoggedIn) {
-            // Set the scene in primary stage
-            currentStage.setScene(loginScene);
+        menuCanvas.play(gcMenu);
+        currentStage.setScene(menuScene);
 
-        } else {
-            menuCanvas.play(gcMenu);
-            currentStage.setScene(menuScene);
-        }
+        if (!isLoggedIn) currentStage.setScene(loginScene);
+
         currentStage.show();
 
         logoff(logoffButton, currentStage);
@@ -304,9 +358,6 @@ public class main extends Application {
         //--------------------------------------------SETTINGS CONTROLS--------------------------------------------\\
 
         settingsScene.setOnKeyPressed(e -> {
-
-            //::::::::::: ESCAPE :::::::::::\\
-
             if (e.getCode() == KeyCode.ESCAPE) {      // If "Escape" Pressed
                 try {
                     start(currentStage);            // Restart with new settings
@@ -320,9 +371,6 @@ public class main extends Application {
         //--------------------------------------------HIGHSCORE CONTROLS--------------------------------------------\\
 
         highscoreScene.setOnKeyPressed(e -> {
-
-            //::::::::::: ESCAPE :::::::::::\\
-
             if (e.getCode() == KeyCode.ESCAPE) {      // If "Escape" Pressed
                 currentStage.setScene(menuScene);   // Go to Menu
             }
@@ -330,9 +378,11 @@ public class main extends Application {
 
         //--------------------------------------------GAME CONTROLS--------------------------------------------\\
 
-        controls(gameScene, gameLayout, tl, gcGame, currentStage, menuScene);     // Controls
+        controls(currentStage);     // Controls
 
 
+        long endTime = System.currentTimeMillis();
+        System.out.println("Exec Time: " + (endTime - startingTime) + "ms");
     }
 
 
@@ -350,7 +400,7 @@ public class main extends Application {
     public void deleteAccount(Text deleteButton, Stage currentStage) {
         deleteButton.setOnMouseClicked(e -> {
             isLoggedIn = false;
-            UserDataStore.getInstance().deleteUser(finalUsername);
+            UserDataStore.getInstance().deleteUser(validUsername);
             try {
                 start(currentStage);
             } catch (Exception exception) {
@@ -359,43 +409,19 @@ public class main extends Application {
         });
     }
 
-    public static void setPacmanStartingPos(Group gameLayout){
-        //Setting the position of the image
-        viewPacmanLeft.setX((pacmanXPosStarting));
-        viewPacmanLeft.setY((pacmanYPosStarting));
 
-        //setting the fit height and width of the image view
-        viewPacmanLeft.setFitHeight(characterHeight);
-        viewPacmanLeft.setFitWidth(characterWidth);
+    private void controls(Stage primaryStage) {
 
-        gameLayout.getChildren().remove(viewPacmanUp);
-        gameLayout.getChildren().remove(viewPacmanRight);
-        gameLayout.getChildren().remove(viewPacmanLeft);
-        gameLayout.getChildren().remove(viewPacmanDown);
-
-        gameLayout.getChildren().addAll(viewPacmanLeft);
-
-        isPacmanStartingPosVisible = false;
-        allowNextMoveRight = true;
-        allowNextMoveLeft = true;
-    }
-
-    private void controls(Scene gameScene, Group gameLayout, Timeline tl, GraphicsContext gc, Stage primaryStage, Scene menuScene) {
-
-        if (isPacmanStartingPosVisible) {
-            setPacmanStartingPos(gameLayout);
-        }
+        if (isPacmanStartingPosVisible) setPacmanStartingPos(gameLayout);
 
         gameScene.setOnKeyPressed(e -> {
 
             //::::::::::: "UP" KEY & "W" KEY :::::::::::\\
 
-            if ((e.getCode() == KeyCode.W || e.getCode() == KeyCode.UP)) {
+            if (e.getCode() == KeyCode.W || e.getCode() == KeyCode.UP) {
                 waitingForTurn = 'u';
 
                 if (allowNextMoveUp) {
-
-                    //::::::::::: Pac-Man GIF :::::::::::\\
 
                     //Setting the position of the image
                     viewPacmanUp.setX((pacmanXPos));
@@ -430,7 +456,6 @@ public class main extends Application {
                 waitingForTurn = 'r';
 
                 if (allowNextMoveRight) {
-                    //::::::::::: Pac-Man GIF :::::::::::\\
 
                     //Setting the position of the image
                     viewPacmanRight.setX((pacmanXPos));
@@ -466,9 +491,6 @@ public class main extends Application {
 
                 if (allowNextMoveLeft) {
 
-
-                    //::::::::::: Pac-Man GIF :::::::::::\\
-
                     //Setting the position of the image
                     viewPacmanLeft.setX((pacmanXPos));
                     viewPacmanLeft.setY((pacmanYPos));
@@ -503,8 +525,6 @@ public class main extends Application {
                 waitingForTurn = 'd';
 
                 if (allowNextMoveDown) {
-
-                    //::::::::::: Pac-Man GIF :::::::::::\\
 
                     //Setting the position of the image
                     viewPacmanDown.setX(pacmanXPos);
@@ -543,10 +563,10 @@ public class main extends Application {
 
                 //::::::::::: Pause Menu :::::::::::\\
 
-                gc.setFill(Color.YELLOW);
-                gc.fillText("PAUSED", (blockCountHorizontally / 2) * widthOneBlock, blockCountVertically * heightOneBlock);
-                gc.fillText("Press P to resume", (blockCountHorizontally / 2) * widthOneBlock, (blockCountVertically + 1) * heightOneBlock);
-                gc.fillText("Press Esc to leave", (blockCountHorizontally / 2) * widthOneBlock, (blockCountVertically + 2) * heightOneBlock);
+                gcGame.setFill(Color.YELLOW);
+                gcGame.fillText("PAUSED", (blockCountHorizontally / 2) * widthOneBlock, blockCountVertically * heightOneBlock);
+                gcGame.fillText("Press P to resume", (blockCountHorizontally / 2) * widthOneBlock, (blockCountVertically + 1) * heightOneBlock);
+                gcGame.fillText("Press Esc to leave", (blockCountHorizontally / 2) * widthOneBlock, (blockCountVertically + 2) * heightOneBlock);
 
 
                 gameScene.setOnKeyPressed(el -> {
@@ -556,7 +576,7 @@ public class main extends Application {
 
                         tl.play();      // Continue Timeline/Animation
 
-                        controls(gameScene, gameLayout, tl, gc, primaryStage, menuScene);      // Recursion -> Check if pressed again
+                        controls(primaryStage);      // Recursion -> Check if pressed again
                     }
 
                     // Leave Game on Esc with Pause
@@ -759,14 +779,15 @@ public class main extends Application {
         loginButton.setOnAction(event -> currentStage.setScene(loginScene));
 
         submitButton.setOnAction(event -> {
+
+            // Empty Input
             if (nameField.getText().isEmpty()) {
                 showAlert(gridPane.getScene().getWindow(),
                         "Please enter your name!");
                 return;
             }
-            if (gameMechanics.validNickname(nameField.getText())) {
-                validUsername = nameField.getText();
-            } else {
+            // Not matching username regexp
+            if (!gameMechanics.isValidNickname(nameField.getText())) {
                 showAlert(gridPane.getScene().getWindow(),
                         "Not allowed Username!");
                 return;
@@ -776,6 +797,9 @@ public class main extends Application {
                         "Username Taken!");
                 return;
             }
+
+
+            // Empty Input
             if (passwordField.getText().isEmpty()) {
                 showAlert(gridPane.getScene().getWindow(),
                         "Please enter a password");
@@ -795,10 +819,11 @@ public class main extends Application {
             try {
                 UserDataStore.getInstance().registerUser(nameField.getText().toUpperCase(), passwordField.getText());
             } catch (IOException e) {
+                System.out.println("Registration Error");
                 e.printStackTrace();
             }
             isLoggedIn = true;
-            finalUsername = nameField.getText();
+            validUsername = nameField.getText();
             menuCanvas.play(gcMenu);
             currentStage.setScene(menuScene);
         });
@@ -806,13 +831,13 @@ public class main extends Application {
 
     private void buttonHover(Button button) {
         Bloom bloom = new Bloom();
-        //Adding the shadow when the mouse cursor is on
+
         button.addEventHandler(MouseEvent.MOUSE_ENTERED,
                 e -> {
                     button.setEffect(bloom);
                     button.setBackground(new Background(new BackgroundFill(Paint.valueOf("Darkblue"), new CornerRadii(10), Insets.EMPTY)));
                 });
-        //Removing the shadow when the mouse cursor is off
+
         button.addEventHandler(MouseEvent.MOUSE_EXITED,
                 e -> {
                     button.setEffect(null);
@@ -827,7 +852,7 @@ public class main extends Application {
 
         field.addEventHandler(MouseEvent.MOUSE_ENTERED,
                 e -> field.setEffect(shadow));
-        //Removing the shadow when the mouse cursor is off
+
         field.addEventHandler(MouseEvent.MOUSE_EXITED,
                 e -> field.setEffect(null));
     }
@@ -925,7 +950,6 @@ public class main extends Application {
 
             currentStage.setScene(menuScene);
             validUsername = nameField.getText();
-            finalUsername = validUsername;
             isLoggedIn = true;
             menuCanvas.play(gcMenu);
         });
@@ -943,11 +967,15 @@ public class main extends Application {
     }
 
 
+    public static long startingTime;
+
     public static void main(String[] args) {
 
         // TODO: Music
         // Sets Background Music
         // sounds.playBackgroundMusic();
+
+        startingTime = System.currentTimeMillis();
 
         System.out.println(ANSI_GREEN);
         launch(args);

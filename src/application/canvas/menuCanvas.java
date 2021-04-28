@@ -15,11 +15,6 @@ public class menuCanvas {
 
     //--------------------------------------------MENU CANVAS--------------------------------------------\\
 
-    /**
-     * Canvas Menu
-     *
-     * @param gc graphics context for Menu
-     */
 
     public static void play(GraphicsContext gc) {
 
@@ -41,10 +36,8 @@ public class menuCanvas {
 
         gc.fillText("Pac-Man", width / 2, pacmanFontSize * 1.5);
 
-
         gc.setFill(Color.YELLOW);
         gc.setFont(pacmanFontUI);
         gc.fillText("Welcome " + validUsername + "!!! ", width / 2, pacmanFontSize * 3);
-
     }
 }

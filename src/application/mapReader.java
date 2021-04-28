@@ -35,6 +35,9 @@ public class mapReader {
     static double pinkyXPos;
     static double pinkyYPos;
 
+    static int spawningFruitColumn = 14;
+    static int spawningFruitRow = 21;
+
     /**
      * reads the Map
      */
@@ -202,6 +205,15 @@ public class mapReader {
                                 viewRailLeftUp[railLeftUpCount].setFitWidth(widthOneBlock);
                                 viewRailLeftUp[railLeftUpCount].setFitHeight(heightOneBlock);
                                 railLeftUpCount++;
+                            }
+                            case "F" -> {
+                                // Spawning Fruit
+                                powerPills[columnCounter][row] = false;
+                                dots[columnCounter][row] = false;
+                                notAllowedBox[columnCounter][row] = false;
+
+                                spawningFruitColumn = columnCounter;
+                                spawningFruitRow = row;
                             }
                         }
                     }
