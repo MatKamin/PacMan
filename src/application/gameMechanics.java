@@ -487,6 +487,28 @@ public class gameMechanics {
             }
         }
     }
+    private static void checkLeftPossible(int direction) {
+        if (!notAllowedBox[(int) pacmanColumn - 1][(int) pacmanRow + direction]) {
+            if (waitingForTurn == 'l' && !stop) {
+                stop = true;
+                pacmanXPosCenter = (pacmanColumn * widthOneBlock);
+                pacmanYPosCenter = (pacmanRow * heightOneBlock) + heightOneBlock * direction;
+                allowNextMoveLeft = true;
+            }
+        }
+    }
+
+    private static void checkRightPossible(int direction) {
+        if (!notAllowedBox[(int) pacmanColumn + 1][(int) pacmanRow + direction]) {
+            if (waitingForTurn == 'r' && !stop) {
+                stop = true;
+                pacmanXPosCenter = (pacmanColumn * widthOneBlock);
+                pacmanYPosCenter = (pacmanRow * heightOneBlock) + heightOneBlock * direction;
+                allowNextMoveRight = true;
+            }
+        }
+    }
+
 
     private static void turnPacmanUp(Group gameLayout) {
         //Setting the position of the image
@@ -544,26 +566,99 @@ public class gameMechanics {
         waitingForTurn = '1';
     }
 
-    private static void rightWallHit(){
-        if (pacmanXPos >= pacmanXPosCenter) {
-            velocityPacmanHorizontal = 0;
-            velocityPacmanVertical = 0;
-            waitingForTurn = '1';
+    private static void turnPacmanLeft(Group gameLayout) {
+        //Setting the position of the image
+        viewPacmanLeft.setX((pacmanXPos));
+        viewPacmanLeft.setY((pacmanYPos));
 
-            pacmanFacingLeft = false;
-            pacmanFacingRight = false;
-            pacmanFacingDown = false;
-            pacmanFacingUp = false;
+        //setting the fit height and width of the image view
+        viewPacmanLeft.setFitHeight(characterHeight);
+        viewPacmanLeft.setFitWidth(characterWidth);
 
-            if (!notAllowedBox[(int) pacmanColumn][(int) pacmanRow - 1]) allowNextMoveUp = true;
-            if (!notAllowedBox[(int) pacmanColumn][(int) pacmanRow + 1]) allowNextMoveDown = true;
+        gameLayout.getChildren().remove(viewPacmanRight);
+        gameLayout.getChildren().remove(viewPacmanUp);
+        gameLayout.getChildren().remove(viewPacmanLeft);
+        gameLayout.getChildren().remove(viewPacmanDown);
 
-            allowNextMoveRight = false;
-            return;
+        gameLayout.getChildren().addAll(viewPacmanLeft);
+
+        pacmanFacingUp = false;
+        pacmanFacingDown = false;
+        pacmanFacingLeft = true;
+        pacmanFacingRight = false;
+        velocityPacmanHorizontal = -1;
+        velocityPacmanVertical = 0;
+
+        hitLeftWall = false;
+        stop = false;
+        waitingForTurn = '1';
+    }
+
+    private static void turnPacmanRight(Group gameLayout) {
+        //Setting the position of the image
+        viewPacmanRight.setX((pacmanXPos));
+        viewPacmanRight.setY((pacmanYPos));
+
+        //setting the fit height and width of the image view
+        viewPacmanRight.setFitHeight(characterHeight);
+        viewPacmanRight.setFitWidth(characterWidth);
+
+        gameLayout.getChildren().remove(viewPacmanRight);
+        gameLayout.getChildren().remove(viewPacmanUp);
+        gameLayout.getChildren().remove(viewPacmanLeft);
+        gameLayout.getChildren().remove(viewPacmanDown);
+
+        gameLayout.getChildren().addAll(viewPacmanRight);
+
+        pacmanFacingUp = false;
+        pacmanFacingDown = false;
+        pacmanFacingLeft = false;
+        pacmanFacingRight = true;
+        velocityPacmanHorizontal = 1;
+        velocityPacmanVertical = 0;
+
+        hitRightWall = false;
+        stop = false;
+        waitingForTurn = '1';
+    }
+
+
+    private static void horizontalWallHit(String MovingDirection) {
+        velocityPacmanHorizontal = 0;
+        velocityPacmanVertical = 0;
+        waitingForTurn = '1';
+
+        pacmanFacingLeft = false;
+        pacmanFacingRight = false;
+        pacmanFacingDown = false;
+        pacmanFacingUp = false;
+
+        if (!notAllowedBox[(int) pacmanColumn][(int) pacmanRow - 1]) allowNextMoveUp = true;
+        if (!notAllowedBox[(int) pacmanColumn][(int) pacmanRow + 1]) allowNextMoveDown = true;
+
+        switch (MovingDirection) {
+            case "LEFT" -> allowNextMoveLeft = false;
+            case "RIGHT" -> allowNextMoveRight = false;
         }
-        viewPacmanRight.setX(pacmanXPos);
-        viewPacmanRight.setY(pacmanYPos);
-        pacmanXPos += velocityPacmanHorizontal;
+    }
+
+    private static void verticalWallHit(String MovingDirection) {
+        velocityPacmanHorizontal = 0;
+        velocityPacmanVertical = 0;
+        waitingForTurn = '1';
+
+        pacmanFacingLeft = false;
+        pacmanFacingRight = false;
+        pacmanFacingDown = false;
+        pacmanFacingUp = false;
+
+        if (!notAllowedBox[(int) pacmanColumn - 1][(int) pacmanRow]) allowNextMoveLeft = true;
+        if (!notAllowedBox[(int) pacmanColumn + 1][(int) pacmanRow]) allowNextMoveRight = true;
+
+        switch (MovingDirection) {
+            case "UP" -> allowNextMoveUp = false;
+            case "DOWN" -> allowNextMoveDown = false;
+        }
     }
 
 
@@ -579,26 +674,23 @@ public class gameMechanics {
             if (!stop) {
                 // Teleport Right to Left
                 if (pacmanColumn + 1 > blockCountHorizontally) pacmanXPos = widthOneBlock;
-
                 // Check if Wall got Hit
                 if (notAllowedBox[(int) pacmanColumn + 1][(int) pacmanRow] && !hitRightWall) {
                     hitRightWall = true;
                     pacmanXPosCenter = pacmanXPos + (int) (characterWidth / 2);
                     pacmanYPosCenter = pacmanYPos;
                 }
-
                 if (!hitRightWall) {
                     allowNextMoveLeft = true;
                     allowNextMoveUp = false;
                     allowNextMoveDown = false;
                     allowNextMoveRight = true;
-
                     viewPacmanRight.setX(pacmanXPos);
                     viewPacmanRight.setY(pacmanYPos);
                     pacmanXPos += velocityPacmanHorizontal;
                     return;
                 }
-                rightWallHit();
+                if (pacmanXPos >= pacmanXPosCenter) horizontalWallHit("RIGHT");
             }
             if (pacmanXPos >= pacmanXPosCenter) {        // Move a little bit further
                 switch (waitingForTurn) {
@@ -613,384 +705,93 @@ public class gameMechanics {
             return;
         }
 
+
         if (pacmanFacingLeft) {
             checkUpPossible(-1);
             checkDownPossible(-1);
+            if (!stop) {
+                // Teleport Left to Right
+                if ((int) pacmanColumn - 2 < 0) pacmanXPos = blockCountHorizontally * widthOneBlock;
+                // Check if left Wall hit
+                if (notAllowedBox[(int) pacmanColumn - 1][(int) pacmanRow] && !hitLeftWall) {
+                    hitLeftWall = true;
+                    pacmanXPosCenter = pacmanXPos - (int) (characterWidth / 2);
+                    pacmanYPosCenter = pacmanYPos;
+                }
+                if (!hitLeftWall) {
+                    allowNextMoveLeft = true;
+                    allowNextMoveUp = false;
+                    allowNextMoveDown = false;
+                    allowNextMoveRight = true;
 
-            if (stop) {
-                if (pacmanXPos > pacmanXPosCenter) {
                     viewPacmanLeft.setX(pacmanXPos);
                     viewPacmanLeft.setY(pacmanYPos);
                     pacmanXPos += velocityPacmanHorizontal;
-                } else {
-                    if (waitingForTurn == 'u') {
-                        //::::::::::: Pac-Man GIF :::::::::::\\
-
-                        //Setting the position of the image
-                        viewPacmanUp.setX((pacmanXPos));
-                        viewPacmanUp.setY((pacmanYPos));
-
-                        //setting the fit height and width of the image view
-                        viewPacmanUp.setFitHeight(characterHeight);
-                        viewPacmanUp.setFitWidth(characterWidth);
-
-                        gameLayout.getChildren().remove(viewPacmanRight);
-                        gameLayout.getChildren().remove(viewPacmanUp);
-                        gameLayout.getChildren().remove(viewPacmanLeft);
-                        gameLayout.getChildren().remove(viewPacmanDown);
-
-                        gameLayout.getChildren().addAll(viewPacmanUp);
-
-                        pacmanFacingUp = true;
-                        pacmanFacingDown = false;
-                        pacmanFacingLeft = false;
-                        pacmanFacingRight = false;
-                        velocityPacmanHorizontal = 0;
-                        velocityPacmanVertical = -1;
-
-                        hitDownWall = false;
-                        stop = false;
-                        waitingForTurn = '1';
-                    }
-
-                    if (waitingForTurn == 'd') {
-                        //::::::::::: Pac-Man GIF :::::::::::\\
-
-                        //Setting the position of the image
-                        viewPacmanDown.setX((pacmanXPos));
-                        viewPacmanDown.setY((pacmanYPos));
-
-                        //setting the fit height and width of the image view
-                        viewPacmanDown.setFitHeight(characterHeight);
-                        viewPacmanDown.setFitWidth(characterWidth);
-
-                        gameLayout.getChildren().remove(viewPacmanRight);
-                        gameLayout.getChildren().remove(viewPacmanUp);
-                        gameLayout.getChildren().remove(viewPacmanLeft);
-                        gameLayout.getChildren().remove(viewPacmanDown);
-
-                        gameLayout.getChildren().addAll(viewPacmanDown);
-
-                        pacmanFacingUp = false;
-                        pacmanFacingDown = true;
-                        pacmanFacingLeft = false;
-                        pacmanFacingRight = false;
-                        velocityPacmanHorizontal = 0;
-                        velocityPacmanVertical = 1;
-
-                        hitDownWall = false;
-                        stop = false;
-                        waitingForTurn = '1';
-                    }
+                    return;
                 }
-            } else {
-
-                if ((int) pacmanColumn - 2 < 0) {
-                    // Teleport left/right
-                    pacmanXPos = blockCountHorizontally * widthOneBlock;
-
-                } else {
-                    if (notAllowedBox[(int) pacmanColumn - 1][(int) pacmanRow] && !hitLeftWall) {
-                        hitLeftWall = true;
-                        pacmanXPosCenter = pacmanXPos - (int) (characterWidth / 2);
-                        pacmanYPosCenter = pacmanYPos;
-                    }
-
-                    if (hitLeftWall) {
-                        if (pacmanXPos > pacmanXPosCenter) {
-                            viewPacmanLeft.setX(pacmanXPos);
-                            viewPacmanLeft.setY(pacmanYPos);
-                            pacmanXPos += velocityPacmanHorizontal;
-                        } else {
-                            velocityPacmanHorizontal = 0;
-                            velocityPacmanVertical = 0;
-                            waitingForTurn = '1';
-
-                            pacmanFacingLeft = false;
-                            pacmanFacingRight = false;
-                            pacmanFacingDown = false;
-                            pacmanFacingUp = false;
-
-
-                            if (!notAllowedBox[(int) pacmanColumn][(int) pacmanRow - 1]) {
-                                allowNextMoveUp = true;
-                            }
-                            if (!notAllowedBox[(int) pacmanColumn][(int) pacmanRow + 1]) {
-                                allowNextMoveDown = true;
-                            }
-
-                            allowNextMoveLeft = false;
-                        }
-                    } else {
-                        allowNextMoveLeft = true;
-                        allowNextMoveUp = false;
-                        allowNextMoveDown = false;
-                        allowNextMoveRight = true;
-
-                        viewPacmanLeft.setX(pacmanXPos);
-                        viewPacmanLeft.setY(pacmanYPos);
-                        pacmanXPos += velocityPacmanHorizontal;
-                    }
-                }
+                if (pacmanXPos <= pacmanXPosCenter) horizontalWallHit("LEFT");
             }
+            if (pacmanXPos <= pacmanXPosCenter) {
+                switch (waitingForTurn) {
+                    case 'u' -> turnPacmanUp(gameLayout);
+                    case 'd' -> turnPacmanDown(gameLayout);
+                }
+                return;
+            }
+            viewPacmanLeft.setX(pacmanXPos);
+            viewPacmanLeft.setY(pacmanYPos);
+            pacmanXPos += velocityPacmanHorizontal;
             return;
         }
 
+
         if (pacmanFacingUp) {
-
-            // Check if Left is possible
-            if (!notAllowedBox[(int) pacmanColumn - 1][(int) pacmanRow - 1]) {
-                if (waitingForTurn == 'l' && !stop) {
-                    stop = true;
-                    pacmanXPosCenter = (pacmanColumn * widthOneBlock);
-                    pacmanYPosCenter = (pacmanRow * heightOneBlock) - heightOneBlock;
-                    allowNextMoveLeft = true;
-                }
-            }
-
-            // Check if Right is possible
-            if (!notAllowedBox[(int) pacmanColumn + 1][(int) pacmanRow - 1]) {
-                if (waitingForTurn == 'r' && !stop) {
-                    stop = true;
-                    pacmanXPosCenter = (pacmanColumn * widthOneBlock);
-                    pacmanYPosCenter = (pacmanRow * heightOneBlock) - heightOneBlock;
-                    allowNextMoveRight = true;
-                }
-            }
-
-
-            if (stop) {
-                if (pacmanYPos > pacmanYPosCenter) {
-                    viewPacmanUp.setX(pacmanXPos);
-                    viewPacmanUp.setY(pacmanYPos);
-                    pacmanYPos += velocityPacmanVertical;
-                } else {
-                    if (waitingForTurn == 'l') {
-                        //::::::::::: Pac-Man GIF :::::::::::\\
-
-                        //Setting the position of the image
-                        viewPacmanLeft.setX((pacmanXPos));
-                        viewPacmanLeft.setY((pacmanYPos));
-
-                        //setting the fit height and width of the image view
-                        viewPacmanLeft.setFitHeight(characterHeight);
-                        viewPacmanLeft.setFitWidth(characterWidth);
-
-                        gameLayout.getChildren().remove(viewPacmanRight);
-                        gameLayout.getChildren().remove(viewPacmanUp);
-                        gameLayout.getChildren().remove(viewPacmanLeft);
-                        gameLayout.getChildren().remove(viewPacmanDown);
-
-                        gameLayout.getChildren().addAll(viewPacmanLeft);
-
-                        pacmanFacingUp = false;
-                        pacmanFacingDown = false;
-                        pacmanFacingLeft = true;
-                        pacmanFacingRight = false;
-                        velocityPacmanHorizontal = -1;
-                        velocityPacmanVertical = 0;
-
-                        hitLeftWall = false;
-                        stop = false;
-                        waitingForTurn = '1';
-                    }
-
-                    if (waitingForTurn == 'r') {
-                        //::::::::::: Pac-Man GIF :::::::::::\\
-
-                        //Setting the position of the image
-                        viewPacmanRight.setX((pacmanXPos));
-                        viewPacmanRight.setY((pacmanYPos));
-
-                        //setting the fit height and width of the image view
-                        viewPacmanRight.setFitHeight(characterHeight);
-                        viewPacmanRight.setFitWidth(characterWidth);
-
-                        gameLayout.getChildren().remove(viewPacmanRight);
-                        gameLayout.getChildren().remove(viewPacmanUp);
-                        gameLayout.getChildren().remove(viewPacmanLeft);
-                        gameLayout.getChildren().remove(viewPacmanDown);
-
-                        gameLayout.getChildren().addAll(viewPacmanRight);
-
-                        pacmanFacingUp = false;
-                        pacmanFacingDown = false;
-                        pacmanFacingLeft = false;
-                        pacmanFacingRight = true;
-                        velocityPacmanHorizontal = 1;
-                        velocityPacmanVertical = 0;
-
-                        hitRightWall = false;
-                        stop = false;
-                        waitingForTurn = '1';
-                    }
-                }
-            } else {
+            checkLeftPossible(-1);
+            checkRightPossible(-1);
+            if (!stop) {
+                // Check if Up Wall hit
                 if (notAllowedBox[(int) pacmanColumn][(int) pacmanRow - 1] && !hitUpWall) {
                     hitUpWall = true;
-
                     pacmanXPosCenter = pacmanXPos;
                     pacmanYPosCenter = pacmanYPos - (int) (characterWidth / 2);
                 }
-
-                if (hitUpWall) {
-                    if (pacmanYPos > pacmanYPosCenter) {
-                        viewPacmanUp.setX(pacmanXPos);
-                        viewPacmanUp.setY(pacmanYPos);
-                        pacmanYPos += velocityPacmanVertical;
-                    } else {
-                        velocityPacmanHorizontal = 0;
-                        velocityPacmanVertical = 0;
-                        waitingForTurn = '1';
-
-                        pacmanFacingLeft = false;
-                        pacmanFacingRight = false;
-                        pacmanFacingDown = false;
-                        pacmanFacingUp = false;
-
-                        if (!notAllowedBox[(int) pacmanColumn - 1][(int) pacmanRow]) {
-                            allowNextMoveLeft = true;
-                        }
-                        if (!notAllowedBox[(int) pacmanColumn + 1][(int) pacmanRow]) {
-                            allowNextMoveRight = true;
-                        }
-                    }
-                } else {
+                if (!hitUpWall) {
                     allowNextMoveLeft = false;
                     allowNextMoveUp = false;
                     allowNextMoveDown = true;
                     allowNextMoveRight = false;
-
                     viewPacmanUp.setX(pacmanXPos);
                     viewPacmanUp.setY(pacmanYPos);
                     pacmanYPos += velocityPacmanVertical;
+                    return;
                 }
+                if (pacmanYPos <= pacmanYPosCenter) verticalWallHit("UP");
             }
+            if (pacmanYPos <= pacmanYPosCenter) {
+                switch (waitingForTurn) {
+                    case 'l' -> turnPacmanLeft(gameLayout);
+                    case 'r' -> turnPacmanRight(gameLayout);
+                }
+                return;
+            }
+            viewPacmanUp.setX(pacmanXPos);
+            viewPacmanUp.setY(pacmanYPos);
+            pacmanYPos += velocityPacmanVertical;
             return;
         }
+
+
         if (pacmanFacingDown) {
-
-            // Check if Left is possible
-            if (!notAllowedBox[(int) pacmanColumn - 1][(int) pacmanRow + 1]) {
-                if (waitingForTurn == 'l' && !stop) {
-                    stop = true;
-                    pacmanXPosCenter = (pacmanColumn * widthOneBlock);
-                    pacmanYPosCenter = (pacmanRow * heightOneBlock) + heightOneBlock;
-                    allowNextMoveLeft = true;
-                }
-            }
-
-            // Check if Right is possible
-            if (!notAllowedBox[(int) pacmanColumn + 1][(int) pacmanRow + 1]) {
-                if (waitingForTurn == 'r' && !stop) {
-                    stop = true;
-                    pacmanXPosCenter = (pacmanColumn * widthOneBlock);
-                    pacmanYPosCenter = (pacmanRow * heightOneBlock) + heightOneBlock;
-                    allowNextMoveRight = true;
-                }
-            }
-
-
-            if (stop) {
-                if (pacmanYPos < pacmanYPosCenter) {
-                    viewPacmanDown.setX(pacmanXPos);
-                    viewPacmanDown.setY(pacmanYPos);
-                    pacmanYPos += velocityPacmanVertical;
-                } else {
-                    if (waitingForTurn == 'l') {
-                        //::::::::::: Pac-Man GIF :::::::::::\\
-
-                        //Setting the position of the image
-                        viewPacmanLeft.setX((pacmanXPos));
-                        viewPacmanLeft.setY((pacmanYPos));
-
-                        //setting the fit height and width of the image view
-                        viewPacmanLeft.setFitHeight(characterHeight);
-                        viewPacmanLeft.setFitWidth(characterWidth);
-
-                        gameLayout.getChildren().remove(viewPacmanRight);
-                        gameLayout.getChildren().remove(viewPacmanUp);
-                        gameLayout.getChildren().remove(viewPacmanLeft);
-                        gameLayout.getChildren().remove(viewPacmanDown);
-
-                        gameLayout.getChildren().addAll(viewPacmanLeft);
-
-                        pacmanFacingUp = false;
-                        pacmanFacingDown = false;
-                        pacmanFacingLeft = true;
-                        pacmanFacingRight = false;
-                        velocityPacmanHorizontal = -1;
-                        velocityPacmanVertical = 0;
-
-                        hitLeftWall = false;
-                        stop = false;
-                        waitingForTurn = '1';
-                    }
-
-                    if (waitingForTurn == 'r') {
-                        //::::::::::: Pac-Man GIF :::::::::::\\
-
-                        //Setting the position of the image
-                        viewPacmanRight.setX((pacmanXPos));
-                        viewPacmanRight.setY((pacmanYPos));
-
-                        //setting the fit height and width of the image view
-                        viewPacmanRight.setFitHeight(characterHeight);
-                        viewPacmanRight.setFitWidth(characterWidth);
-
-                        gameLayout.getChildren().remove(viewPacmanRight);
-                        gameLayout.getChildren().remove(viewPacmanUp);
-                        gameLayout.getChildren().remove(viewPacmanLeft);
-                        gameLayout.getChildren().remove(viewPacmanDown);
-
-                        gameLayout.getChildren().addAll(viewPacmanRight);
-
-                        pacmanFacingUp = false;
-                        pacmanFacingDown = false;
-                        pacmanFacingLeft = false;
-                        pacmanFacingRight = true;
-                        velocityPacmanHorizontal = 1;
-                        velocityPacmanVertical = 0;
-
-                        hitRightWall = false;
-                        stop = false;
-                        waitingForTurn = '1';
-                    }
-                }
-
-            } else {
-
+            checkLeftPossible(1);
+            checkRightPossible(1);
+            if (!stop) {
+                // Check down Wall hit
                 if (notAllowedBox[(int) pacmanColumn][(int) pacmanRow + 1] && !hitDownWall) {
                     hitDownWall = true;
-
                     pacmanXPosCenter = pacmanXPos;
                     pacmanYPosCenter = pacmanYPos + (int) (characterWidth / 2);
                 }
-
-                if (hitDownWall) {
-                    if (pacmanYPos < pacmanYPosCenter) {
-                        viewPacmanDown.setX(pacmanXPos);
-                        viewPacmanDown.setY(pacmanYPos);
-                        pacmanYPos += velocityPacmanVertical;
-                    } else {
-                        velocityPacmanHorizontal = 0;
-                        velocityPacmanVertical = 0;
-                        waitingForTurn = '1';
-
-                        pacmanFacingLeft = false;
-                        pacmanFacingRight = false;
-                        pacmanFacingDown = false;
-                        pacmanFacingUp = false;
-
-                        if (!notAllowedBox[(int) pacmanColumn - 1][(int) pacmanRow]) {
-                            allowNextMoveLeft = true;
-                        }
-                        if (!notAllowedBox[(int) pacmanColumn + 1][(int) pacmanRow]) {
-                            allowNextMoveRight = true;
-                        }
-
-                    }
-                } else {
+                if (!hitDownWall) {
                     allowNextMoveLeft = false;
                     allowNextMoveUp = true;
                     allowNextMoveDown = false;
@@ -999,8 +800,21 @@ public class gameMechanics {
                     viewPacmanDown.setX(pacmanXPos);
                     viewPacmanDown.setY(pacmanYPos);
                     pacmanYPos += velocityPacmanVertical;
+                    return;
                 }
+                if (pacmanYPos <= pacmanYPosCenter) verticalWallHit("DOWN");
             }
+            if (pacmanYPos >= pacmanYPosCenter) {
+                switch (waitingForTurn) {
+                    case 'l' -> turnPacmanLeft(gameLayout);
+                    case 'r' -> turnPacmanRight(gameLayout);
+                }
+                return;
+            }
+            viewPacmanDown.setX(pacmanXPos);
+            viewPacmanDown.setY(pacmanYPos);
+            pacmanYPos += velocityPacmanVertical;
         }
     }
 }
+
