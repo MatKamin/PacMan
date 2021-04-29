@@ -16,6 +16,10 @@ public class menuCanvas {
     //--------------------------------------------MENU CANVAS--------------------------------------------\\
 
 
+    /**
+     * Draws the menu Canvas
+     * @param gc Graphics Context of the Menu
+     */
     public static void play(GraphicsContext gc) {
 
         //::::::::::: Background :::::::::::\\

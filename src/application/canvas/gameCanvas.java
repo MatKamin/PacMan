@@ -23,7 +23,11 @@ public class gameCanvas {
 
     //--------------------------------------------GAME CANVAS--------------------------------------------\\
 
-
+    /**
+     * draws game Canvas
+     * @param gc Graphics Context of the Game window
+     * @param gameLayout Group Layout of the Game Window
+     */
     public static void play(GraphicsContext gc, Group gameLayout) {
 
         //::::::::::: Background :::::::::::\\
@@ -76,7 +80,7 @@ public class gameCanvas {
             gameMechanics.spawnFruit(gameLayout);                   // Spawns Fruit
             gameMechanics.collectFruit(gameLayout);                 // Allows collecting Fruit & makes it disappear after some time
 
-            gameMechanics.drawLifes(gameLayout);                    // Draws Life Counter in UI
+            gameMechanics.drawLifesCounter(gameLayout);                    // Draws Life Counter in UI
             gameMechanics.drawLevelCounter(gameLayout);             // Draws Level Counter in UI
 
             gameMechanics.levelUp(gameLayout);                      // Level Up

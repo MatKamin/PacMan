@@ -43,9 +43,7 @@ public class mapReader {
      */
     public static void readMap() {
         if (firstRead) {
-
             try {
-
                 File map = new File(mapFile);
                 Scanner myReader = new Scanner(map);
                 int row = 0;
@@ -55,13 +53,11 @@ public class mapReader {
                 while (myReader.hasNext()) {
                     String value = myReader.next();
                     columnCounter++;
-
                     if (value.equals("?")) {
                         row++;
                         column = columnCounter - 1;
                         columnCounter = -1;
                     } else {
-
                         switch (value) {
                             case "S" -> {
                                 // POWER PILLS
@@ -218,14 +214,12 @@ public class mapReader {
                         }
                     }
                 }
-
                 myReader.close();
                 firstRead = false;
                 blockCountHorizontally = column;
                 blockCountVertically = row;
 
-            } catch (
-                    FileNotFoundException e) {
+            } catch (FileNotFoundException e) {
                 System.out.println("An error while reading the map occurred.");
                 e.printStackTrace();
                 Thread.currentThread().interrupt();

@@ -73,15 +73,21 @@ public class gameMechanics {
     static int delayFruit = 1;
 
 
-    public static boolean isValidNickname(String USERNAME) {
-        return Pattern.compile(regexp).matcher(USERNAME).matches();
-    }
+    /**
+     * checks if given Username is valid
+     * @param USERNAME username to validate
+     * @return true or false
+     */
+    public static boolean isValidNickname(String USERNAME) { return Pattern.compile(regexp).matcher(USERNAME).matches(); }
 
 
+    /**
+     * Sets and draws the Starting Position of PacMan
+     * @param gameLayout Group Layout of the Game window
+     */
     public static void setPacmanStartingPos(Group gameLayout) {
         viewPacmanLeft.setX((pacmanXPosStarting));
         viewPacmanLeft.setY((pacmanYPosStarting));
-
         viewPacmanLeft.setFitHeight(characterHeight);
         viewPacmanLeft.setFitWidth(characterWidth);
 
@@ -89,7 +95,6 @@ public class gameMechanics {
         gameLayout.getChildren().remove(viewPacmanRight);
         gameLayout.getChildren().remove(viewPacmanLeft);
         gameLayout.getChildren().remove(viewPacmanDown);
-
         gameLayout.getChildren().add(viewPacmanLeft);
 
         isPacmanStartingPosVisible = false;
@@ -98,6 +103,10 @@ public class gameMechanics {
     }
 
 
+    /**
+     * Resets the Game
+     * @param gameLayout Group Layout of the Game window
+     */
     public static void resetGame(Group gameLayout) {
 
         // Save Score
@@ -162,6 +171,10 @@ public class gameMechanics {
     }
 
 
+    /**
+     * Draws The Spawning Fruit
+     * @param gameLayout Group Layout of the Game window
+     */
     private static void drawFruit(Group gameLayout) {
         viewSpawningFruit = new ImageView(spawningFruit);
         viewSpawningFruit.setX(spawningFruitColumn * widthOneBlock + 2.5);
@@ -173,6 +186,10 @@ public class gameMechanics {
     }
 
 
+    /**
+     * Spawns Fruit after eating 70 and / or 170 dots
+     * @param gameLayout Group Layout of the Game window
+     */
     public static void spawnFruit(Group gameLayout) {
         if (dotCount == dotCountAtStart - 70 && !fruitSpawned1) {
             drawFruit(gameLayout);
@@ -188,7 +205,11 @@ public class gameMechanics {
     }
 
 
-    public static void drawLifes(Group gameLayout) {
+    /**
+     * Draws Life counter
+     * @param gameLayout Group Layout of the Game window
+     */
+    public static void drawLifesCounter(Group gameLayout) {
         if (lifesCounter != lifesAtLevelStart) {
             for (int i = 1; i <= lifesCounter; i++) {
                 viewLifes = new ImageView(lifes);
@@ -203,6 +224,10 @@ public class gameMechanics {
     }
 
 
+    /**
+     * draws Level counter
+     * @param gameLayout Group Layout of the Game window
+     */
     public static void drawLevelCounter(Group gameLayout) {
         // TODO: More Level Icons
 
@@ -218,6 +243,10 @@ public class gameMechanics {
     }
 
 
+    /**
+     * Removes Complete Map
+     * @param gameLayout Group Layout of the Game window
+     */
     private static void removeMap(Group gameLayout) {
         // Remove Dots to Map
         for (int i = 0; i < dotCount; i++) {
@@ -260,6 +289,10 @@ public class gameMechanics {
         }
     }
 
+    /**
+     * Draws Next Map
+     * @param gameLayout Group Layout of the Game window
+     */
     private static void drawNextMap(Group gameLayout) {
         // Add Dots to Map
         for (int i = 0; i < dotCount; i++) {
@@ -267,13 +300,11 @@ public class gameMechanics {
             gameLayout.getChildren().add(viewDot[i]);
         }
 
-
         // Add Power Pills to Map
         for (int i = 0; i < powerPillCount; i++) {
             gameLayout.getChildren().remove(viewPowerPill[i]);
             gameLayout.getChildren().add(viewPowerPill[i]);
         }
-
 
         // Add Vertical Rails to Map
         for (int i = 0; i < railVerticalCount; i++) {
@@ -319,7 +350,6 @@ public class gameMechanics {
         viewBlinky.setFitHeight(characterHeight);
         viewBlinky.setFitWidth(characterWidth);
 
-
         //Setting the position of the image
         viewPinky.setX((pinkyColumn * widthOneBlock) + (int) ((widthOneBlock - characterWidth) / 2));
         viewPinky.setY((pinkyRow * heightOneBlock) + (int) ((heightOneBlock - characterHeight) / 2));
@@ -332,10 +362,12 @@ public class gameMechanics {
     }
 
 
+    /**
+     * Sets the next level
+     * @param gameLayout Group Layout of the Game window
+     */
     public static void levelUp(Group gameLayout) {
-
         if (dotCount == 0) nextLevel = true;
-
         if (nextLevel) {
             levelCounter++;
             if (levelCounter > maxLevel) return;
@@ -375,13 +407,16 @@ public class gameMechanics {
     }
 
 
+    /**
+     * Makes Spawning Fruit collectable
+     * @param gameLayout Group Layout of the Game window
+     */
     public static void collectFruit(Group gameLayout) {
         if (!collectableFruit) {
             gameLayout.getChildren().remove(viewSpawningFruit);
             getRandomLifespan = true;
             return;
         }
-
         if ((pacmanColumn == spawningFruitColumn) && (pacmanRow == spawningFruitRow)) {
             score += 100;       // Fruit gives 100 Points
             // TODO: Fruit gives points depending on current Level
@@ -412,6 +447,10 @@ public class gameMechanics {
         );
     }
 
+    /**
+     * Hides Dots and Power Pills
+     * @param gameLayout Group Layout of the Game window
+     */
     private static void clearer(Group gameLayout) {
         viewClearer = new ImageView(clearer);
         viewClearer.setFitWidth(widthOneBlock - 5);
@@ -438,33 +477,40 @@ public class gameMechanics {
             gameLayout.getChildren().remove(viewPacmanDown);
             gameLayout.getChildren().add(viewPacmanDown);
         }
-
         gameLayout.getChildren().remove(viewBlinky);
         gameLayout.getChildren().add(viewBlinky);
     }
 
+    /**
+     * Makes Dots collectable
+     * @param gameLayout Group Layout of the Game window
+     */
     public static void collectPoints(Group gameLayout) {
         if (!dots[(int) pacmanColumn][(int) pacmanRow]) return;
-
         dots[(int) pacmanColumn][(int) pacmanRow] = false;
         dotCount--;
         score += 10;    // A dot is worth 10 Points
-
         clearer(gameLayout);
     }
 
 
+    /**
+     * Makes Power Pills collectable
+     * @param gameLayout Group Layout of the Game window
+     */
     public static void collectPowerPill(Group gameLayout) {
         if (!powerPills[(int) pacmanColumn][(int) pacmanRow]) return;
-
         powerPills[(int) pacmanColumn][(int) pacmanRow] = false;
         powerPillCount--;
         score += 50;        // A Power Pill gives 50 points
-
         clearer(gameLayout);
     }
 
 
+    /**
+     * Checks if UP move is possible
+     * @param direction direction Pacman is heading (1 = going Right, -1 = going Left)
+     */
     private static void checkUpPossible(int direction) {
         if (!notAllowedBox[(int) pacmanColumn + direction][(int) pacmanRow - 1]) {
             if (waitingForTurn == 'u' && !stop) {
@@ -476,8 +522,11 @@ public class gameMechanics {
         }
     }
 
+    /**
+     * Checks if DOWN move is possible
+     * @param direction direction Pacman is heading (1 = going Right, -1 = going Left)
+     */
     private static void checkDownPossible(int direction) {
-        // Check if Down is possible
         if (!notAllowedBox[(int) pacmanColumn + direction][(int) pacmanRow + 1]) {
             if (waitingForTurn == 'd' && !stop) {
                 stop = true;
@@ -487,6 +536,11 @@ public class gameMechanics {
             }
         }
     }
+
+    /**
+     * Checks if LEFT move is possible
+     * @param direction direction Pacman is heading (1 = going Down, -1 = going Up)
+     */
     private static void checkLeftPossible(int direction) {
         if (!notAllowedBox[(int) pacmanColumn - 1][(int) pacmanRow + direction]) {
             if (waitingForTurn == 'l' && !stop) {
@@ -498,6 +552,10 @@ public class gameMechanics {
         }
     }
 
+    /**
+     * Checks if RIGHT move is possible
+     * @param direction direction Pacman is heading (1 = going Down, -1 = going Up)
+     */
     private static void checkRightPossible(int direction) {
         if (!notAllowedBox[(int) pacmanColumn + 1][(int) pacmanRow + direction]) {
             if (waitingForTurn == 'r' && !stop) {
@@ -509,7 +567,10 @@ public class gameMechanics {
         }
     }
 
-
+    /**
+     * Turns Pacman UP
+     * @param gameLayout Group Layout of the Game window
+     */
     private static void turnPacmanUp(Group gameLayout) {
         //Setting the position of the image
         viewPacmanUp.setX((pacmanXPos));
@@ -538,6 +599,10 @@ public class gameMechanics {
         waitingForTurn = '1';
     }
 
+    /**
+     * Turns Pacman DOWN
+     * @param gameLayout Group Layout of the Game window
+     */
     private static void turnPacmanDown(Group gameLayout) {
         //Setting the position of the image
         viewPacmanDown.setX((pacmanXPos));
@@ -566,6 +631,10 @@ public class gameMechanics {
         waitingForTurn = '1';
     }
 
+    /**
+     * Turns Pacman LEFT
+     * @param gameLayout Group Layout of the Game window
+     */
     private static void turnPacmanLeft(Group gameLayout) {
         //Setting the position of the image
         viewPacmanLeft.setX((pacmanXPos));
@@ -594,6 +663,10 @@ public class gameMechanics {
         waitingForTurn = '1';
     }
 
+    /**
+     * Turns Pacman RIGHT
+     * @param gameLayout Group Layout of the Game window
+     */
     private static void turnPacmanRight(Group gameLayout) {
         //Setting the position of the image
         viewPacmanRight.setX((pacmanXPos));
@@ -623,6 +696,10 @@ public class gameMechanics {
     }
 
 
+    /**
+     * Checks if horizontal Wall got Hit
+     * @param MovingDirection Pacmans moving direction
+     */
     private static void horizontalWallHit(String MovingDirection) {
         velocityPacmanHorizontal = 0;
         velocityPacmanVertical = 0;
@@ -642,6 +719,10 @@ public class gameMechanics {
         }
     }
 
+    /**
+     * Checks if vertical Wall got Hit
+     * @param MovingDirection Pacmans moving direction
+     */
     private static void verticalWallHit(String MovingDirection) {
         velocityPacmanHorizontal = 0;
         velocityPacmanVertical = 0;
@@ -662,11 +743,13 @@ public class gameMechanics {
     }
 
 
+    /**
+     * Allows Moving Pacman
+     * @param gameLayout Group Layout of the Game window
+     */
     public static void pacmanMove(Group gameLayout) {
-
         pacmanRow = (int) Math.round(pacmanYPos / widthOneBlock);
         pacmanColumn = (int) Math.round((pacmanXPos / heightOneBlock));
-
 
         if (pacmanFacingRight) {
             checkUpPossible(1);
@@ -802,7 +885,7 @@ public class gameMechanics {
                     pacmanYPos += velocityPacmanVertical;
                     return;
                 }
-                if (pacmanYPos <= pacmanYPosCenter) verticalWallHit("DOWN");
+                if (pacmanYPos >= pacmanYPosCenter) verticalWallHit("DOWN");
             }
             if (pacmanYPos >= pacmanYPosCenter) {
                 switch (waitingForTurn) {

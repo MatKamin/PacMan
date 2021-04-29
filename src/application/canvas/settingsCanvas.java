@@ -15,6 +15,10 @@ public class settingsCanvas {
 
     //--------------------------------------------MENU CANVAS--------------------------------------------\\
 
+    /**
+     * Draws the Settings Window
+     * @param gc Graphics Context of the Settings window
+     */
     public static void play(GraphicsContext gc) {
 
         //::::::::::: Background :::::::::::\\
