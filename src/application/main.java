@@ -43,7 +43,7 @@ public class main extends Application {
     //---------------------------------VARIABLES---------------------------------\\
 
 
-    //Useful for perfect uses ;)
+
     public static final int width = 1300;       // Window width
     public static final int height = 1000;      // Window height
 
