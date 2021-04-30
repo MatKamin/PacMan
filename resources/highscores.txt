@@ -1,1 +1,1 @@
-Frank,1020,Joshua,740,bob,580,a,520,Bob,440,a,630,a,280,a,270,a,790,a,380
+Bosh,1440,Alex,1410,Frank,1020,Joshua,740,a,630,empty,0

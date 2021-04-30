@@ -27,6 +27,8 @@ public class mapReader {
 
     static double blinkyRow;
     static double blinkyColumn;
+    static double blinkyColumnStart;
+    static double blinkyRowStart;
     static double blinkyXPos;
     static double blinkyYPos;
 
@@ -89,6 +91,8 @@ public class mapReader {
                                 blinkyYPos = (heightOneBlock * row);
                                 blinkyRow = row;
                                 blinkyColumn = columnCounter;
+                                blinkyColumnStart = columnCounter;
+                                blinkyRowStart = row;
                                 powerPills[columnCounter][row] = false;
                                 dots[columnCounter][row] = false;
                                 notAllowedBox[columnCounter][row] = false;

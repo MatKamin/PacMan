@@ -51,6 +51,23 @@ public class imageViewerVariables {
     public static ImageView viewBlinky = new ImageView(blinky);
 
 
+    //::::::::::: Scared Ghost GIF :::::::::::\\
+
+    //Creating an image
+    static Image scared;
+
+    static {
+        try {
+            scared = new Image(new FileInputStream("resources/characters/scared.gif"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Setting the image view
+    public static ImageView viewScared = new ImageView(scared);
+
+
     //::::::::::: Pink Ghost (Pinky) GIF :::::::::::\\
 
     // Creating an image

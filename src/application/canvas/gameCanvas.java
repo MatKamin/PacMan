@@ -3,15 +3,15 @@ package application.canvas;
 
 //---------------------------------IMPORTS---------------------------------\\
 
+import application.chaseMode;
 import application.gameMechanics;
-import application.ghostAI;
+import application.scaredMode;
 import javafx.scene.Group;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 
-import static application.gameMechanics.highscore;
-import static application.gameMechanics.score;
+import static application.gameMechanics.*;
 import static application.main.*;
 import static application.mapReader.blockCountHorizontally;
 
@@ -68,7 +68,14 @@ public class gameCanvas {
 
             //::::::::::: Ghosts Movement :::::::::::\\
 
-            ghostAI.ghostAnimate();
+            if (inChaseMode) {
+                chaseMode.ghostAnimate(gameLayout);
+            }
+            if (inScaredMode) {
+                scaredMode.ghostAnimate(gameLayout);
+                gameMechanics.eatGhost(gameLayout);
+            }
+
 
             //::::::::::: Pac-Man Movement :::::::::::\\
 

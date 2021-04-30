@@ -1,8 +1,8 @@
 package application;
 
-import static application.gameMechanics.*;
-import static application.imageViewerVariables.viewBlinky;
-import static application.main.*;
+import static application.chaseMode.calculateNextMove;
+import static application.gameMechanics.notAllowedBox;
+import static application.main.widthOneBlock;
 import static application.mapReader.*;
 
 public class ghostAI {
@@ -29,25 +29,12 @@ public class ghostAI {
     static double distance3 = 10000;
     static double distance4 = 10000;
 
-    /**
-     * Animates Ghosts
-     * TODO: Ghost AI remaining
-     */
-    public static void ghostAnimate() {
-        // Blinky
-        viewBlinky.setX(blinkyXPos);
-        viewBlinky.setY(blinkyYPos);
-        blinkyXPos += velocityBlinkyHorizontal;
-        blinkyYPos += velocityBlinkyVertical;
 
-        calculateNextMove();
-        allowTeleport();
-    }
 
     /**
      * Allows Teleporting Left / Right by Ghost
      */
-    private static void allowTeleport(){
+    public static void allowTeleport(){
         if (velocityBlinkyHorizontal > 0) {
             if (blinkyColumnNew + 1 > blockCountHorizontally) {
                 // Teleport right to left
@@ -71,7 +58,7 @@ public class ghostAI {
     /**
      * Gets Ghosts moving direction
      */
-    private static void getMovingDirection() {
+    public static void getMovingDirection() {
         if (velocityBlinkyHorizontal > 0) blinkyGoingRight = true;
         if (velocityBlinkyHorizontal < 0) blinkyGoingLeft = true;
         if (velocityBlinkyVertical < 0) blinkyGoingUp = true;
@@ -81,7 +68,7 @@ public class ghostAI {
     /**
      * Dont allow Turning around
      */
-    private static void blockTurnAround() {
+    public static void blockTurnAround() {
         if (blinkyGoingRight) blinkyGoLeft = false;
         if (blinkyGoingLeft) blinkyGoRight = false;
         if (blinkyGoingUp) blinkyGoDown = false;
@@ -91,37 +78,19 @@ public class ghostAI {
     /**
      * Dont allow any moves against walls
      */
-    private static void blockImpossibleMoves() {
+    public static void blockImpossibleMoves() {
         if (ghostNotPossibleUp()) blinkyGoUp = false;
         if (ghostNotPossibleDown()) blinkyGoDown = false;
         if (ghostNotPossibleLeft()) blinkyGoLeft = false;
         if (ghostNozPossibleRight()) blinkyGoRight = false;
     }
 
-    /**
-     * Calculates Distances
-     */
-    private static void calculateDistances() {
-        // TARGET SCATTER MODE
-        // COLUMN: 26 (pacmanColumn)
-        // ROW: 1 (pacmanRow)
-        if (blinkyColumnNew > 10 && blinkyColumnNew < 17 && blinkyRowNew > 15 && blinkyRowNew < 20) {
-            if (blinkyGoRight) distance1 = Math.pow(Math.abs((blinkyColumn + 1) - 26 - 1), 2) + Math.pow(Math.abs(blinkyRow - 1), 2);
-            if (blinkyGoUp) distance2 = Math.pow(Math.abs(blinkyColumn - 26), 2) + Math.pow(Math.abs((blinkyRow - 1) - 1 - 1), 2);
-            if (blinkyGoDown) distance3 = Math.pow(Math.abs(blinkyColumn - 26), 2) + Math.pow(Math.abs((blinkyRow + 1) - 1 - 1), 2);
-            if (blinkyGoLeft) distance4 = Math.pow(Math.abs((blinkyColumn - 1) - 26 - 1), 2) + Math.pow(Math.abs(blinkyRow - 1), 2);
-        } else {
-            if (blinkyGoRight) distance1 = Math.pow(Math.abs((blinkyColumn + 1) - pacmanColumn - 1), 2) + Math.pow(Math.abs(blinkyRow - pacmanRow), 2);
-            if (blinkyGoUp) distance2 = Math.pow(Math.abs(blinkyColumn - pacmanColumn), 2) + Math.pow(Math.abs((blinkyRow - 1) - pacmanRow - 1), 2);
-            if (blinkyGoDown) distance3 = Math.pow(Math.abs(blinkyColumn - pacmanColumn), 2) + Math.pow(Math.abs((blinkyRow + 1) - pacmanRow - 1), 2);
-            if (blinkyGoLeft) distance4 = Math.pow(Math.abs((blinkyColumn - 1) - pacmanColumn - 1), 2) + Math.pow(Math.abs(blinkyRow - pacmanRow), 2);
-        }
-    }
+
 
     /**
      * Sets Ghost Velocity
      */
-    private static void moveGhost(){
+    public static void moveGhost(){
         if (blinkyGoLeft) {
             velocityBlinkyVertical = 0;
             velocityBlinkyHorizontal = -1;
@@ -140,7 +109,7 @@ public class ghostAI {
     /**
      * Gets the shortest distance
      */
-    private static void getShortestDistance() {
+    public static void getShortestDistance() {
         double smallest = distance1;
         if (distance2 < smallest) smallest = distance2;
         if (distance3 < smallest) smallest = distance3;
@@ -151,53 +120,19 @@ public class ghostAI {
         if (smallest != distance4) blinkyGoLeft = false;
     }
 
+    public static void getReverseDirection() {
 
-    /**
-     * Calculates next move
-     */
-    private static void calculateNextMove() {
-        blinkyRowNew = (int) Math.round((blinkyYPos + characterHeight / 2) / widthOneBlock);
-        blinkyColumnNew = (int) Math.round(((blinkyXPos - characterWidth / 2) / heightOneBlock));
-
-        if (velocityBlinkyHorizontal < 0 || velocityBlinkyVertical > 0) {
-            blinkyRowNew = (int) Math.round((blinkyYPos - characterHeight / 2) / widthOneBlock);
-            blinkyColumnNew = (int) Math.round(((blinkyXPos + characterWidth / 2) / heightOneBlock));
-        }
-
-        blinkyGoingRight = false;
-        blinkyGoingLeft = false;
-        blinkyGoingUp = false;
-        blinkyGoingDown = false;
-
-        blinkyGoRight = true;
-        blinkyGoLeft = true;
-        blinkyGoUp = true;
-        blinkyGoDown = true;
-
-        distance1 = 10000;
-        distance2 = 10000;
-        distance3 = 10000;
-        distance4 = 10000;
-
-        if (blinkyColumnNew == blinkyColumn + 1 || blinkyColumnNew == blinkyColumn - 1) {
-            blinkyColumn = blinkyColumnNew;
-            getMovingDirection();
-            blockTurnAround();
-            blockImpossibleMoves();
-            calculateDistances();
-            getShortestDistance();
-            moveGhost();
-        }
-        if (blinkyRowNew == blinkyRow + 1 || blinkyRowNew == blinkyRow - 1) {
-            blinkyRow = blinkyRowNew;
-            getMovingDirection();
-            blockTurnAround();
-            blockImpossibleMoves();
-            calculateDistances();
-            getShortestDistance();
-            moveGhost();
-        }
+        double biggest = 0;
+        if (distance1 > biggest && distance1 != 10000) biggest = distance1;
+        if (distance2 > biggest && distance2 != 10000) biggest = distance2;
+        if (distance3 > biggest && distance3 != 10000) biggest = distance3;
+        if (distance4 > biggest && distance4 != 10000) biggest = distance4;
+        if (biggest != distance1) blinkyGoRight = false;
+        if (biggest != distance2) blinkyGoUp = false;
+        if (biggest != distance3) blinkyGoDown = false;
+        if (biggest != distance4) blinkyGoLeft = false;
     }
+
 
 
     /**

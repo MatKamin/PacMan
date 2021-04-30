@@ -72,6 +72,8 @@ public class gameMechanics {
     static boolean collectFruitOnce = true;
     static int delayFruit = 1;
 
+    public static boolean inChaseMode = true;
+
 
     /**
      * checks if given Username is valid
@@ -358,7 +360,9 @@ public class gameMechanics {
         viewPinky.setFitHeight(characterHeight);
         viewPinky.setFitWidth(characterWidth);
 
-        gameLayout.getChildren().addAll(viewBlinky, viewPinky);
+        if (!inScaredMode) {
+            gameLayout.getChildren().addAll(viewBlinky, viewPinky);
+        }
     }
 
 
@@ -478,7 +482,9 @@ public class gameMechanics {
             gameLayout.getChildren().add(viewPacmanDown);
         }
         gameLayout.getChildren().remove(viewBlinky);
-        gameLayout.getChildren().add(viewBlinky);
+        if (!inScaredMode) {
+            gameLayout.getChildren().add(viewBlinky);
+        }
     }
 
     /**
@@ -503,7 +509,49 @@ public class gameMechanics {
         powerPills[(int) pacmanColumn][(int) pacmanRow] = false;
         powerPillCount--;
         score += 50;        // A Power Pill gives 50 points
+        inChaseMode = false;
+        pacmanPowerMode(gameLayout);
         clearer(gameLayout);
+    }
+
+    public static boolean inScaredMode = false;
+    private static void pacmanPowerMode(Group gameLayout) {
+        gameLayout.getChildren().remove(viewBlinky);
+        inScaredMode = true;
+        // Timer
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        if (inScaredMode) {
+                            inScaredMode = false;
+                            inChaseMode = true;
+                        }
+                    }
+                },
+                10000
+        );
+    }
+
+    public static void eatGhost(Group gameLayout) {
+        if (!inScaredMode) { return; }
+
+        if (pacmanColumn == blinkyColumn && pacmanRow == blinkyRow) {
+            inScaredMode = false;
+            inChaseMode = true;
+
+            blinkyXPos = (widthOneBlock * blinkyColumnStart);
+            blinkyYPos = (heightOneBlock * blinkyRowStart);
+            blinkyColumn = blinkyColumnStart;
+            blinkyRow = blinkyRowStart;
+
+            viewBlinky.setX(blinkyXPos);
+            viewBlinky.setY(blinkyYPos);
+
+            gameLayout.getChildren().remove(viewScared);
+
+            score += 200;
+        }
     }
 
 

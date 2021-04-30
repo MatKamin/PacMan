@@ -9,6 +9,8 @@ import application.canvas.settingsCanvas;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -35,7 +37,8 @@ import java.io.IOException;
 
 import static application.gameMechanics.*;
 import static application.imageViewerVariables.*;
-import static application.mapReader.*;
+import static application.mapReader.blockCountHorizontally;
+import static application.mapReader.blockCountVertically;
 
 
 public class main extends Application {
@@ -125,6 +128,7 @@ public class main extends Application {
         logoffButton.setLayoutX(50);
     }
 
+
     private void createDeleteAccountButton(){
         // Label
         deleteAccountButton = new Text("Delete account");
@@ -152,8 +156,6 @@ public class main extends Application {
 
         // Scene
         gameScene = new Scene(gameLayout, width, height);
-
-
         gameLayout.getChildren().add(canvasGame);
     }
 
@@ -285,6 +287,28 @@ public class main extends Application {
     }
 
 
+    private static volatile boolean javaFxLaunched = false;
+
+    public static void myLaunch(Class<? extends Application> applicationClass) {
+        if (!javaFxLaunched) { // First time
+            Platform.setImplicitExit(false);
+            new Thread(()->Application.launch(applicationClass)).start();
+            javaFxLaunched = true;
+        } else { // Next times
+            new JFXPanel();
+            Platform.runLater(()->{
+                try {
+                    Application application = applicationClass.newInstance();
+                    Stage primaryStage = new Stage();
+                    application.start(primaryStage);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+    }
+
+
     /**
      * Launching Game
      *
@@ -293,6 +317,7 @@ public class main extends Application {
 
     @Override
     public void start(Stage currentStage) {
+
 
         currentStage.setTitle("Pac-Man");      // Window title
         gameStarted = false;
@@ -979,7 +1004,8 @@ public class main extends Application {
         startingTime = System.currentTimeMillis();
 
         System.out.println(ANSI_GREEN);
-        launch(args);
+        //Application.launch(args);
+        myLaunch(main.class);
         System.out.println(ANSI_RESET);
     }
 }
