@@ -6,6 +6,7 @@ package application.canvas;
 import application.chaseMode;
 import application.gameMechanics;
 import application.scaredMode;
+import application.scatterMode;
 import javafx.scene.Group;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -68,13 +69,34 @@ public class gameCanvas {
 
             //::::::::::: Ghosts Movement :::::::::::\\
 
+
+            switch (scatterCount) {
+                case 0, 1 -> scatterTime = 7000;
+                case 2, 3 -> scatterTime = 5000;
+            }
+
+            if (inScatterMode) {
+                scatterMode.ghostAnimate(gameLayout);
+                gameMechanics.scatterModeTimer();
+            }
+
+
+            switch (chaseCount) {
+                case 0, 1, 2, 3 -> chaseTime = 20000;
+                default -> chaseTime = 500000;
+            }
+
             if (inChaseMode) {
                 chaseMode.ghostAnimate(gameLayout);
+                gameMechanics.chaseModeTimer();
             }
+
+
             if (inScaredMode) {
                 scaredMode.ghostAnimate(gameLayout);
                 gameMechanics.eatGhost(gameLayout);
             }
+
 
 
             //::::::::::: Pac-Man Movement :::::::::::\\

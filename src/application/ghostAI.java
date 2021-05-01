@@ -5,7 +5,7 @@ import static application.gameMechanics.notAllowedBox;
 import static application.main.widthOneBlock;
 import static application.mapReader.*;
 
-public class ghostAI {
+public abstract class ghostAI {
 
     //---------------------------------VARIABLES---------------------------------\\
     static int blinkyColumnNew;
@@ -28,7 +28,6 @@ public class ghostAI {
     static double distance2 = 10000;
     static double distance3 = 10000;
     static double distance4 = 10000;
-
 
 
     /**

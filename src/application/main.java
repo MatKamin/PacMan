@@ -144,7 +144,7 @@ public class main extends Application {
     private static GraphicsContext gcGame;
     private static Group gameLayout;
     private static Scene gameScene;
-    private static Timeline tl;
+    public static Timeline tl;
 
     private void createGameWindow(){
         // Canvas

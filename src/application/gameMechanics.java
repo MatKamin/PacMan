@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 
 import java.io.*;
 import java.util.Scanner;
+import java.util.Timer;
 import java.util.regex.Pattern;
 
 import static application.imageViewerVariables.*;
@@ -72,19 +73,31 @@ public class gameMechanics {
     static boolean collectFruitOnce = true;
     static int delayFruit = 1;
 
-    public static boolean inChaseMode = true;
+    public static boolean inChaseMode = false;
+    public static boolean inScaredMode = false;
+    public static boolean inScatterMode = true;
+
+    public static int scatterTime = 7000;
+    public static int chaseTime = 20000;
+    public static int scaredTime = 7000;
+    public static int scatterCount = 0;
+    public static int chaseCount = 0;
 
 
     /**
      * checks if given Username is valid
+     *
      * @param USERNAME username to validate
      * @return true or false
      */
-    public static boolean isValidNickname(String USERNAME) { return Pattern.compile(regexp).matcher(USERNAME).matches(); }
+    public static boolean isValidNickname(String USERNAME) {
+        return Pattern.compile(regexp).matcher(USERNAME).matches();
+    }
 
 
     /**
      * Sets and draws the Starting Position of PacMan
+     *
      * @param gameLayout Group Layout of the Game window
      */
     public static void setPacmanStartingPos(Group gameLayout) {
@@ -107,6 +120,7 @@ public class gameMechanics {
 
     /**
      * Resets the Game
+     *
      * @param gameLayout Group Layout of the Game window
      */
     public static void resetGame(Group gameLayout) {
@@ -170,11 +184,16 @@ public class gameMechanics {
         mapReader.readMap();
         nextLevel = true;
         isPacmanStartingPosVisible = true;
+
+        inScatterMode = true;
+        inChaseMode = false;
+        inScaredMode = false;
     }
 
 
     /**
      * Draws The Spawning Fruit
+     *
      * @param gameLayout Group Layout of the Game window
      */
     private static void drawFruit(Group gameLayout) {
@@ -190,6 +209,7 @@ public class gameMechanics {
 
     /**
      * Spawns Fruit after eating 70 and / or 170 dots
+     *
      * @param gameLayout Group Layout of the Game window
      */
     public static void spawnFruit(Group gameLayout) {
@@ -209,6 +229,7 @@ public class gameMechanics {
 
     /**
      * Draws Life counter
+     *
      * @param gameLayout Group Layout of the Game window
      */
     public static void drawLifesCounter(Group gameLayout) {
@@ -228,6 +249,7 @@ public class gameMechanics {
 
     /**
      * draws Level counter
+     *
      * @param gameLayout Group Layout of the Game window
      */
     public static void drawLevelCounter(Group gameLayout) {
@@ -247,6 +269,7 @@ public class gameMechanics {
 
     /**
      * Removes Complete Map
+     *
      * @param gameLayout Group Layout of the Game window
      */
     private static void removeMap(Group gameLayout) {
@@ -293,6 +316,7 @@ public class gameMechanics {
 
     /**
      * Draws Next Map
+     *
      * @param gameLayout Group Layout of the Game window
      */
     private static void drawNextMap(Group gameLayout) {
@@ -368,6 +392,7 @@ public class gameMechanics {
 
     /**
      * Sets the next level
+     *
      * @param gameLayout Group Layout of the Game window
      */
     public static void levelUp(Group gameLayout) {
@@ -404,6 +429,9 @@ public class gameMechanics {
             fruitSpawned2 = false;
             getRandomLifespan = true;
             collectFruitOnce = true;
+            inScatterMode = true;
+            inChaseMode = false;
+            inScaredMode = false;
 
             mapReader.readMap();
             drawNextMap(gameLayout);
@@ -413,6 +441,7 @@ public class gameMechanics {
 
     /**
      * Makes Spawning Fruit collectable
+     *
      * @param gameLayout Group Layout of the Game window
      */
     public static void collectFruit(Group gameLayout) {
@@ -453,6 +482,7 @@ public class gameMechanics {
 
     /**
      * Hides Dots and Power Pills
+     *
      * @param gameLayout Group Layout of the Game window
      */
     private static void clearer(Group gameLayout) {
@@ -489,6 +519,7 @@ public class gameMechanics {
 
     /**
      * Makes Dots collectable
+     *
      * @param gameLayout Group Layout of the Game window
      */
     public static void collectPoints(Group gameLayout) {
@@ -502,6 +533,7 @@ public class gameMechanics {
 
     /**
      * Makes Power Pills collectable
+     *
      * @param gameLayout Group Layout of the Game window
      */
     public static void collectPowerPill(Group gameLayout) {
@@ -514,7 +546,7 @@ public class gameMechanics {
         clearer(gameLayout);
     }
 
-    public static boolean inScaredMode = false;
+
     private static void pacmanPowerMode(Group gameLayout) {
         gameLayout.getChildren().remove(viewBlinky);
         inScaredMode = true;
@@ -529,12 +561,64 @@ public class gameMechanics {
                         }
                     }
                 },
-                10000
+                scaredTime
         );
     }
 
+
+    public static void scatterModeTimer() {
+        Timer t = new Timer();
+
+        inScatterMode = true;
+
+        t.schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        if (inScatterMode) {
+                            if (chaseCount < 5) {
+                                inScatterMode = false;
+                                System.out.println("SWITCHED TO CHASE MODE AFTER: " + scatterTime + "ms                " + scatterCount);
+                                scatterCount++;
+                                chaseModeTimer();
+                            }
+                        }
+                        t.cancel();
+                    }
+                },
+                scatterTime
+        );
+    }
+
+
+    public static void chaseModeTimer() {
+        Timer t = new Timer();
+        inChaseMode = true;
+
+        t.schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        if (inChaseMode) {
+                            if (scatterCount < 4) {
+                                inChaseMode = false;
+                                System.out.println("SWITCHED TO SCATTER MODE AFTER " + chaseTime + "ms          " + chaseCount);
+                                chaseCount++;
+                                scatterModeTimer();
+                            }
+                        }
+                        t.cancel();
+                    }
+                },
+                chaseTime
+        );
+    }
+
+
     public static void eatGhost(Group gameLayout) {
-        if (!inScaredMode) { return; }
+        if (!inScaredMode) {
+            return;
+        }
 
         if (pacmanColumn == blinkyColumn && pacmanRow == blinkyRow) {
             inScaredMode = false;
@@ -557,6 +641,7 @@ public class gameMechanics {
 
     /**
      * Checks if UP move is possible
+     *
      * @param direction direction Pacman is heading (1 = going Right, -1 = going Left)
      */
     private static void checkUpPossible(int direction) {
@@ -572,6 +657,7 @@ public class gameMechanics {
 
     /**
      * Checks if DOWN move is possible
+     *
      * @param direction direction Pacman is heading (1 = going Right, -1 = going Left)
      */
     private static void checkDownPossible(int direction) {
@@ -587,6 +673,7 @@ public class gameMechanics {
 
     /**
      * Checks if LEFT move is possible
+     *
      * @param direction direction Pacman is heading (1 = going Down, -1 = going Up)
      */
     private static void checkLeftPossible(int direction) {
@@ -602,6 +689,7 @@ public class gameMechanics {
 
     /**
      * Checks if RIGHT move is possible
+     *
      * @param direction direction Pacman is heading (1 = going Down, -1 = going Up)
      */
     private static void checkRightPossible(int direction) {
@@ -617,6 +705,7 @@ public class gameMechanics {
 
     /**
      * Turns Pacman UP
+     *
      * @param gameLayout Group Layout of the Game window
      */
     private static void turnPacmanUp(Group gameLayout) {
@@ -649,6 +738,7 @@ public class gameMechanics {
 
     /**
      * Turns Pacman DOWN
+     *
      * @param gameLayout Group Layout of the Game window
      */
     private static void turnPacmanDown(Group gameLayout) {
@@ -681,6 +771,7 @@ public class gameMechanics {
 
     /**
      * Turns Pacman LEFT
+     *
      * @param gameLayout Group Layout of the Game window
      */
     private static void turnPacmanLeft(Group gameLayout) {
@@ -713,6 +804,7 @@ public class gameMechanics {
 
     /**
      * Turns Pacman RIGHT
+     *
      * @param gameLayout Group Layout of the Game window
      */
     private static void turnPacmanRight(Group gameLayout) {
@@ -746,6 +838,7 @@ public class gameMechanics {
 
     /**
      * Checks if horizontal Wall got Hit
+     *
      * @param MovingDirection Pacmans moving direction
      */
     private static void horizontalWallHit(String MovingDirection) {
@@ -769,6 +862,7 @@ public class gameMechanics {
 
     /**
      * Checks if vertical Wall got Hit
+     *
      * @param MovingDirection Pacmans moving direction
      */
     private static void verticalWallHit(String MovingDirection) {
@@ -793,6 +887,7 @@ public class gameMechanics {
 
     /**
      * Allows Moving Pacman
+     *
      * @param gameLayout Group Layout of the Game window
      */
     public static void pacmanMove(Group gameLayout) {
