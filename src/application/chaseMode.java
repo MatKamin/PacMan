@@ -4,21 +4,17 @@ import javafx.scene.Group;
 
 import static application.gameMechanics.pacmanColumn;
 import static application.gameMechanics.pacmanRow;
-import static application.imageViewerVariables.viewBlinky;
-import static application.imageViewerVariables.viewScared;
+import static application.imageViewerVariables.*;
 import static application.main.*;
 import static application.mapReader.*;
 
-public class chaseMode extends ghostAI {
+public class chaseMode extends Ghost {
 
 
-    /**
-     * Animates Ghosts
-     * TODO: Ghost AI remaining
-     */
-    public static void ghostAnimate(Group gameLayout) {
-        gameLayout.getChildren().remove(viewScared);
+    public static void blinkyAnimate(Group gameLayout) {
+        gameLayout.getChildren().remove(viewScaredBlinky);
         gameLayout.getChildren().remove(viewBlinky);
+
         gameLayout.getChildren().add(viewBlinky);
 
         // Blinky
@@ -27,44 +23,31 @@ public class chaseMode extends ghostAI {
         blinkyXPos += velocityBlinkyHorizontal;
         blinkyYPos += velocityBlinkyVertical;
 
-        calculateNextMove();
-        allowTeleport();
 
+        calculateNextMoveBlinky();
+        allowTeleportBlinky();
     }
 
-
-    /**
-     * Calculates Distances
-     */
-    public static void calculateDistances() {
+    public static void calculateDistancesBlinky() {
         // TARGET SCATTER MODE
-        // COLUMN: 26 (pacmanColumn)
-        // ROW: 1 (pacmanRow)
-        if (blinkyColumnNew > 10 && blinkyColumnNew < 17 && blinkyRowNew > 15 && blinkyRowNew < 20) {
-            if (blinkyGoRight)
-                distance1 = Math.pow(Math.abs((blinkyColumn + 1) - 26 - 1), 2) + Math.pow(Math.abs(blinkyRow - 1), 2);
-            if (blinkyGoUp)
-                distance2 = Math.pow(Math.abs(blinkyColumn - 26), 2) + Math.pow(Math.abs((blinkyRow - 1) - 1 - 1), 2);
-            if (blinkyGoDown)
-                distance3 = Math.pow(Math.abs(blinkyColumn - 26), 2) + Math.pow(Math.abs((blinkyRow + 1) - 1 - 1), 2);
-            if (blinkyGoLeft)
-                distance4 = Math.pow(Math.abs((blinkyColumn - 1) - 26 - 1), 2) + Math.pow(Math.abs(blinkyRow - 1), 2);
-        } else {
-            if (blinkyGoRight)
-                distance1 = Math.pow(Math.abs((blinkyColumn + 1) - pacmanColumn - 1), 2) + Math.pow(Math.abs(blinkyRow - pacmanRow), 2);
-            if (blinkyGoUp)
-                distance2 = Math.pow(Math.abs(blinkyColumn - pacmanColumn), 2) + Math.pow(Math.abs((blinkyRow - 1) - pacmanRow - 1), 2);
-            if (blinkyGoDown)
-                distance3 = Math.pow(Math.abs(blinkyColumn - pacmanColumn), 2) + Math.pow(Math.abs((blinkyRow + 1) - pacmanRow - 1), 2);
-            if (blinkyGoLeft)
-                distance4 = Math.pow(Math.abs((blinkyColumn - 1) - pacmanColumn - 1), 2) + Math.pow(Math.abs(blinkyRow - pacmanRow), 2);
-        }
+        // COLUMN: 26
+        // ROW: 1
+        if (blinkyGoRight)
+            distance1 = Math.pow(Math.abs((blinkyColumn + 1) - pacmanColumn - 1), 2) + Math.pow(Math.abs(blinkyRow - pacmanRow), 2);
+        if (blinkyGoUp)
+            distance2 = Math.pow(Math.abs(blinkyColumn - pacmanColumn), 2) + Math.pow(Math.abs((blinkyRow - 1) - pacmanRow - 1), 2);
+        if (blinkyGoDown)
+            distance3 = Math.pow(Math.abs(blinkyColumn - pacmanColumn), 2) + Math.pow(Math.abs((blinkyRow + 1) - pacmanRow - 1), 2);
+        if (blinkyGoLeft)
+            distance4 = Math.pow(Math.abs((blinkyColumn - 1) - pacmanColumn - 1), 2) + Math.pow(Math.abs(blinkyRow - pacmanRow), 2);
     }
+
+
 
     /**
      * Calculates next move
      */
-    public static void calculateNextMove() {
+    public static void calculateNextMoveBlinky() {
         blinkyRowNew = (int) Math.round((blinkyYPos + characterHeight / 2) / widthOneBlock);
         blinkyColumnNew = (int) Math.round(((blinkyXPos - characterWidth / 2) / heightOneBlock));
 
@@ -90,21 +73,109 @@ public class chaseMode extends ghostAI {
 
         if (blinkyColumnNew == blinkyColumn + 1 || blinkyColumnNew == blinkyColumn - 1) {
             blinkyColumn = blinkyColumnNew;
-            getMovingDirection();
-            blockTurnAround();
-            blockImpossibleMoves();
-            calculateDistances();
-            getShortestDistance();
-            moveGhost();
+            getMovingDirectionBlinky();
+            blockTurnAroundBlinky();
+            blockImpossibleMovesBlinky();
+            calculateDistancesBlinky();
+            getShortestDistanceBlinky();
+            moveBlinky();
         }
         if (blinkyRowNew == blinkyRow + 1 || blinkyRowNew == blinkyRow - 1) {
             blinkyRow = blinkyRowNew;
-            getMovingDirection();
-            blockTurnAround();
-            blockImpossibleMoves();
-            calculateDistances();
-            getShortestDistance();
-            moveGhost();
+            getMovingDirectionBlinky();
+            blockTurnAroundBlinky();
+            blockImpossibleMovesBlinky();
+            calculateDistancesBlinky();
+            getShortestDistanceBlinky();
+            moveBlinky();
+        }
+    }
+
+
+
+
+
+
+
+
+
+    public static void pinkyAnimate(Group gameLayout) {
+        gameLayout.getChildren().remove(viewScaredPinky);
+        gameLayout.getChildren().remove(viewPinky);
+
+        gameLayout.getChildren().add(viewPinky);
+
+        // Pinky
+        viewPinky.setX(pinkyXPos);
+        viewPinky.setY(pinkyYPos);
+        pinkyXPos += velocityPinkyHorizontal;
+        pinkyYPos += velocityPinkyVertical;
+
+
+        calculateNextMovePinky();
+        allowTeleportPinky();
+    }
+
+    public static void calculateDistancesPinky() {
+        // TARGET SCATTER MODE
+        // COLUMN: 2
+        // ROW: 1
+        if (pinkyGoRight)
+            distance1pinky = Math.pow(Math.abs((pinkyColumn + 1) - pacmanColumn - 1), 2) + Math.pow(Math.abs(pinkyRow - pacmanRow), 2);
+        if (pinkyGoUp)
+            distance2pinky = Math.pow(Math.abs(pinkyColumn - pacmanColumn), 2) + Math.pow(Math.abs((pinkyRow - 1) - pacmanRow - 1), 2);
+        if (pinkyGoDown)
+            distance3pinky = Math.pow(Math.abs(pinkyColumn - pacmanColumn), 2) + Math.pow(Math.abs((pinkyRow + 1) - pacmanRow - 1), 2);
+        if (pinkyGoLeft)
+            distance4pinky = Math.pow(Math.abs((pinkyColumn - 1) - pacmanColumn - 1), 2) + Math.pow(Math.abs(pinkyRow - pacmanRow), 2);
+    }
+
+
+
+    /**
+     * Calculates next move
+     */
+    public static void calculateNextMovePinky() {
+        pinkyRowNew = (int) Math.round((pinkyYPos + characterHeight / 2) / widthOneBlock);
+        pinkyColumnNew = (int) Math.round(((pinkyXPos - characterWidth / 2) / heightOneBlock));
+
+        if (velocityPinkyHorizontal < 0 || velocityPinkyVertical > 0) {
+            pinkyRowNew = (int) Math.round((pinkyYPos - characterHeight / 2) / widthOneBlock);
+            pinkyColumnNew = (int) Math.round(((pinkyXPos + characterWidth / 2) / heightOneBlock));
+        }
+
+        pinkyGoingRight = false;
+        pinkyGoingLeft = false;
+        pinkyGoingUp = false;
+        pinkyGoingDown = false;
+
+        pinkyGoRight = true;
+        pinkyGoLeft = true;
+        pinkyGoUp = true;
+        pinkyGoDown = true;
+
+        distance1pinky = 10000;
+        distance2pinky = 10000;
+        distance3pinky = 10000;
+        distance4pinky = 10000;
+
+        if (pinkyColumnNew == pinkyColumn + 1 || pinkyColumnNew == pinkyColumn - 1) {
+            pinkyColumn = pinkyColumnNew;
+            getMovingDirectionPinky();
+            blockTurnAroundPinky();
+            blockImpossibleMovesPinky();
+            calculateDistancesPinky();
+            getShortestDistancePinky();
+            movePinky();
+        }
+        if (pinkyRowNew == pinkyRow + 1 || pinkyRowNew == pinkyRow - 1) {
+            pinkyRow = pinkyRowNew;
+            getMovingDirectionPinky();
+            blockTurnAroundPinky();
+            blockImpossibleMovesPinky();
+            calculateDistancesPinky();
+            getShortestDistancePinky();
+            movePinky();
         }
     }
 }

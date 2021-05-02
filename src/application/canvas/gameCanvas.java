@@ -3,10 +3,7 @@ package application.canvas;
 
 //---------------------------------IMPORTS---------------------------------\\
 
-import application.chaseMode;
-import application.gameMechanics;
-import application.scaredMode;
-import application.scatterMode;
+import application.*;
 import javafx.scene.Group;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -76,25 +73,30 @@ public class gameCanvas {
             }
 
             if (inScatterMode) {
-                scatterMode.ghostAnimate(gameLayout);
+                scatterMode.blinkyAnimate(gameLayout);
+                scatterMode.pinkyAnimate(gameLayout);
+
                 gameMechanics.scatterModeTimer();
             }
 
 
             switch (chaseCount) {
                 case 0, 1, 2, 3 -> chaseTime = 20000;
-                default -> chaseTime = 500000;
+                default -> chaseTime = 50;
             }
 
             if (inChaseMode) {
-                chaseMode.ghostAnimate(gameLayout);
+                chaseMode.blinkyAnimate(gameLayout);
+                chaseMode.pinkyAnimate(gameLayout);
+
                 gameMechanics.chaseModeTimer();
             }
 
 
-            if (inScaredMode) {
-                scaredMode.ghostAnimate(gameLayout);
-                gameMechanics.eatGhost(gameLayout);
+            if (inScaredModeBlinky) {
+                scaredMode.blinkyAnimate(gameLayout);
+                scaredMode.pinkyAnimate(gameLayout);
+
             }
 
 

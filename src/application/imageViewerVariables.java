@@ -64,8 +64,11 @@ public class imageViewerVariables {
         }
     }
 
-    //Setting the image view
-    public static ImageView viewScared = new ImageView(scared);
+    //Setting the image views
+    public static ImageView viewScaredBlinky = new ImageView(scared);
+    public static ImageView viewScaredPinky = new ImageView(scared);
+    public static ImageView viewScaredInky = new ImageView(scared);
+    public static ImageView viewScaredClyde = new ImageView(scared);
 
 
     //::::::::::: Pink Ghost (Pinky) GIF :::::::::::\\

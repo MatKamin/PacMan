@@ -74,7 +74,8 @@ public class gameMechanics {
     static int delayFruit = 1;
 
     public static boolean inChaseMode = false;
-    public static boolean inScaredMode = false;
+    public static boolean inScaredModeBlinky = false;
+    public static boolean inScaredModePinky = false;
     public static boolean inScatterMode = true;
 
     public static int scatterTime = 7000;
@@ -187,7 +188,7 @@ public class gameMechanics {
 
         inScatterMode = true;
         inChaseMode = false;
-        inScaredMode = false;
+        inScaredModeBlinky = false;
     }
 
 
@@ -384,7 +385,7 @@ public class gameMechanics {
         viewPinky.setFitHeight(characterHeight);
         viewPinky.setFitWidth(characterWidth);
 
-        if (!inScaredMode) {
+        if (!inScaredModeBlinky) {
             gameLayout.getChildren().addAll(viewBlinky, viewPinky);
         }
     }
@@ -431,7 +432,7 @@ public class gameMechanics {
             collectFruitOnce = true;
             inScatterMode = true;
             inChaseMode = false;
-            inScaredMode = false;
+            inScaredModeBlinky = false;
 
             mapReader.readMap();
             drawNextMap(gameLayout);
@@ -512,7 +513,7 @@ public class gameMechanics {
             gameLayout.getChildren().add(viewPacmanDown);
         }
         gameLayout.getChildren().remove(viewBlinky);
-        if (!inScaredMode) {
+        if (!inScaredModeBlinky) {
             gameLayout.getChildren().add(viewBlinky);
         }
     }
@@ -542,21 +543,22 @@ public class gameMechanics {
         powerPillCount--;
         score += 50;        // A Power Pill gives 50 points
         inChaseMode = false;
-        pacmanPowerMode(gameLayout);
+        pacmanPowerModeBlinky(gameLayout);
+        pacmanPowerModePinky(gameLayout);
         clearer(gameLayout);
     }
 
 
-    private static void pacmanPowerMode(Group gameLayout) {
+    private static void pacmanPowerModeBlinky(Group gameLayout) {
         gameLayout.getChildren().remove(viewBlinky);
-        inScaredMode = true;
+        inScaredModeBlinky = true;
         // Timer
         new java.util.Timer().schedule(
                 new java.util.TimerTask() {
                     @Override
                     public void run() {
-                        if (inScaredMode) {
-                            inScaredMode = false;
+                        if (inScaredModeBlinky) {
+                            inScaredModeBlinky = false;
                             inChaseMode = true;
                         }
                     }
@@ -566,12 +568,29 @@ public class gameMechanics {
     }
 
 
-    public static void scatterModeTimer() {
-        Timer t = new Timer();
+    private static void pacmanPowerModePinky(Group gameLayout) {
+        gameLayout.getChildren().remove(viewPinky);
+        inScaredModePinky = true;
+        // Timer
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        if (inScaredModePinky) {
+                            inScaredModePinky = false;
+                            inChaseMode = true;
+                        }
+                    }
+                },
+                scaredTime
+        );
+    }
 
+    static Timer t2 = new Timer();
+    public static void scatterModeTimer() {
         inScatterMode = true;
 
-        t.schedule(
+        t2.schedule(
                 new java.util.TimerTask() {
                     @Override
                     public void run() {
@@ -583,60 +602,42 @@ public class gameMechanics {
                                 chaseModeTimer();
                             }
                         }
-                        t.cancel();
+                        t2.cancel();
+                        t2 = new Timer();
                     }
                 },
                 scatterTime
         );
     }
 
-
+    static Timer t1 = new Timer();
     public static void chaseModeTimer() {
-        Timer t = new Timer();
         inChaseMode = true;
 
-        t.schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        if (inChaseMode) {
-                            if (scatterCount < 4) {
-                                inChaseMode = false;
-                                System.out.println("SWITCHED TO SCATTER MODE AFTER " + chaseTime + "ms          " + chaseCount);
-                                chaseCount++;
-                                scatterModeTimer();
+        if (chaseCount != 3) {
+            t1.schedule(
+                    new java.util.TimerTask() {
+                        @Override
+                        public void run() {
+                            if (inChaseMode) {
+                                if (scatterCount < 4) {
+                                    inChaseMode = false;
+                                    System.out.println("SWITCHED TO SCATTER MODE AFTER " + chaseTime + "ms          " + chaseCount);
+                                    chaseCount++;
+                                    scatterModeTimer();
+                                }
                             }
+                            t1.cancel();
+                            t1 = new Timer();
                         }
-                        t.cancel();
-                    }
-                },
-                chaseTime
-        );
-    }
-
-
-    public static void eatGhost(Group gameLayout) {
-        if (!inScaredMode) {
-            return;
-        }
-
-        if (pacmanColumn == blinkyColumn && pacmanRow == blinkyRow) {
-            inScaredMode = false;
-            inChaseMode = true;
-
-            blinkyXPos = (widthOneBlock * blinkyColumnStart);
-            blinkyYPos = (heightOneBlock * blinkyRowStart);
-            blinkyColumn = blinkyColumnStart;
-            blinkyRow = blinkyRowStart;
-
-            viewBlinky.setX(blinkyXPos);
-            viewBlinky.setY(blinkyYPos);
-
-            gameLayout.getChildren().remove(viewScared);
-
-            score += 200;
+                    },
+                    chaseTime
+            );
         }
     }
+
+
+
 
 
     /**

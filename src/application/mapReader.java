@@ -34,6 +34,8 @@ public class mapReader {
 
     static double pinkyRow;
     static double pinkyColumn;
+    static double pinkyColumnStart;
+    static double pinkyRowStart;
     static double pinkyXPos;
     static double pinkyYPos;
 
