@@ -587,6 +587,7 @@ public class gameMechanics {
     }
 
     static Timer t2 = new Timer();
+
     public static void scatterModeTimer() {
         inScatterMode = true;
 
@@ -611,6 +612,7 @@ public class gameMechanics {
     }
 
     static Timer t1 = new Timer();
+
     public static void chaseModeTimer() {
         inChaseMode = true;
 
@@ -635,9 +637,6 @@ public class gameMechanics {
             );
         }
     }
-
-
-
 
 
     /**
