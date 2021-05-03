@@ -85,7 +85,7 @@ public class imageViewerVariables {
     }
 
     //Setting the image view
-    static ImageView viewPinky = new ImageView(pinky);
+    public static ImageView viewPinky = new ImageView(pinky);
 
 
     //::::::::::: DOTS :::::::::::\\

@@ -3,7 +3,10 @@ package application.canvas;
 
 //---------------------------------IMPORTS---------------------------------\\
 
-import application.*;
+import application.ai.chaseMode;
+import application.gameMechanics;
+import application.ai.scaredMode;
+import application.ai.scatterMode;
 import javafx.scene.Group;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -19,6 +22,8 @@ import static application.mapReader.blockCountHorizontally;
 public class gameCanvas {
 
 
+
+
     //--------------------------------------------GAME CANVAS--------------------------------------------\\
 
     /**
@@ -27,6 +32,7 @@ public class gameCanvas {
      * @param gameLayout Group Layout of the Game Window
      */
     public static void play(GraphicsContext gc, Group gameLayout) {
+
 
         //::::::::::: Background :::::::::::\\
 
@@ -73,8 +79,8 @@ public class gameCanvas {
             }
 
             if (inScatterMode) {
-                scatterMode.blinkyAnimate(gameLayout);
-                scatterMode.pinkyAnimate(gameLayout);
+                scatterMode.ghostAnimate(gameLayout, "blinky");
+                scatterMode.ghostAnimate(gameLayout, "pinky");
 
                 gameMechanics.scatterModeTimer();
             }
@@ -86,17 +92,17 @@ public class gameCanvas {
             }
 
             if (inChaseMode) {
-                chaseMode.blinkyAnimate(gameLayout);
-                chaseMode.pinkyAnimate(gameLayout);
-
+                chaseMode.ghostAnimate(gameLayout, "blinky");
+                chaseMode.ghostAnimate(gameLayout, "pinky");
                 gameMechanics.chaseModeTimer();
             }
 
 
             if (inScaredModeBlinky) {
-                scaredMode.blinkyAnimate(gameLayout);
-                scaredMode.pinkyAnimate(gameLayout);
-
+                scaredMode.ghostAnimate(gameLayout, "blinky");
+            }
+            if (inScaredModePinky) {
+                scaredMode.ghostAnimate(gameLayout, "pinky");
             }
 
 

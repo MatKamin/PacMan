@@ -25,19 +25,19 @@ public class mapReader {
     static double pacmanXPosStarting;
     static double pacmanYPosStarting;
 
-    static double blinkyRow;
-    static double blinkyColumn;
-    static double blinkyColumnStart;
-    static double blinkyRowStart;
-    static double blinkyXPos;
-    static double blinkyYPos;
+    public static double blinkyRow;
+    public static double blinkyColumn;
+    public static double blinkyColumnStart;
+    public static double blinkyRowStart;
+    public static double blinkyXPos;
+    public static double blinkyYPos;
 
-    static double pinkyRow;
-    static double pinkyColumn;
-    static double pinkyColumnStart;
-    static double pinkyRowStart;
-    static double pinkyXPos;
-    static double pinkyYPos;
+    public static double pinkyRow;
+    public static double pinkyColumn;
+    public static double pinkyColumnStart;
+    public static double pinkyRowStart;
+    public static double pinkyXPos;
+    public static double pinkyYPos;
 
     static int spawningFruitColumn = 14;
     static int spawningFruitRow = 21;
@@ -106,6 +106,8 @@ public class mapReader {
                                 pinkyYPos = heightOneBlock * row;
                                 pinkyRow = row;
                                 pinkyColumn = columnCounter;
+                                pinkyColumnStart = columnCounter;
+                                pinkyRowStart = row;
                                 powerPills[columnCounter][row] = false;
                                 dots[columnCounter][row] = false;
                                 notAllowedBox[columnCounter][row] = false;

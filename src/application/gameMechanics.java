@@ -37,7 +37,7 @@ public class gameMechanics {
 
     static boolean[][] dots = new boolean[blockCountHorizontally + 1][blockCountVertically];
     static boolean[][] powerPills = new boolean[blockCountHorizontally + 1][blockCountVertically];
-    static boolean[][] notAllowedBox = new boolean[blockCountHorizontally + 1][blockCountVertically];
+    public static boolean[][] notAllowedBox = new boolean[blockCountHorizontally + 1][blockCountVertically];
 
     static int dotCount = 0;
     static int dotCountAtStart = 0;
