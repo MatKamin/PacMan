@@ -25,7 +25,7 @@ public class gameMechanics {
     public static int score = 0;    // player score
     public static int highscore;    // Highest score
 
-    private static final int maxLevel = 2;
+    private static final int maxMaps = 2;
 
     static String mapFile = "resources/levels/level1.txt";
 
@@ -242,7 +242,7 @@ public class gameMechanics {
             for (int i = 1; i <= lifesCounter; i++) {
                 viewLifes = new ImageView(lifes);
                 viewLifes.setX(i * (widthOneBlock + 10));
-                viewLifes.setY(blockCountVertically * heightOneBlock);
+                viewLifes.setY((blockCountVertically - 1)* heightOneBlock);
                 viewLifes.setFitWidth(widthOneBlock);
                 viewLifes.setFitHeight(heightOneBlock);
                 gameLayout.getChildren().addAll(viewLifes);
@@ -267,7 +267,7 @@ public class gameMechanics {
             for (int i = 0; i < levelCounter; i++) {
                 viewCherry = new ImageView(cherry);
                 viewCherry.setX((blockCountHorizontally - i) * widthOneBlock);
-                viewCherry.setY(blockCountVertically * heightOneBlock);
+                viewCherry.setY((blockCountVertically - 1) * heightOneBlock);
                 viewCherry.setFitWidth(widthOneBlock);
                 viewCherry.setFitHeight(heightOneBlock);
                 gameLayout.getChildren().remove(viewCherry);
@@ -409,15 +409,16 @@ public class gameMechanics {
      */
 
     static int mapNumber = 0;
+    static int maxLevel = 255;
 
     public static void levelUp(Group gameLayout) {
         if (dotCount == 0 && powerPillCount == 0) nextLevel = true;
         if (nextLevel) {
             levelCounter++;
             mapNumber++;
-            if (mapNumber > maxLevel) mapNumber = 1;
+            if (levelCounter == maxLevel) return;
+            if (mapNumber > maxMaps) mapNumber = 1;
             mapFile = "resources/levels/level" + mapNumber + ".txt";
-
             removeMap(gameLayout);
             gameLayout.getChildren().removeAll(viewBlinky, viewPinky);
             nextLevel = false;
@@ -456,7 +457,6 @@ public class gameMechanics {
 
             mapReader.readMap();
             drawNextMap(gameLayout);
-            return;
         }
     }
 

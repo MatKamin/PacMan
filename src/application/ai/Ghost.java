@@ -68,23 +68,27 @@ public class Ghost {
     public static void scatterModeTimer() {
         inScatterMode = true;
 
-        scatterTimer.schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        if (inScatterMode && !inScaredModeBlinky && !inScaredModePinky) {
-                            if (chaseCount < 5) {
-                                inScatterMode = false;
-                                scatterCount++;
-                                chaseModeTimer();
+        try {
+            scatterTimer.schedule(
+                    new java.util.TimerTask() {
+                        @Override
+                        public void run() {
+                            if (inScatterMode && !inScaredModeBlinky && !inScaredModePinky) {
+                                if (chaseCount < 5) {
+                                    inScatterMode = false;
+                                    scatterCount++;
+                                    chaseModeTimer();
+                                }
                             }
+                            scatterTimer.cancel();
+                            scatterTimer = new Timer();
                         }
-                        scatterTimer.cancel();
-                        scatterTimer = new Timer();
-                    }
-                },
-                scatterTime
-        );
+                    },
+                    scatterTime
+            );
+        } catch (IllegalStateException a){
+            a.printStackTrace();
+        }
     }
 
     public static Timer chaseTimer = new Timer();
@@ -93,23 +97,28 @@ public class Ghost {
         inChaseMode = true;
 
         if (chaseCount != 3) {
-            chaseTimer.schedule(
-                    new java.util.TimerTask() {
-                        @Override
-                        public void run() {
-                            if (inChaseMode && !inScaredModeBlinky && !inScaredModePinky) {
-                                if (scatterCount < 4) {
-                                    inChaseMode = false;
-                                    chaseCount++;
-                                    scatterModeTimer();
+            try {
+                chaseTimer.schedule(
+                        new java.util.TimerTask() {
+                            @Override
+                            public void run() {
+                                if (inChaseMode && !inScaredModeBlinky && !inScaredModePinky) {
+                                    if (scatterCount < 4) {
+                                        inChaseMode = false;
+                                        chaseCount++;
+                                        scatterModeTimer();
+                                    }
                                 }
+                                chaseTimer.cancel();
+                                chaseTimer = new Timer();
                             }
-                            chaseTimer.cancel();
-                            chaseTimer = new Timer();
-                        }
-                    },
-                    chaseTime
-            );
+                        },
+                        chaseTime
+                );
+            }catch (IllegalStateException a){
+                a.printStackTrace();
+            }
+
         }
     }
 
