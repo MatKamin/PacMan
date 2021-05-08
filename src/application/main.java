@@ -34,7 +34,10 @@ import javafx.util.Duration;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Timer;
 
+import static application.ai.Ghost.chaseTimer;
+import static application.ai.Ghost.scatterTimer;
 import static application.gameMechanics.*;
 import static application.imageViewerVariables.*;
 import static application.mapReader.blockCountHorizontally;
@@ -585,6 +588,8 @@ public class main extends Application {
 
                 isPacmanStartingPosVisible = false;
                 tl.stop();    // Stop Timeline/Animation
+                chaseTimer.cancel();
+                scatterTimer.cancel();
 
 
                 //::::::::::: Pause Menu :::::::::::\\
@@ -601,6 +606,8 @@ public class main extends Application {
                     if (el.getCode() == KeyCode.P) {      // If "P" pressed again
 
                         tl.play();      // Continue Timeline/Animation
+                        chaseTimer = new Timer();
+                        scatterTimer = new Timer();
 
                         controls(primaryStage);      // Recursion -> Check if pressed again
                     }

@@ -1,11 +1,9 @@
 package application.ai;
 
-import application.ai.Ghost;
 import javafx.scene.Group;
 
 import static application.imageViewerVariables.*;
 import static application.main.*;
-import static application.main.heightOneBlock;
 import static application.mapReader.*;
 
 public class scatterMode extends Ghost {
@@ -15,6 +13,7 @@ public class scatterMode extends Ghost {
      * TODO: Ghost AI remaining
      */
     public static void ghostAnimate(Group gameLayout, String ghost) {
+        scatterModeTimer();
         if (ghost.equals("blinky")) {
             gameLayout.getChildren().remove(viewScaredBlinky);
             gameLayout.getChildren().remove(viewBlinky);

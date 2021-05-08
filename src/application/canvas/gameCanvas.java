@@ -4,9 +4,9 @@ package application.canvas;
 //---------------------------------IMPORTS---------------------------------\\
 
 import application.ai.chaseMode;
-import application.gameMechanics;
 import application.ai.scaredMode;
 import application.ai.scatterMode;
+import application.gameMechanics;
 import javafx.scene.Group;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -79,10 +79,12 @@ public class gameCanvas {
             }
 
             if (inScatterMode) {
-                scatterMode.ghostAnimate(gameLayout, "blinky");
-                scatterMode.ghostAnimate(gameLayout, "pinky");
-
-                gameMechanics.scatterModeTimer();
+                if (!inScaredModePinky) {
+                    scatterMode.ghostAnimate(gameLayout, "pinky");
+                }
+                if (!inScaredModeBlinky) {
+                    scatterMode.ghostAnimate(gameLayout, "blinky");
+                }
             }
 
 
@@ -94,7 +96,6 @@ public class gameCanvas {
             if (inChaseMode) {
                 chaseMode.ghostAnimate(gameLayout, "blinky");
                 chaseMode.ghostAnimate(gameLayout, "pinky");
-                gameMechanics.chaseModeTimer();
             }
 
 

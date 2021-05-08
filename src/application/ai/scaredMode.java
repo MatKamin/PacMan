@@ -55,7 +55,9 @@ public class scaredMode extends Ghost {
             }
             if (pacmanColumn == blinkyColumn && pacmanRow == blinkyRow) {
                 inScaredModeBlinky = false;
-                inChaseMode = true;
+                inScatterMode = true;
+                scatterCount --;
+                chaseCount --;
 
                 blinkyXPos = (widthOneBlock * blinkyColumnStart);
                 blinkyYPos = (heightOneBlock * blinkyRowStart);
@@ -78,7 +80,9 @@ public class scaredMode extends Ghost {
             }
             if (pacmanColumn == pinkyColumn && pacmanRow == pinkyRow) {
                 inScaredModePinky = false;
-                inChaseMode = true;
+                inScatterMode = true;
+                scatterCount --;
+                chaseCount --;
 
                 pinkyXPos = (widthOneBlock * pinkyColumnStart);
                 pinkyYPos = (heightOneBlock * pinkyRowStart);

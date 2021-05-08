@@ -12,6 +12,7 @@ public class chaseMode extends Ghost {
 
 
     public static void ghostAnimate(Group gameLayout, String ghost) {
+        chaseModeTimer();
         if (ghost.equals("blinky")) {
             gameLayout.getChildren().remove(viewScaredBlinky);
             gameLayout.getChildren().remove(viewBlinky);

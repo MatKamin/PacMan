@@ -1,6 +1,8 @@
 package application.ai;
 
-import static application.gameMechanics.notAllowedBox;
+import java.util.Timer;
+
+import static application.gameMechanics.*;
 import static application.main.widthOneBlock;
 import static application.mapReader.*;
 
@@ -57,6 +59,59 @@ public class Ghost {
     static double distance4pinky = 10000;
 
 
+
+
+
+
+    public static Timer scatterTimer = new Timer();
+
+    public static void scatterModeTimer() {
+        inScatterMode = true;
+
+        scatterTimer.schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        if (inScatterMode) {
+                            if (chaseCount < 5) {
+                                inScatterMode = false;
+                                scatterCount++;
+                                chaseModeTimer();
+                            }
+                        }
+                        scatterTimer.cancel();
+                        scatterTimer = new Timer();
+                    }
+                },
+                scatterTime
+        );
+    }
+
+    public static Timer chaseTimer = new Timer();
+
+    public static void chaseModeTimer() {
+        inChaseMode = true;
+
+        if (chaseCount != 3) {
+            chaseTimer.schedule(
+                    new java.util.TimerTask() {
+                        @Override
+                        public void run() {
+                            if (inChaseMode) {
+                                if (scatterCount < 4) {
+                                    inChaseMode = false;
+                                    chaseCount++;
+                                    scatterModeTimer();
+                                }
+                            }
+                            chaseTimer.cancel();
+                            chaseTimer = new Timer();
+                        }
+                    },
+                    chaseTime
+            );
+        }
+    }
 
 
 

@@ -8,7 +8,6 @@ import javafx.scene.image.ImageView;
 
 import java.io.*;
 import java.util.Scanner;
-import java.util.Timer;
 import java.util.regex.Pattern;
 
 import static application.imageViewerVariables.*;
@@ -189,6 +188,9 @@ public class gameMechanics {
         inScatterMode = true;
         inChaseMode = false;
         inScaredModeBlinky = false;
+
+        scatterCount = 0;
+        chaseCount = 0;
     }
 
 
@@ -434,6 +436,9 @@ public class gameMechanics {
             inChaseMode = false;
             inScaredModeBlinky = false;
 
+            scatterCount = 0;
+            chaseCount = 0;
+
             mapReader.readMap();
             drawNextMap(gameLayout);
         }
@@ -584,58 +589,6 @@ public class gameMechanics {
                 },
                 scaredTime
         );
-    }
-
-    static Timer t2 = new Timer();
-
-    public static void scatterModeTimer() {
-        inScatterMode = true;
-
-        t2.schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        if (inScatterMode) {
-                            if (chaseCount < 5) {
-                                inScatterMode = false;
-                                System.out.println("SWITCHED TO CHASE MODE AFTER: " + scatterTime + "ms                " + scatterCount);
-                                scatterCount++;
-                                chaseModeTimer();
-                            }
-                        }
-                        t2.cancel();
-                        t2 = new Timer();
-                    }
-                },
-                scatterTime
-        );
-    }
-
-    static Timer t1 = new Timer();
-
-    public static void chaseModeTimer() {
-        inChaseMode = true;
-
-        if (chaseCount != 3) {
-            t1.schedule(
-                    new java.util.TimerTask() {
-                        @Override
-                        public void run() {
-                            if (inChaseMode) {
-                                if (scatterCount < 4) {
-                                    inChaseMode = false;
-                                    System.out.println("SWITCHED TO SCATTER MODE AFTER " + chaseTime + "ms          " + chaseCount);
-                                    chaseCount++;
-                                    scatterModeTimer();
-                                }
-                            }
-                            t1.cancel();
-                            t1 = new Timer();
-                        }
-                    },
-                    chaseTime
-            );
-        }
     }
 
 
