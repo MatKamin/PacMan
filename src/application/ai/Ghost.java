@@ -72,7 +72,7 @@ public class Ghost {
                 new java.util.TimerTask() {
                     @Override
                     public void run() {
-                        if (inScatterMode) {
+                        if (inScatterMode && !inScaredModeBlinky && !inScaredModePinky) {
                             if (chaseCount < 5) {
                                 inScatterMode = false;
                                 scatterCount++;
@@ -97,7 +97,7 @@ public class Ghost {
                     new java.util.TimerTask() {
                         @Override
                         public void run() {
-                            if (inChaseMode) {
+                            if (inChaseMode && !inScaredModeBlinky && !inScaredModePinky) {
                                 if (scatterCount < 4) {
                                     inChaseMode = false;
                                     chaseCount++;

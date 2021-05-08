@@ -1,5 +1,6 @@
 package application.ai;
 
+import application.ai.Ghost;
 import javafx.scene.Group;
 
 import static application.gameMechanics.pacmanColumn;

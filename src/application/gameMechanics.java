@@ -34,9 +34,9 @@ public class gameMechanics {
 
     static boolean firstRead = true;
 
-    static boolean[][] dots = new boolean[blockCountHorizontally + 1][blockCountVertically];
-    static boolean[][] powerPills = new boolean[blockCountHorizontally + 1][blockCountVertically];
-    public static boolean[][] notAllowedBox = new boolean[blockCountHorizontally + 1][blockCountVertically];
+    static boolean[][] dots = new boolean[blockCountHorizontally + 2][blockCountVertically + 1];
+    static boolean[][] powerPills = new boolean[blockCountHorizontally + 2][blockCountVertically + 1];
+    public static boolean[][] notAllowedBox = new boolean[blockCountHorizontally + 2][blockCountVertically + 1];
 
     static int dotCount = 0;
     static int dotCountAtStart = 0;
@@ -159,6 +159,7 @@ public class gameMechanics {
         lifesCounter = 3;
         lifesAtLevelStart = 3;
         levelCounter = 0;
+        mapNumber = 0;
         wallCount = 0;
         dotCount = 0;
         dotCountAtStart = 0;
@@ -181,7 +182,7 @@ public class gameMechanics {
         fruitSpawned2 = false;
         getRandomLifespan = true;
         collectFruitOnce = true;
-        mapReader.readMap();
+        application.mapReader.readMap();
         nextLevel = true;
         isPacmanStartingPosVisible = true;
 
@@ -191,6 +192,7 @@ public class gameMechanics {
 
         scatterCount = 0;
         chaseCount = 0;
+        drawLevelCounterOnce = true;
     }
 
 
@@ -255,18 +257,25 @@ public class gameMechanics {
      *
      * @param gameLayout Group Layout of the Game window
      */
+
+    static boolean drawLevelCounterOnce = true;
+
     public static void drawLevelCounter(Group gameLayout) {
         // TODO: More Level Icons
 
-        if (levelCounter != startingLevel) {
-            viewCherry = new ImageView(cherry);
-            viewCherry.setX((blockCountHorizontally - 2) * widthOneBlock);
-            viewCherry.setY(blockCountVertically * heightOneBlock);
-            viewCherry.setFitWidth(widthOneBlock);
-            viewCherry.setFitHeight(heightOneBlock);
-            gameLayout.getChildren().remove(viewCherry);
-            gameLayout.getChildren().add(viewCherry);
+        if (drawLevelCounterOnce) {
+            for (int i = 0; i < levelCounter; i++) {
+                viewCherry = new ImageView(cherry);
+                viewCherry.setX((blockCountHorizontally - i) * widthOneBlock);
+                viewCherry.setY(blockCountVertically * heightOneBlock);
+                viewCherry.setFitWidth(widthOneBlock);
+                viewCherry.setFitHeight(heightOneBlock);
+                gameLayout.getChildren().remove(viewCherry);
+                gameLayout.getChildren().add(viewCherry);
+            }
+            drawLevelCounterOnce = false;
         }
+
     }
 
 
@@ -398,12 +407,16 @@ public class gameMechanics {
      *
      * @param gameLayout Group Layout of the Game window
      */
+
+    static int mapNumber = 0;
+
     public static void levelUp(Group gameLayout) {
-        if (dotCount == 0) nextLevel = true;
+        if (dotCount == 0 && powerPillCount == 0) nextLevel = true;
         if (nextLevel) {
             levelCounter++;
-            if (levelCounter > maxLevel) return;
-            mapFile = "resources/levels/level" + levelCounter + ".txt";
+            mapNumber++;
+            if (mapNumber > maxLevel) mapNumber = 1;
+            mapFile = "resources/levels/level" + mapNumber + ".txt";
 
             removeMap(gameLayout);
             gameLayout.getChildren().removeAll(viewBlinky, viewPinky);
@@ -439,8 +452,11 @@ public class gameMechanics {
             scatterCount = 0;
             chaseCount = 0;
 
+            drawLevelCounterOnce = true;
+
             mapReader.readMap();
             drawNextMap(gameLayout);
+            return;
         }
     }
 
@@ -564,7 +580,7 @@ public class gameMechanics {
                     public void run() {
                         if (inScaredModeBlinky) {
                             inScaredModeBlinky = false;
-                            inChaseMode = true;
+                            inScatterMode = true;
                         }
                     }
                 },
@@ -583,7 +599,7 @@ public class gameMechanics {
                     public void run() {
                         if (inScaredModePinky) {
                             inScaredModePinky = false;
-                            inChaseMode = true;
+                            inScatterMode = true;
                         }
                     }
                 },

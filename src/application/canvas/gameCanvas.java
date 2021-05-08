@@ -110,24 +110,24 @@ public class gameCanvas {
 
             //::::::::::: Pac-Man Movement :::::::::::\\
 
-            gameMechanics.pacmanMove(gameLayout);                   // Allows moving
+            pacmanMove(gameLayout);                   // Allows moving
 
-            gameMechanics.collectPoints(gameLayout);                // Allows collecting points
-            gameMechanics.collectPowerPill(gameLayout);             // Allows collecting Power Pills
+            collectPoints(gameLayout);                // Allows collecting points
+            collectPowerPill(gameLayout);             // Allows collecting Power Pills
 
-            gameMechanics.spawnFruit(gameLayout);                   // Spawns Fruit
-            gameMechanics.collectFruit(gameLayout);                 // Allows collecting Fruit & makes it disappear after some time
+            spawnFruit(gameLayout);                   // Spawns Fruit
+            collectFruit(gameLayout);                 // Allows collecting Fruit & makes it disappear after some time
+            levelUp(gameLayout);                      // Level Up
+            drawLifesCounter(gameLayout);             // Draws Life Counter in UI
+            drawLevelCounter(gameLayout);             // Draws Level Counter in UI
 
-            gameMechanics.drawLifesCounter(gameLayout);                    // Draws Life Counter in UI
-            gameMechanics.drawLevelCounter(gameLayout);             // Draws Level Counter in UI
 
-            gameMechanics.levelUp(gameLayout);                      // Level Up
 
 
         } else {
 
             // TODO
-            gameMechanics.resetGame(gameLayout);
+            resetGame(gameLayout);
 
         }
     }

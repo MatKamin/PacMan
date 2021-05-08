@@ -429,7 +429,7 @@ public class main extends Application {
     public void deleteAccount(Text deleteButton, Stage currentStage) {
         deleteButton.setOnMouseClicked(e -> {
             isLoggedIn = false;
-            UserDataStore.getInstance().deleteUser(validUsername);
+            application.UserDataStore.getInstance().deleteUser(validUsername);
             try {
                 start(currentStage);
             } catch (Exception exception) {
@@ -616,7 +616,7 @@ public class main extends Application {
                     if (el.getCode() == KeyCode.ESCAPE) {         // If "Escape" pressed
 
                         try {
-                            gameMechanics.resetGame(gameLayout);
+                            resetGame(gameLayout);
                             isPacmanStartingPosVisible = true;
                             gameStarted = false;
                             primaryStage.setScene(menuScene);
@@ -638,7 +638,7 @@ public class main extends Application {
             if (e.getCode() == KeyCode.ESCAPE) {          // If "Escape" pressed
 
                 try {
-                    gameMechanics.resetGame(gameLayout);
+                    resetGame(gameLayout);
                     isPacmanStartingPosVisible = true;
                     gameStarted = false;
                     primaryStage.setScene(menuScene);
@@ -820,12 +820,12 @@ public class main extends Application {
                 return;
             }
             // Not matching username regexp
-            if (!gameMechanics.isValidNickname(nameField.getText())) {
+            if (!isValidNickname(nameField.getText())) {
                 showAlert(gridPane.getScene().getWindow(),
                         "Not allowed Username!");
                 return;
             }
-            if (UserDataStore.getInstance().isUsernameTaken(nameField.getText().toUpperCase())) {
+            if (application.UserDataStore.getInstance().isUsernameTaken(nameField.getText().toUpperCase())) {
                 showAlert(gridPane.getScene().getWindow(),
                         "Username Taken!");
                 return;
@@ -850,7 +850,7 @@ public class main extends Application {
             }
 
             try {
-                UserDataStore.getInstance().registerUser(nameField.getText().toUpperCase(), passwordField.getText());
+                application.UserDataStore.getInstance().registerUser(nameField.getText().toUpperCase(), passwordField.getText());
             } catch (IOException e) {
                 System.out.println("Registration Error");
                 e.printStackTrace();

@@ -9,7 +9,7 @@ import java.util.List;
 
 import static application.TrivialEchoServer.ClientNicknames;
 import static application.TrivialEchoServer.connections;
-import static application.main.*;
+import static application.main.myLaunch;
 
 public class TrivialEchoServer {
 
