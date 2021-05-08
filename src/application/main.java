@@ -21,6 +21,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.effect.Bloom;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -44,6 +45,7 @@ import static application.mapReader.blockCountHorizontally;
 import static application.mapReader.blockCountVertically;
 
 
+@SuppressWarnings("ALL")
 public class main extends Application {
 
     //---------------------------------VARIABLES---------------------------------\\
@@ -117,7 +119,7 @@ public class main extends Application {
         settingsScene = new Scene(settingsLayout, width, height);
 
         // Adds Canvas to Layout
-        settingsLayout.getChildren().addAll(canvasSettings, logoffButton, deleteAccountButton);
+        settingsLayout.getChildren().addAll(canvasSettings, logoffButton, deleteAccountButton, getScheme);
     }
 
     private void createLogoffButton(){
@@ -129,6 +131,22 @@ public class main extends Application {
         // Option Label Position
         logoffButton.setLayoutY(height - 50);
         logoffButton.setLayoutX(50);
+    }
+
+    private static ComboBox getScheme;
+    private void createGetSchemeButton(){
+        getScheme = new ComboBox();
+
+        getScheme.getItems().add("Pac-Man");
+        getScheme.getItems().add("Mrs. Pac-Man");
+
+        getScheme.setLayoutX(width/8);
+        getScheme.setLayoutY(height/6);
+
+        getScheme.setPrefWidth(250);
+        getScheme.setPrefHeight(40);
+
+        getScheme.setPromptText("SELECT SCHEME");
     }
 
 
@@ -339,7 +357,10 @@ public class main extends Application {
 
         createLogoffButton();
         createDeleteAccountButton();
+        createGetSchemeButton();
         createSettingsWindow();
+        settingsScene.getStylesheets().add("file:resources/css/settings.css");
+
 
         //------------------------------------------------------ HIGHSCORE WINDOW ------------------------------------------------------\\
 
@@ -393,6 +414,26 @@ public class main extends Application {
                     gameStarted = false;
                 } catch (Exception exception) {
                     exception.printStackTrace();
+                }
+            }
+        });
+
+        getScheme.setOnAction((event) -> {
+            int selectedIndex = getScheme.getSelectionModel().getSelectedIndex();
+
+            switch (selectedIndex) {
+                case 0 -> {
+                    viewPacmanLeft = new ImageView(pacmanLeft);
+                    viewPacmanRight = new ImageView(pacmanRight);
+                    viewPacmanUp = new ImageView(pacmanUp);
+                    viewPacmanDown = new ImageView(pacmanDown);
+
+                }
+                case 1 -> {
+                    viewPacmanLeft = new ImageView(MrspacmanLeft);
+                    viewPacmanRight = new ImageView(MrspacmanRight);
+                    viewPacmanUp = new ImageView(MrspacmanUp);
+                    viewPacmanDown = new ImageView(MrspacmanDown);
                 }
             }
         });

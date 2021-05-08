@@ -350,6 +350,72 @@ public class imageViewerVariables {
     //Setting the image view
     public static ImageView viewPacmanLeft = new ImageView(pacmanLeft);
 
+
+
+
+
+
+
+
+
+
+    //::::::::::: Mrs. Pac-Man RIGHT :::::::::::\\
+
+    //Creating an image
+    public static Image MrspacmanRight;
+
+    static {
+        try {
+            MrspacmanRight = new Image(new FileInputStream("resources/characters/mrspacmanRight.gif"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    //::::::::::: Pac-Man UP :::::::::::\\
+
+    //Creating an image
+    public static Image MrspacmanUp;
+
+    static {
+        try {
+            MrspacmanUp = new Image(new FileInputStream("resources/characters/mrspacmanUp.gif"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    //::::::::::: Pac-Man DOWN :::::::::::\\
+
+    //Creating an image
+    public static Image MrspacmanDown;
+
+    static {
+        try {
+            MrspacmanDown = new Image(new FileInputStream("resources/characters/mrspacmanDown.gif"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    //::::::::::: Pac-Man LEFT :::::::::::\\
+
+    //Creating an image
+    public static Image MrspacmanLeft;
+
+    static {
+        try {
+            MrspacmanLeft = new Image(new FileInputStream("resources/characters/mrspacmanLeft.gif"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 }
 
 
