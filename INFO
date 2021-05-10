@@ -1,3 +1,5 @@
 Known Bugs;
 
 1) You have to open the highscore window to save the highscore
+2) Clipping
+3) Wrong PacMan spawn pos. after exiting level 2
