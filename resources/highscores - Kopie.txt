@@ -1,0 +1,1 @@
+Mateusz,400,Jan,300,abc,200,hhh,20,geez,10,empty,0

@@ -104,6 +104,7 @@ public class main extends Application {
     private static Text logoffButton;
     private static Text deleteAccountButton;
 
+    public static boolean inPinkMode = false;
 
     private void createSettingsWindow(){
         // TODO: Settings
@@ -428,12 +429,15 @@ public class main extends Application {
                     viewPacmanUp = new ImageView(pacmanUp);
                     viewPacmanDown = new ImageView(pacmanDown);
 
+                    inPinkMode = false;
                 }
                 case 1 -> {
                     viewPacmanLeft = new ImageView(MrspacmanLeft);
                     viewPacmanRight = new ImageView(MrspacmanRight);
                     viewPacmanUp = new ImageView(MrspacmanUp);
                     viewPacmanDown = new ImageView(MrspacmanDown);
+
+                    inPinkMode = true;
                 }
             }
         });

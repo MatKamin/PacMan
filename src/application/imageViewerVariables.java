@@ -283,6 +283,94 @@ public class imageViewerVariables {
     }
 
 
+
+
+    //::::::::::: RAIL VERTICAL PINK :::::::::::\\
+
+    // Creating an image
+    static public Image railVerticalPink;
+
+    static {
+        try {
+            railVerticalPink = new Image(new FileInputStream("resources/mapAssets/railVerticalPink.png"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    //::::::::::: RAIL HORIZONTAL PINK :::::::::::\\
+
+    // Creating an image
+    static public Image railHorizontalPink;
+
+    static {
+        try {
+            railHorizontalPink = new Image(new FileInputStream("resources/mapAssets/railHorizontalPink.png"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    //::::::::::: RAIL UP RIGHT PINK :::::::::::\\
+
+    // Creating an image
+    static public Image railUpRightPink;
+
+    static {
+        try {
+            railUpRightPink = new Image(new FileInputStream("resources/mapAssets/railUpRightPink.png"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    //::::::::::: RAIL UP LEFT PINK :::::::::::\\
+
+    // Creating an image
+    static public Image railUpLeftPink;
+
+    static {
+        try {
+            railUpLeftPink = new Image(new FileInputStream("resources/mapAssets/railUpLeftPink.png"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    //::::::::::: RAIL RIGHT UP PINK :::::::::::\\
+
+    // Creating an image
+    static public Image railRightUpPink;
+
+    static {
+        try {
+            railRightUpPink = new Image(new FileInputStream("resources/mapAssets/railRightUpPink.png"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    //::::::::::: RAIL LEFT UP PINK :::::::::::\\
+
+    // Creating an image
+    static public Image railLeftUpPink;
+
+    static {
+        try {
+            railLeftUpPink = new Image(new FileInputStream("resources/mapAssets/railLeftUpPink.png"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
     //::::::::::: Pac-Man RIGHT :::::::::::\\
 
     //Creating an image
