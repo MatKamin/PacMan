@@ -13,7 +13,7 @@ import static application.main.clickURI;
 
 //---------------------------------CLASS---------------------------------\\
 
-public class sounds {
+public class sounds extends Thread{
 
 
     /**
