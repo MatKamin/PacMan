@@ -7,6 +7,7 @@ import application.ai.chaseMode;
 import application.ai.scaredMode;
 import application.ai.scatterMode;
 import application.gameMechanics;
+import application.sounds;
 import javafx.scene.Group;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;

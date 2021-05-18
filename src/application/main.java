@@ -44,7 +44,7 @@ import static application.gameMechanics.*;
 import static application.imageViewerVariables.*;
 import static application.mapReader.blockCountHorizontally;
 import static application.mapReader.blockCountVertically;
-import static application.sounds.sfxSoundsOn;
+import static application.sounds.*;
 
 
 @SuppressWarnings("ALL")
@@ -113,7 +113,9 @@ public class main extends Application {
     public static String clickURI = Paths.get(clickPath).toUri().toString();                      // Convert to URI
 
 
-    private void createSettingsWindow() {
+
+
+    private void createSettingsWindow(){
         // TODO: Settings
 
         // Canvas
@@ -130,7 +132,7 @@ public class main extends Application {
         settingsLayout.getChildren().addAll(canvasSettings, logoffButton, deleteAccountButton, exitButton, getScheme, getScheme2, getScheme3, getSFX, getScheme5, getScheme6);
     }
 
-    private void createLogoffButton() {
+    private void createLogoffButton(){
         // Label
         logoffButton = new Text("Log out");
         logoffButton.setStroke(Color.YELLOW);
@@ -142,15 +144,14 @@ public class main extends Application {
     }
 
     private static ComboBox getScheme;
-
-    private void createGetSchemeButton() {
+    private void createGetSchemeButton(){
         getScheme = new ComboBox();
 
         getScheme.getItems().add("Pac-Man");
         getScheme.getItems().add("Mrs. Pac-Man");
 
-        getScheme.setLayoutX(width / 8);
-        getScheme.setLayoutY(height / 6);
+        getScheme.setLayoutX(width/8);
+        getScheme.setLayoutY(height/6);
 
         getScheme.setPrefWidth(250);
         getScheme.setPrefHeight(40);
@@ -162,15 +163,14 @@ public class main extends Application {
 
 
     private static ComboBox getScheme2;
-
-    private void createGetSchemeButton2() {
+    private void createGetSchemeButton2(){
         getScheme2 = new ComboBox();
 
         getScheme2.getItems().add("X");
         getScheme2.getItems().add("X2");
 
-        getScheme2.setLayoutX(width / 8);
-        getScheme2.setLayoutY(height / 6 + (height / 6));
+        getScheme2.setLayoutX(width/8);
+        getScheme2.setLayoutY(height/6 + (height/6));
 
         getScheme2.setPrefWidth(250);
         getScheme2.setPrefHeight(40);
@@ -181,16 +181,16 @@ public class main extends Application {
     }
 
 
-    private static ComboBox getScheme3;
 
-    private void createGetSchemeButton3() {
+    private static ComboBox getScheme3;
+    private void createGetSchemeButton3(){
         getScheme3 = new ComboBox();
 
         getScheme3.getItems().add("ON");
         getScheme3.getItems().add("OFF");
 
-        getScheme3.setLayoutX(width / 8);
-        getScheme3.setLayoutY(height / 6 + (height / 6) * 2);
+        getScheme3.setLayoutX(width/8);
+        getScheme3.setLayoutY(height/6 + (height/6)*2);
 
         getScheme3.setPrefWidth(250);
         getScheme3.setPrefHeight(40);
@@ -201,16 +201,17 @@ public class main extends Application {
     }
 
 
-    private static ComboBox getSFX;
 
-    private void createGetSFX() {
+
+    private static ComboBox getSFX;
+    private void createGetSFX(){
         getSFX = new ComboBox();
 
         getSFX.getItems().add("ON");
         getSFX.getItems().add("OFF");
 
-        getSFX.setLayoutX(width / 8 + (width / 8) * 4);
-        getSFX.setLayoutY(height / 6);
+        getSFX.setLayoutX(width/8 + (width/8) * 4);
+        getSFX.setLayoutY(height/6);
 
         getSFX.setPrefWidth(250);
         getSFX.setPrefHeight(40);
@@ -221,16 +222,18 @@ public class main extends Application {
     }
 
 
-    private static ComboBox getScheme5;
 
-    private void createGetSchemeButton5() {
+
+
+    private static ComboBox getScheme5;
+    private void createGetSchemeButton5(){
         getScheme5 = new ComboBox();
 
         getScheme5.getItems().add("ON");
         getScheme5.getItems().add("OFF");
 
-        getScheme5.setLayoutX(width / 8 + (width / 8) * 4);
-        getScheme5.setLayoutY(height / 6 + (height / 6));
+        getScheme5.setLayoutX(width/8 + (width/8) * 4);
+        getScheme5.setLayoutY(height/6 + (height/6));
 
         getScheme5.setPrefWidth(250);
         getScheme5.setPrefHeight(40);
@@ -241,16 +244,17 @@ public class main extends Application {
     }
 
 
-    private static ComboBox getScheme6;
 
-    private void createGetSchemeButton6() {
+
+    private static ComboBox getScheme6;
+    private void createGetSchemeButton6(){
         getScheme6 = new ComboBox();
 
         getScheme6.getItems().add("Pac-Man");
         getScheme6.getItems().add("Mrs. Pac-Man");
 
-        getScheme6.setLayoutX(width / 8 + (width / 8) * 4);
-        getScheme6.setLayoutY(height / 6 + (height / 6) * 2);
+        getScheme6.setLayoutX(width/8 + (width/8) * 4);
+        getScheme6.setLayoutY(height/6 + (height/6) * 2);
 
         getScheme6.setPrefWidth(250);
         getScheme6.setPrefHeight(40);
@@ -269,7 +273,6 @@ public class main extends Application {
         ds.setColor(Color.YELLOW);
         return ds;
     }
-
     private void addHoverDropdown(ComboBox c) {
 
         c.addEventHandler(MouseEvent.MOUSE_ENTERED,
@@ -283,7 +286,7 @@ public class main extends Application {
                 });
     }
 
-    private void createDeleteAccountButton() {
+    private void createDeleteAccountButton(){
         // Label
         deleteAccountButton = new Text("Delete account");
         deleteAccountButton.setStroke(Color.YELLOW);
@@ -295,7 +298,7 @@ public class main extends Application {
     }
 
 
-    private void createExitButton() {
+    private void createExitButton(){
         // Label
         exitButton = new Text("Exit");
         exitButton.setStroke(Color.YELLOW);
@@ -311,7 +314,7 @@ public class main extends Application {
     private static Scene gameScene;
     public static Timeline tl;
 
-    private void createGameWindow() {
+    private void createGameWindow(){
         // Canvas
         Canvas canvasGame = new Canvas(width, height);
         gcGame = canvasGame.getGraphicsContext2D();
@@ -324,7 +327,7 @@ public class main extends Application {
         gameLayout.getChildren().add(canvasGame);
     }
 
-    private void createTimeline() {
+    private void createTimeline(){
         // JavaFX Timeline = Free form animation defined by KeyFrames and their duration
         KeyFrame kf = new KeyFrame(Duration.millis(10), e -> gameCanvas.play(gcGame, gameLayout));
         tl = new Timeline(kf);
@@ -336,7 +339,7 @@ public class main extends Application {
     private static GraphicsContext gcHighscore;
     private static Scene highscoreScene;
 
-    private void createHighscoreWindow() {
+    private void createHighscoreWindow(){
         // Canvas
         Canvas canvasHighscore = new Canvas(width, height);
         gcHighscore = canvasHighscore.getGraphicsContext2D();
@@ -357,7 +360,7 @@ public class main extends Application {
     private static Text settingsButton;
     private static Text highscoreButton;
 
-    private void createMenuWindow() {
+    private void createMenuWindow(){
         // Canvas
         Canvas canvasMenu = new Canvas(width, height);
         gcMenu = canvasMenu.getGraphicsContext2D();
@@ -372,7 +375,7 @@ public class main extends Application {
         menuLayout.getChildren().addAll(canvasMenu, playButton, viewMenuAnimation, settingsButton, highscoreButton);
     }
 
-    private void createMenuAnimation() {
+    private void createMenuAnimation(){
         //Setting the position of the image
         viewMenuAnimation.setX(10);
         viewMenuAnimation.setY((height / 10) * 3);
@@ -380,7 +383,7 @@ public class main extends Application {
         viewMenuAnimation.setFitHeight(150);
     }
 
-    private void createPlayButton(Stage currentStage) {
+    private void createPlayButton(Stage currentStage){
         // Label
         playButton = new Text("play");
         playButton.setStroke(fontColor);
@@ -408,7 +411,7 @@ public class main extends Application {
         });
     }
 
-    private void createSettingsButton(Stage currentStage) {
+    private void createSettingsButton(Stage currentStage){
         // Label
         settingsButton = new Text("settings");
         settingsButton.setStroke(fontColor);
@@ -430,7 +433,7 @@ public class main extends Application {
         });
     }
 
-    private void createHighscoreButton(Stage currentStage) {
+    private void createHighscoreButton(Stage currentStage){
         // Label
         highscoreButton = new Text("highscores");
         highscoreButton.setStroke(fontColor);
@@ -460,11 +463,11 @@ public class main extends Application {
     public static void myLaunch(Class<? extends Application> applicationClass) {
         if (!javaFxLaunched) { // First time
             Platform.setImplicitExit(false);
-            new Thread(() -> Application.launch(applicationClass)).start();
+            new Thread(()->Application.launch(applicationClass)).start();
             javaFxLaunched = true;
         } else { // Next times
             new JFXPanel();
-            Platform.runLater(() -> {
+            Platform.runLater(()->{
                 try {
                     Application application = applicationClass.newInstance();
                     Stage primaryStage = new Stage();
@@ -527,6 +530,7 @@ public class main extends Application {
         createSettingsButton(currentStage);
         createHighscoreButton(currentStage);
         createMenuWindow();
+
 
 
         //------------------------------------------------------ REGISTRATION FORM ------------------------------------------------------\\
@@ -665,232 +669,228 @@ public class main extends Application {
 
     private void controls(Stage primaryStage) {
 
-        Thread t = new Thread(() -> {
+        if (isPacmanStartingPosVisible) setPacmanStartingPos(gameLayout);
 
-            if (isPacmanStartingPosVisible) setPacmanStartingPos(gameLayout);
+        gameScene.setOnKeyPressed(e -> {
 
-            gameScene.setOnKeyPressed(e -> {
+            //::::::::::: "UP" KEY & "W" KEY :::::::::::\\
 
-                //::::::::::: "UP" KEY & "W" KEY :::::::::::\\
+            if (e.getCode() == KeyCode.W || e.getCode() == KeyCode.UP) {
+                waitingForTurn = 'u';
 
-                if (e.getCode() == KeyCode.W || e.getCode() == KeyCode.UP) {
-                    waitingForTurn = 'u';
+                if (allowNextMoveUp) {
 
-                    if (allowNextMoveUp) {
+                    //Setting the position of the image
+                    viewPacmanUp.setX((pacmanXPos));
+                    viewPacmanUp.setY((pacmanYPos));
 
-                        //Setting the position of the image
-                        viewPacmanUp.setX((pacmanXPos));
-                        viewPacmanUp.setY((pacmanYPos));
+                    //setting the fit height and width of the image view
+                    viewPacmanUp.setFitHeight(characterHeight);
+                    viewPacmanUp.setFitWidth(characterWidth);
 
-                        //setting the fit height and width of the image view
-                        viewPacmanUp.setFitHeight(characterHeight);
-                        viewPacmanUp.setFitWidth(characterWidth);
+                    gameLayout.getChildren().remove(viewPacmanRight);
+                    gameLayout.getChildren().remove(viewPacmanUp);
+                    gameLayout.getChildren().remove(viewPacmanLeft);
+                    gameLayout.getChildren().remove(viewPacmanDown);
 
-                        gameLayout.getChildren().remove(viewPacmanRight);
-                        gameLayout.getChildren().remove(viewPacmanUp);
-                        gameLayout.getChildren().remove(viewPacmanLeft);
-                        gameLayout.getChildren().remove(viewPacmanDown);
+                    gameLayout.getChildren().add(viewPacmanUp);
 
-                        gameLayout.getChildren().add(viewPacmanUp);
+                    pacmanFacingUp = true;
+                    pacmanFacingDown = false;
+                    pacmanFacingLeft = false;
+                    pacmanFacingRight = false;
+                    velocityPacmanHorizontal = 0;
+                    velocityPacmanVertical = -1;
 
-                        pacmanFacingUp = true;
-                        pacmanFacingDown = false;
-                        pacmanFacingLeft = false;
-                        pacmanFacingRight = false;
-                        velocityPacmanHorizontal = 0;
-                        velocityPacmanVertical = -1;
-
-                        hitUpWall = false;
-                    }
+                    hitUpWall = false;
                 }
+            }
 
 
-                //::::::::::: "RIGHT" KEY & "D" KEY :::::::::::\\
+            //::::::::::: "RIGHT" KEY & "D" KEY :::::::::::\\
 
-                if ((e.getCode() == KeyCode.D || e.getCode() == KeyCode.RIGHT)) {
-                    waitingForTurn = 'r';
+            if ((e.getCode() == KeyCode.D || e.getCode() == KeyCode.RIGHT)) {
+                waitingForTurn = 'r';
 
-                    if (allowNextMoveRight) {
+                if (allowNextMoveRight) {
 
-                        //Setting the position of the image
-                        viewPacmanRight.setX((pacmanXPos));
-                        viewPacmanRight.setY((pacmanYPos));
+                    //Setting the position of the image
+                    viewPacmanRight.setX((pacmanXPos));
+                    viewPacmanRight.setY((pacmanYPos));
 
-                        //setting the fit height and width of the image view
-                        viewPacmanRight.setFitHeight(characterHeight);
-                        viewPacmanRight.setFitWidth(characterWidth);
+                    //setting the fit height and width of the image view
+                    viewPacmanRight.setFitHeight(characterHeight);
+                    viewPacmanRight.setFitWidth(characterWidth);
 
-                        gameLayout.getChildren().remove(viewPacmanUp);
-                        gameLayout.getChildren().remove(viewPacmanRight);
-                        gameLayout.getChildren().remove(viewPacmanLeft);
-                        gameLayout.getChildren().remove(viewPacmanDown);
+                    gameLayout.getChildren().remove(viewPacmanUp);
+                    gameLayout.getChildren().remove(viewPacmanRight);
+                    gameLayout.getChildren().remove(viewPacmanLeft);
+                    gameLayout.getChildren().remove(viewPacmanDown);
 
-                        gameLayout.getChildren().addAll(viewPacmanRight);
+                    gameLayout.getChildren().addAll(viewPacmanRight);
 
-                        pacmanFacingRight = true;
-                        pacmanFacingDown = false;
-                        pacmanFacingLeft = false;
-                        pacmanFacingUp = false;
-                        velocityPacmanHorizontal = 1;
-                        velocityPacmanVertical = 0;
+                    pacmanFacingRight = true;
+                    pacmanFacingDown = false;
+                    pacmanFacingLeft = false;
+                    pacmanFacingUp = false;
+                    velocityPacmanHorizontal = 1;
+                    velocityPacmanVertical = 0;
 
-                        hitRightWall = false;
-                    }
+                    hitRightWall = false;
                 }
+            }
 
 
-                //::::::::::: "LEFT" KEY & "A" KEY :::::::::::\\
+            //::::::::::: "LEFT" KEY & "A" KEY :::::::::::\\
 
-                if ((e.getCode() == KeyCode.A || e.getCode() == KeyCode.LEFT)) {
-                    waitingForTurn = 'l';
+            if ((e.getCode() == KeyCode.A || e.getCode() == KeyCode.LEFT)) {
+                waitingForTurn = 'l';
 
-                    if (allowNextMoveLeft) {
+                if (allowNextMoveLeft) {
 
-                        //Setting the position of the image
-                        viewPacmanLeft.setX((pacmanXPos));
-                        viewPacmanLeft.setY((pacmanYPos));
+                    //Setting the position of the image
+                    viewPacmanLeft.setX((pacmanXPos));
+                    viewPacmanLeft.setY((pacmanYPos));
 
-                        //setting the fit height and width of the image view
-                        viewPacmanLeft.setFitHeight(characterHeight);
-                        viewPacmanLeft.setFitWidth(characterWidth);
+                    //setting the fit height and width of the image view
+                    viewPacmanLeft.setFitHeight(characterHeight);
+                    viewPacmanLeft.setFitWidth(characterWidth);
 
-                        gameLayout.getChildren().remove(viewPacmanUp);
-                        gameLayout.getChildren().remove(viewPacmanRight);
-                        gameLayout.getChildren().remove(viewPacmanLeft);
-                        gameLayout.getChildren().remove(viewPacmanDown);
+                    gameLayout.getChildren().remove(viewPacmanUp);
+                    gameLayout.getChildren().remove(viewPacmanRight);
+                    gameLayout.getChildren().remove(viewPacmanLeft);
+                    gameLayout.getChildren().remove(viewPacmanDown);
 
-                        gameLayout.getChildren().addAll(viewPacmanLeft);
+                    gameLayout.getChildren().addAll(viewPacmanLeft);
 
 
-                        pacmanFacingLeft = true;
-                        pacmanFacingDown = false;
-                        pacmanFacingUp = false;
-                        pacmanFacingRight = false;
-                        velocityPacmanHorizontal = -1;
-                        velocityPacmanVertical = 0;
+                    pacmanFacingLeft = true;
+                    pacmanFacingDown = false;
+                    pacmanFacingUp = false;
+                    pacmanFacingRight = false;
+                    velocityPacmanHorizontal = -1;
+                    velocityPacmanVertical = 0;
 
-                        hitLeftWall = false;
-                    }
+                    hitLeftWall = false;
                 }
+            }
 
 
-                //::::::::::: "DOWN" KEY & "S" KEY :::::::::::\\
+            //::::::::::: "DOWN" KEY & "S" KEY :::::::::::\\
 
-                if ((e.getCode() == KeyCode.S || e.getCode() == KeyCode.DOWN)) {
-                    waitingForTurn = 'd';
+            if ((e.getCode() == KeyCode.S || e.getCode() == KeyCode.DOWN)) {
+                waitingForTurn = 'd';
 
-                    if (allowNextMoveDown) {
+                if (allowNextMoveDown) {
 
-                        //Setting the position of the image
-                        viewPacmanDown.setX(pacmanXPos);
-                        viewPacmanDown.setY(pacmanYPos);
+                    //Setting the position of the image
+                    viewPacmanDown.setX(pacmanXPos);
+                    viewPacmanDown.setY(pacmanYPos);
 
 
-                        //setting the fit height and width of the image view
-                        viewPacmanDown.setFitHeight(characterHeight);
-                        viewPacmanDown.setFitWidth(characterWidth);
+                    //setting the fit height and width of the image view
+                    viewPacmanDown.setFitHeight(characterHeight);
+                    viewPacmanDown.setFitWidth(characterWidth);
 
-                        gameLayout.getChildren().remove(viewPacmanUp);
-                        gameLayout.getChildren().remove(viewPacmanRight);
-                        gameLayout.getChildren().remove(viewPacmanLeft);
-                        gameLayout.getChildren().remove(viewPacmanDown);
+                    gameLayout.getChildren().remove(viewPacmanUp);
+                    gameLayout.getChildren().remove(viewPacmanRight);
+                    gameLayout.getChildren().remove(viewPacmanLeft);
+                    gameLayout.getChildren().remove(viewPacmanDown);
 
-                        gameLayout.getChildren().addAll(viewPacmanDown);
+                    gameLayout.getChildren().addAll(viewPacmanDown);
 
-                        pacmanFacingDown = true;
-                        pacmanFacingUp = false;
-                        pacmanFacingLeft = false;
-                        pacmanFacingRight = false;
-                        velocityPacmanHorizontal = 0;
-                        velocityPacmanVertical = 1;
+                    pacmanFacingDown = true;
+                    pacmanFacingUp = false;
+                    pacmanFacingLeft = false;
+                    pacmanFacingRight = false;
+                    velocityPacmanHorizontal = 0;
+                    velocityPacmanVertical = 1;
 
-                        hitDownWall = false;
-                    }
+                    hitDownWall = false;
                 }
+            }
 
 
-                // Pause Game when "P" Pressed
-                if (e.getCode() == KeyCode.P) {   // If "P" Pressed
+            // Pause Game when "P" Pressed
+            if (e.getCode() == KeyCode.P) {   // If "P" Pressed
 
-                    sounds.playClick();
-                    isPacmanStartingPosVisible = false;
-                    tl.stop();    // Stop Timeline/Animation
-
-
-                    //::::::::::: Pause Menu :::::::::::\\
-
-                    gcGame.setFill(Color.YELLOW);
-                    gcGame.fillText("PAUSED", (blockCountHorizontally / 2) * widthOneBlock, blockCountVertically * heightOneBlock);
-                    gcGame.fillText("Press P to resume", (blockCountHorizontally / 2) * widthOneBlock, (blockCountVertically + 1) * heightOneBlock);
-                    gcGame.fillText("Press Esc to leave", (blockCountHorizontally / 2) * widthOneBlock, (blockCountVertically + 2) * heightOneBlock);
+                sounds.playClick();
+                isPacmanStartingPosVisible = false;
+                tl.stop();    // Stop Timeline/Animation
 
 
-                    gameScene.setOnKeyPressed(el -> {
+                //::::::::::: Pause Menu :::::::::::\\
 
-                        // Continue Game when P Pressed
-                        if (el.getCode() == KeyCode.P) {      // If "P" pressed again
-
-                            sounds.playClick();
-                            tl.play();      // Continue Timeline/Animation
-
-                            controls(primaryStage);      // Recursion -> Check if pressed again
-                        }
-
-                        // Leave Game on Esc with Pause
-                        if (el.getCode() == KeyCode.ESCAPE) {         // If "Escape" pressed
-
-                            try {
-                                sounds.playClick();
-                                resetGame(gameLayout);
-                                isPacmanStartingPosVisible = true;
-                                gameStarted = false;
-                                primaryStage.setScene(menuScene);
-                                chaseTimer.cancel();
-                                scatterTimer.cancel();
-                                chaseTimer = new Timer();
-                                scatterTimer = new Timer();
-                                chaseCount = 0;
-                                scatterCount = 0;
-
-                            } catch (Exception exception) {
-                                exception.printStackTrace();
-                            }
-
-                            tl.jumpTo(Duration.millis(0));          // Restart Animation
-                            tl.stop();
-
-                        }
-                    });
-                }
+                gcGame.setFill(Color.YELLOW);
+                gcGame.fillText("PAUSED", (blockCountHorizontally / 2) * widthOneBlock, blockCountVertically * heightOneBlock);
+                gcGame.fillText("Press P to resume", (blockCountHorizontally / 2) * widthOneBlock, (blockCountVertically + 1) * heightOneBlock);
+                gcGame.fillText("Press Esc to leave", (blockCountHorizontally / 2) * widthOneBlock, (blockCountVertically + 2) * heightOneBlock);
 
 
-                // Leave Game on Esc without Pause
-                if (e.getCode() == KeyCode.ESCAPE) {          // If "Escape" pressed
+                gameScene.setOnKeyPressed(el -> {
 
-                    try {
+                    // Continue Game when P Pressed
+                    if (el.getCode() == KeyCode.P) {      // If "P" pressed again
+
                         sounds.playClick();
-                        resetGame(gameLayout);
-                        isPacmanStartingPosVisible = true;
-                        gameStarted = false;
-                        primaryStage.setScene(menuScene);
-                        chaseTimer.cancel();
-                        scatterTimer.cancel();
-                        chaseTimer = new Timer();
-                        scatterTimer = new Timer();
-                        chaseCount = 0;
-                        scatterCount = 0;
+                        tl.play();      // Continue Timeline/Animation
 
-                    } catch (Exception exception) {
-                        exception.printStackTrace();
+                        controls(primaryStage);      // Recursion -> Check if pressed again
                     }
 
-                    tl.jumpTo(Duration.millis(0));          // Restart Animation
-                    tl.stop();
+                    // Leave Game on Esc with Pause
+                    if (el.getCode() == KeyCode.ESCAPE) {         // If "Escape" pressed
 
+                        try {
+                            sounds.playClick();
+                            resetGame(gameLayout);
+                            isPacmanStartingPosVisible = true;
+                            gameStarted = false;
+                            primaryStage.setScene(menuScene);
+                            chaseTimer.cancel();
+                            scatterTimer.cancel();
+                            chaseTimer = new Timer();
+                            scatterTimer = new Timer();
+                            chaseCount = 0;
+                            scatterCount = 0;
+
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                        }
+
+                        tl.jumpTo(Duration.millis(0));          // Restart Animation
+                        tl.stop();
+
+                    }
+                });
+            }
+
+
+            // Leave Game on Esc without Pause
+            if (e.getCode() == KeyCode.ESCAPE) {          // If "Escape" pressed
+
+                try {
+                    sounds.playClick();
+                    resetGame(gameLayout);
+                    isPacmanStartingPosVisible = true;
+                    gameStarted = false;
+                    primaryStage.setScene(menuScene);
+                    chaseTimer.cancel();
+                    scatterTimer.cancel();
+                    chaseTimer = new Timer();
+                    scatterTimer = new Timer();
+                    chaseCount = 0;
+                    scatterCount = 0;
+
+                } catch (Exception exception) {
+                    exception.printStackTrace();
                 }
-            });
+
+                tl.jumpTo(Duration.millis(0));          // Restart Animation
+                tl.stop();
+
+            }
         });
-        t.start();
     }
 
 
@@ -1243,8 +1243,6 @@ public class main extends Application {
 
     public static void main(String[] args) {
 
-        sounds.playBackgroundMusic();
-        sounds.playChomp();
         // TODO: Music
         // Sets Background Music
         // sounds.playBackgroundMusic();
