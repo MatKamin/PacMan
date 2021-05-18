@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 import static application.gameMechanics.*;
+import static application.gameMechanics.mapFile;
 import static application.imageViewerVariables.*;
 import static application.main.*;
 

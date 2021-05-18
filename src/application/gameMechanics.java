@@ -13,6 +13,8 @@ import java.util.regex.Pattern;
 import static application.imageViewerVariables.*;
 import static application.main.*;
 import static application.mapReader.*;
+import static application.sounds.*;
+
 
 
 //---------------------------------CLASS---------------------------------\\
@@ -546,10 +548,12 @@ public class gameMechanics {
      */
     public static void collectPoints(Group gameLayout) {
         if (!dots[(int) pacmanColumn][(int) pacmanRow]) return;
+
         dots[(int) pacmanColumn][(int) pacmanRow] = false;
         dotCount--;
         score += 10;    // A dot is worth 10 Points
         clearer(gameLayout);
+        isPlayChomp = true;
     }
 
 
