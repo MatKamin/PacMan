@@ -565,7 +565,6 @@ public class gameMechanics {
         score += 10;    // A dot is worth 10 Points
         clearer(gameLayout);
 
-        System.out.println(dotCount);
     }
 
 
@@ -575,6 +574,9 @@ public class gameMechanics {
      * @param gameLayout Group Layout of the Game window
      */
     public static boolean pacmanInPowerMode = false;
+    public static boolean switchedToScaredBlinky = false;
+    public static boolean switchedToScaredPinky = false;
+
     public static void collectPowerPill(Group gameLayout) {
         if (!powerPills[(int) pacmanColumn][(int) pacmanRow]) return;
         powerPills[(int) pacmanColumn][(int) pacmanRow] = false;
@@ -582,6 +584,8 @@ public class gameMechanics {
         score += 50;        // A Power Pill gives 50 points
         inChaseMode = false;
         pacmanInPowerMode = true;
+        switchedToScaredBlinky = true;
+        switchedToScaredPinky = true;
         pacmanPowerModeBlinky(gameLayout);
         pacmanPowerModePinky(gameLayout);
         clearer(gameLayout);

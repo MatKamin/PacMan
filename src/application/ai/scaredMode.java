@@ -1,6 +1,5 @@
 package application.ai;
 
-import application.ai.Ghost;
 import javafx.scene.Group;
 
 import static application.gameMechanics.*;
@@ -180,13 +179,24 @@ public class scaredMode extends Ghost {
             distance3 = 10000;
             distance4 = 10000;
 
+            if (switchedToScaredBlinky) {
+                getMovingDirection("blinky");
+                if (blinkyGoingRight || blinkyGoingLeft) {
+                    velocityBlinkyHorizontal *= -1;
+                }
+                if (blinkyGoingUp || blinkyGoingDown) {
+                    velocityBlinkyVertical *= -1;
+                }
+                switchedToScaredBlinky = false;
+            }
+
             if (blinkyColumnNew == blinkyColumn + 1 || blinkyColumnNew == blinkyColumn - 1) {
                 blinkyColumn = blinkyColumnNew;
                 getMovingDirection("blinky");
                 blockTurnAround("blinky");
                 blockImpossibleMoves("blinky");
                 calculateDistances("blinky");
-                getReverseDirection(distance1, distance2, distance3, distance4, "blinky");
+                getRandomDirection(distance1, distance2, distance3, distance4, "blinky");
                 move("blinky");
             }
             if (blinkyRowNew == blinkyRow + 1 || blinkyRowNew == blinkyRow - 1) {
@@ -195,7 +205,7 @@ public class scaredMode extends Ghost {
                 blockTurnAround("blinky");
                 blockImpossibleMoves("blinky");
                 calculateDistances("blinky");
-                getReverseDirection(distance1, distance2, distance3, distance4, "blinky");
+                getRandomDirection(distance1, distance2, distance3, distance4, "blinky");
                 move("blinky");
             }
             return;
@@ -226,13 +236,24 @@ public class scaredMode extends Ghost {
             distance3pinky = 10000;
             distance4pinky = 10000;
 
+            if (switchedToScaredPinky) {
+                getMovingDirection("pinky");
+                if (pinkyGoingRight || pinkyGoingLeft) {
+                    velocityPinkyHorizontal *= -1;
+                }
+                if (pinkyGoingUp || pinkyGoingDown) {
+                    velocityPinkyVertical *= -1;
+                }
+                switchedToScaredPinky = false;
+            }
+
             if (pinkyColumnNew == pinkyColumn + 1 || pinkyColumnNew == pinkyColumn - 1) {
                 pinkyColumn = pinkyColumnNew;
                 getMovingDirection("pinky");
                 blockTurnAround("pinky");
                 blockImpossibleMoves("pinky");
                 calculateDistances("pinky");
-                getReverseDirection(distance1pinky, distance2pinky, distance3pinky, distance4pinky, "pinky");
+                getRandomDirection(distance1pinky, distance2pinky, distance3pinky, distance4pinky, "pinky");
                 move("pinky");
             }
             if (pinkyRowNew == pinkyRow + 1 || pinkyRowNew == pinkyRow - 1) {
@@ -241,7 +262,7 @@ public class scaredMode extends Ghost {
                 blockTurnAround("pinky");
                 blockImpossibleMoves("pinky");
                 calculateDistances("pinky");
-                getReverseDirection(distance1pinky, distance2pinky, distance3pinky, distance4pinky, "pinky");
+                getRandomDirection(distance1pinky, distance2pinky, distance3pinky, distance4pinky, "pinky");
                 move("pinky");
             }
         }

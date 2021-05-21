@@ -85,10 +85,10 @@ public class main extends Application {
     public static final Font pacmanFont = Font.loadFont("file:resources/fonts/pacman.ttf", pacmanFontSize);                  // Loading Pac-Man Font
     public static final Font pacmanFontUI = Font.loadFont("file:resources/fonts/emulogic.ttf", pacmanFontSizeUI);            // Loading Pac-Man UI Font
 
-    static boolean pacmanFacingUp = false;
-    static boolean pacmanFacingDown = false;
-    static boolean pacmanFacingLeft = false;
-    static boolean pacmanFacingRight = true;
+    public static boolean pacmanFacingUp = false;
+    public static boolean pacmanFacingDown = false;
+    public static boolean pacmanFacingLeft = false;
+    public static boolean pacmanFacingRight = true;
 
     static char waitingForTurn;
 

@@ -72,14 +72,25 @@ public class chaseMode extends Ghost {
             // TARGET SCATTER MODE
             // COLUMN: 2
             // ROW: 1
+            int vertical = 0;
+            int horizontal = 0;
+
+            if (pacmanFacingUp) {
+                vertical = -4;
+                horizontal = -4;
+            }
+            if (pacmanFacingDown) vertical = 4;
+            if (pacmanFacingLeft) horizontal = -4;
+            if (pacmanFacingRight) horizontal = 4;
+
             if (pinkyGoRight)
-                distance1pinky = Math.pow(Math.abs((pinkyColumn + 1) - pacmanColumn - 1), 2) + Math.pow(Math.abs(pinkyRow - pacmanRow), 2);
+                distance1pinky = Math.pow(Math.abs((pinkyColumn + 1) - (pacmanColumn + horizontal) - 1), 2) + Math.pow(Math.abs(pinkyRow - (pacmanRow + vertical)), 2);
             if (pinkyGoUp)
-                distance2pinky = Math.pow(Math.abs(pinkyColumn - pacmanColumn), 2) + Math.pow(Math.abs((pinkyRow - 1) - pacmanRow - 1), 2);
+                distance2pinky = Math.pow(Math.abs(pinkyColumn - (pacmanColumn + horizontal)), 2) + Math.pow(Math.abs((pinkyRow - 1) - (pacmanRow + vertical) - 1), 2);
             if (pinkyGoDown)
-                distance3pinky = Math.pow(Math.abs(pinkyColumn - pacmanColumn), 2) + Math.pow(Math.abs((pinkyRow + 1) - pacmanRow - 1), 2);
+                distance3pinky = Math.pow(Math.abs(pinkyColumn - (pacmanColumn + horizontal)), 2) + Math.pow(Math.abs((pinkyRow + 1) - (pacmanRow + vertical) - 1), 2);
             if (pinkyGoLeft)
-                distance4pinky = Math.pow(Math.abs((pinkyColumn - 1) - pacmanColumn - 1), 2) + Math.pow(Math.abs(pinkyRow - pacmanRow), 2);
+                distance4pinky = Math.pow(Math.abs((pinkyColumn - 1) - (pacmanColumn + horizontal) - 1), 2) + Math.pow(Math.abs(pinkyRow - (pacmanRow + vertical)), 2);
         }
     }
 

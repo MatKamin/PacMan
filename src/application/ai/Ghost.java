@@ -125,31 +125,55 @@ public class Ghost {
 
 
 
-    public static void getReverseDirection(double d1, double d2, double d3, double d4, String ghost) {
-        double biggest = 0;
-        if (d1 > biggest && d1 != 10000) biggest = d1;
-        if (d2 > biggest && d2 != 10000) biggest = d2;
-        if (d3 > biggest && d3 != 10000) biggest = d3;
-        if (d4 > biggest && d4 != 10000) biggest = d4;
-        if (biggest != d1) {
+    public static void getRandomDirection(double d1, double d2, double d3, double d4, String ghost) {
+        int random = 0;
+
+        try {
+            random = (int)(Math.random() * 4 + 1);
+        } catch (StackOverflowError e) {
+            e.printStackTrace();
+        }
+
+        double direction = 0;
+
+
+        if (random == 1 && d1 != 10000) {
+            direction = d1;
+        }
+        if (random == 2 && d2 != 10000) {
+            direction = d2;
+        }
+        if (random == 3 && d3 != 10000) {
+            direction = d3;
+        }
+        if (random == 4 && d4 != 10000) {
+            direction = d4;
+        }
+
+        if (direction == 0) {
+            getRandomDirection(d1, d2, d3, d4, ghost);
+            return;
+        }
+
+        if (direction != d1) {
             switch (ghost) {
                 case "blinky" -> blinkyGoRight = false;
                 case "pinky" -> pinkyGoRight = false;
             }
         }
-        if (biggest != d2) {
+        if (direction != d2) {
             switch (ghost) {
                 case "blinky" -> blinkyGoUp = false;
                 case "pinky" -> pinkyGoUp = false;
             }
         }
-        if (biggest != d3) {
+        if (direction != d3) {
             switch (ghost) {
                 case "blinky" -> blinkyGoDown = false;
                 case "pinky" -> pinkyGoDown = false;
             }
         }
-        if (biggest != d4) {
+        if (direction != d4) {
             switch (ghost) {
                 case "blinky" -> blinkyGoLeft = false;
                 case "pinky" -> pinkyGoLeft = false;
