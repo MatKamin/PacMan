@@ -4,7 +4,9 @@ package application;
 //---------------------------------IMPORTS---------------------------------\\
 
 import javafx.scene.Group;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 
 import java.io.*;
 import java.util.Scanner;
@@ -13,9 +15,6 @@ import java.util.regex.Pattern;
 import static application.imageViewerVariables.*;
 import static application.main.*;
 import static application.mapReader.*;
-import static application.sounds.*;
-
-
 
 
 //---------------------------------CLASS---------------------------------\\
@@ -158,6 +157,7 @@ public class gameMechanics {
         removeMap(gameLayout);
         gameLayout.getChildren().removeAll(viewCherry);
         firstRead = true;
+        reset = true;
         score = 0;
         lifesCounter = 3;
         lifesAtLevelStart = 3;
@@ -196,6 +196,7 @@ public class gameMechanics {
         scatterCount = 0;
         chaseCount = 0;
         drawLevelCounterOnce = true;
+        drawLifesCounterOnce = true;
     }
 
 
@@ -240,17 +241,20 @@ public class gameMechanics {
      *
      * @param gameLayout Group Layout of the Game window
      */
+    static boolean drawLifesCounterOnce = true;
+
     public static void drawLifesCounter(Group gameLayout) {
-        if (lifesCounter != lifesAtLevelStart) {
+        if (drawLifesCounterOnce) {
             for (int i = 1; i <= lifesCounter; i++) {
                 viewLifes = new ImageView(lifes);
                 viewLifes.setX(i * (widthOneBlock + 10));
-                viewLifes.setY((blockCountVertically - 1)* heightOneBlock);
+                viewLifes.setY((blockCountVertically - 1) * heightOneBlock);
                 viewLifes.setFitWidth(widthOneBlock);
                 viewLifes.setFitHeight(heightOneBlock);
-                gameLayout.getChildren().addAll(viewLifes);
+                gameLayout.getChildren().removeAll(viewLifes);
+                gameLayout.getChildren().add(viewLifes);
             }
-            lifesAtLevelStart--;
+            drawLifesCounterOnce = false;
         }
     }
 
@@ -288,16 +292,17 @@ public class gameMechanics {
      * @param gameLayout Group Layout of the Game window
      */
     private static void removeMap(Group gameLayout) {
-        // Remove Dots to Map
-        for (int i = 0; i < dotCount; i++) {
-            gameLayout.getChildren().remove(viewDot[i]);
-        }
+        if (reset) {
+            // Remove Dots to Map
+            for (int i = 0; i < dotCount; i++) {
+                gameLayout.getChildren().remove(viewDot[i]);
+            }
 
-        // Remove Power Pills to Map
-        for (int i = 0; i < powerPillCount; i++) {
-            gameLayout.getChildren().remove(viewPowerPill[i]);
+            // Remove Power Pills to Map
+            for (int i = 0; i < powerPillCount; i++) {
+                gameLayout.getChildren().remove(viewPowerPill[i]);
+            }
         }
-
         // Remove Vertical Rails to Map
         for (int i = 0; i < railVerticalCount; i++) {
             gameLayout.getChildren().remove(viewRailVertical[i]);
@@ -335,16 +340,19 @@ public class gameMechanics {
      * @param gameLayout Group Layout of the Game window
      */
     private static void drawNextMap(Group gameLayout) {
-        // Add Dots to Map
-        for (int i = 0; i < dotCount; i++) {
-            gameLayout.getChildren().remove(viewDot[i]);
-            gameLayout.getChildren().add(viewDot[i]);
-        }
 
-        // Add Power Pills to Map
-        for (int i = 0; i < powerPillCount; i++) {
-            gameLayout.getChildren().remove(viewPowerPill[i]);
-            gameLayout.getChildren().add(viewPowerPill[i]);
+        if (reset) {
+            // Add Dots to Map
+            for (int i = 0; i < dotCount; i++) {
+                gameLayout.getChildren().remove(viewDot[i]);
+                gameLayout.getChildren().add(viewDot[i]);
+            }
+
+            // Add Power Pills to Map
+            for (int i = 0; i < powerPillCount; i++) {
+                gameLayout.getChildren().remove(viewPowerPill[i]);
+                gameLayout.getChildren().add(viewPowerPill[i]);
+            }
         }
 
         // Add Vertical Rails to Map
@@ -424,6 +432,7 @@ public class gameMechanics {
             mapFile = "resources/levels/level" + mapNumber + ".txt";
             removeMap(gameLayout);
             gameLayout.getChildren().removeAll(viewBlinky, viewPinky);
+            reset = true;
             nextLevel = false;
             firstRead = true;
             lifesAtLevelStart = 3;
@@ -457,6 +466,7 @@ public class gameMechanics {
             chaseCount = 0;
 
             drawLevelCounterOnce = true;
+            drawLifesCounterOnce = true;
 
             mapReader.readMap();
             drawNextMap(gameLayout);
@@ -554,7 +564,8 @@ public class gameMechanics {
         dotCount--;
         score += 10;    // A dot is worth 10 Points
         clearer(gameLayout);
-        isPlayChomp = true;
+
+        System.out.println(dotCount);
     }
 
 
@@ -563,12 +574,14 @@ public class gameMechanics {
      *
      * @param gameLayout Group Layout of the Game window
      */
+    public static boolean pacmanInPowerMode = false;
     public static void collectPowerPill(Group gameLayout) {
         if (!powerPills[(int) pacmanColumn][(int) pacmanRow]) return;
         powerPills[(int) pacmanColumn][(int) pacmanRow] = false;
         powerPillCount--;
         score += 50;        // A Power Pill gives 50 points
         inChaseMode = false;
+        pacmanInPowerMode = true;
         pacmanPowerModeBlinky(gameLayout);
         pacmanPowerModePinky(gameLayout);
         clearer(gameLayout);
@@ -612,6 +625,90 @@ public class gameMechanics {
         );
     }
 
+
+    private static boolean pacmanIsAlive = true;
+
+    public static void pacmanDeath(Group gameLayout, GraphicsContext gcGame) {
+
+        if (lifesCounter == -1) {
+            gcGame.setFill(Color.YELLOW);
+            gcGame.fillText("Game Over", (blockCountHorizontally / 2) * widthOneBlock, blockCountVertically * heightOneBlock);
+            gcGame.fillText("Press Esc to leave", (blockCountHorizontally / 2) * widthOneBlock, (blockCountVertically + 2) * heightOneBlock);
+            tl.pause();
+        }
+
+        if ((!inScaredModeBlinky) && (!inScaredModePinky)) {
+            pacmanInPowerMode = false;
+        }
+
+        if ((!pacmanInPowerMode) && pacmanIsAlive && ((pacmanColumn == blinkyColumn && pacmanRow == blinkyRow) || (pacmanColumn == pinkyColumn && pacmanRow == pinkyRow))) {
+
+            reset = false;
+            pacmanXPos = pacmanXPosStarting;
+            pacmanYPos = pacmanYPosStarting;
+
+            removeMap(gameLayout);
+            gameLayout.getChildren().removeAll(viewCherry, viewBlinky, viewPinky);
+
+
+            firstRead = true;
+            lifesCounter -= 1;
+            pacmanIsAlive = false;
+
+            wallCount = 0;
+            railVerticalCount = 0;
+            railHorizontalCount = 0;
+            railUpRightCount = 0;
+            railUpLeftCount = 0;
+            railRightUpCount = 0;
+            railLeftUpCount = 0;
+
+
+
+            velocityPacmanHorizontal = 0;
+            velocityPacmanVertical = 0;
+
+            allowNextMoveDown = false;
+            allowNextMoveUp = false;
+            allowNextMoveRight = true;
+            allowNextMoveLeft = true;
+
+            fruitSpawned1 = false;
+            fruitSpawned2 = false;
+
+            getRandomLifespan = true;
+            collectFruitOnce = true;
+
+            application.mapReader.readMap();
+
+            drawNextMap(gameLayout);
+            drawLifesCounter(gameLayout);
+            deleteLifeCounter(gameLayout);
+
+            isPacmanStartingPosVisible = true;
+
+            inScatterMode = true;
+            inChaseMode = false;
+            inScaredModeBlinky = false;
+
+            scatterCount = 0;
+            chaseCount = 0;
+            drawLevelCounterOnce = true;
+            pacmanIsAlive = true;
+
+        }
+    }
+
+
+    private static void deleteLifeCounter (Group gameLayout) {
+        viewClearer = new ImageView(clearer);
+        viewClearer.setX((lifesCounter + 1) * (widthOneBlock + 10));
+        viewClearer.setY((blockCountVertically - 1) * heightOneBlock);
+        viewClearer.setFitWidth(widthOneBlock);
+        viewClearer.setFitHeight(heightOneBlock);
+        gameLayout.getChildren().removeAll(viewClearer);
+        gameLayout.getChildren().add(viewClearer);
+    }
 
     /**
      * Checks if UP move is possible

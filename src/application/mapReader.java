@@ -31,6 +31,8 @@ public class mapReader {
     public static double blinkyRowStart;
     public static double blinkyXPos;
     public static double blinkyYPos;
+    public static double blinkyXPosStarting;
+    public static double blinkyYPosStarting;
 
     public static double pinkyRow;
     public static double pinkyColumn;
@@ -38,9 +40,13 @@ public class mapReader {
     public static double pinkyRowStart;
     public static double pinkyXPos;
     public static double pinkyYPos;
+    public static double pinkyXPosStarting;
+    public static double pinkyYPosStarting;
 
     static int spawningFruitColumn = 14;
     static int spawningFruitRow = 21;
+
+    public static boolean reset = true;
 
     /**
      * reads the Map
@@ -69,10 +75,13 @@ public class mapReader {
                                 viewPowerPill[powerPillCount] = new ImageView(powerPill);
                                 viewPowerPill[powerPillCount].setX(widthOneBlock * columnCounter + (int) (widthOneBlock / 2) - powerPill.getWidth() / 2);
                                 viewPowerPill[powerPillCount].setY(heightOneBlock * row + (int) (heightOneBlock / 2) - powerPill.getHeight() / 2);
-                                powerPillCount++;
-                                powerPills[columnCounter][row] = true;
-                                notAllowedBox[columnCounter][row] = false;
-                                dots[columnCounter][row] = false;
+
+                                if (reset) {
+                                    powerPillCount++;
+                                    powerPills[columnCounter][row] = true;
+                                    notAllowedBox[columnCounter][row] = false;
+                                    dots[columnCounter][row] = false;
+                                }
                             }
                             case "B" -> {
                                 // DOTS
@@ -80,37 +89,50 @@ public class mapReader {
                                 viewDot[dotCount] = new ImageView(dot);
                                 viewDot[dotCount].setX(widthOneBlock * columnCounter + (int) (widthOneBlock / 2) - dot.getWidth() / 2);
                                 viewDot[dotCount].setY(heightOneBlock * row + (int) (heightOneBlock / 2) - dot.getHeight() / 2);
-                                dotCount++;
-                                dotCountAtStart++;
-                                powerPills[columnCounter][row] = false;
-                                dots[columnCounter][row] = true;
-                                notAllowedBox[columnCounter][row] = false;
+
+                                if (reset) {
+                                    dotCount++;
+                                    dotCountAtStart++;
+                                    powerPills[columnCounter][row] = false;
+                                    dots[columnCounter][row] = true;
+                                    notAllowedBox[columnCounter][row] = false;
+                                }
                             }
                             case "1" -> {
                                 // BLINKY
 
                                 blinkyXPos = (widthOneBlock * columnCounter);
                                 blinkyYPos = (heightOneBlock * row);
+                                blinkyXPosStarting = blinkyXPos;
+                                blinkyYPosStarting = blinkyYPos;
+
                                 blinkyRow = row;
                                 blinkyColumn = columnCounter;
                                 blinkyColumnStart = columnCounter;
                                 blinkyRowStart = row;
-                                powerPills[columnCounter][row] = false;
-                                dots[columnCounter][row] = false;
-                                notAllowedBox[columnCounter][row] = false;
+                                if (reset) {
+                                    powerPills[columnCounter][row] = false;
+                                    dots[columnCounter][row] = false;
+                                    notAllowedBox[columnCounter][row] = false;
+                                }
                             }
                             case "2" -> {
                                 // PINKY
 
                                 pinkyXPos = widthOneBlock * columnCounter;
                                 pinkyYPos = heightOneBlock * row;
+                                pinkyXPosStarting = pinkyXPos;
+                                pinkyYPosStarting = pinkyYPos;
+
                                 pinkyRow = row;
                                 pinkyColumn = columnCounter;
                                 pinkyColumnStart = columnCounter;
                                 pinkyRowStart = row;
-                                powerPills[columnCounter][row] = false;
-                                dots[columnCounter][row] = false;
-                                notAllowedBox[columnCounter][row] = false;
+                                if (reset) {
+                                    powerPills[columnCounter][row] = false;
+                                    dots[columnCounter][row] = false;
+                                    notAllowedBox[columnCounter][row] = false;
+                                }
                             }
                             case "P" -> {
                                 // PAC-MAN
@@ -121,9 +143,11 @@ public class mapReader {
                                 pacmanYPosStarting = pacmanYPos;
                                 pacmanRow = row;
                                 pacmanColumn = columnCounter;
-                                powerPills[columnCounter][row] = false;
-                                dots[columnCounter][row] = false;
-                                notAllowedBox[columnCounter][row] = false;
+                                if (reset) {
+                                    powerPills[columnCounter][row] = false;
+                                    dots[columnCounter][row] = false;
+                                    notAllowedBox[columnCounter][row] = false;
+                                }
                             }
                             case "E" -> {
                                 // NOTHING
@@ -135,9 +159,11 @@ public class mapReader {
                             case "V" -> {
                                 // RAIL VERTICAL
 
-                                notAllowedBox[columnCounter][row] = true;
-                                dots[columnCounter][row] = false;
-                                powerPills[columnCounter][row] = false;
+                                if (reset) {
+                                    notAllowedBox[columnCounter][row] = true;
+                                    dots[columnCounter][row] = false;
+                                    powerPills[columnCounter][row] = false;
+                                }
                                 if (inPinkMode) {
                                     viewRailVertical[railVerticalCount] = new ImageView(railVerticalPink);
                                 } else {
@@ -153,9 +179,11 @@ public class mapReader {
                             case "H" -> {
                                 // RAIL HORIZONTAL
 
-                                notAllowedBox[columnCounter][row] = true;
-                                dots[columnCounter][row] = false;
-                                powerPills[columnCounter][row] = false;
+                                if (reset) {
+                                    notAllowedBox[columnCounter][row] = true;
+                                    dots[columnCounter][row] = false;
+                                    powerPills[columnCounter][row] = false;
+                                }
                                 if (inPinkMode) {
                                     viewRailHorizontal[railHorizontalCount] = new ImageView(railHorizontalPink);
                                 } else {
@@ -171,9 +199,11 @@ public class mapReader {
                             case "R" -> {
                                 // UP RIGHT
 
-                                notAllowedBox[columnCounter][row] = true;
-                                dots[columnCounter][row] = false;
-                                powerPills[columnCounter][row] = false;
+                                if (reset) {
+                                    notAllowedBox[columnCounter][row] = true;
+                                    dots[columnCounter][row] = false;
+                                    powerPills[columnCounter][row] = false;
+                                }
                                 if (inPinkMode) {
                                     viewRailUpRight[railUpRightCount] = new ImageView(railUpRightPink);
                                 } else {
@@ -188,10 +218,11 @@ public class mapReader {
                             }
                             case "L" -> {
                                 // UP LEFT
-
-                                notAllowedBox[columnCounter][row] = true;
-                                dots[columnCounter][row] = false;
-                                powerPills[columnCounter][row] = false;
+                                if (reset) {
+                                    notAllowedBox[columnCounter][row] = true;
+                                    dots[columnCounter][row] = false;
+                                    powerPills[columnCounter][row] = false;
+                                }
                                 if (inPinkMode) {
                                     viewRailUpLeft[railUpLeftCount] = new ImageView(railUpLeftPink);
                                 } else {
@@ -207,9 +238,11 @@ public class mapReader {
                             case "U" -> {
                                 // RIGHT UP
 
-                                notAllowedBox[columnCounter][row] = true;
-                                dots[columnCounter][row] = false;
-                                powerPills[columnCounter][row] = false;
+                                if (reset) {
+                                    notAllowedBox[columnCounter][row] = true;
+                                    dots[columnCounter][row] = false;
+                                    powerPills[columnCounter][row] = false;
+                                }
                                 if (inPinkMode) {
                                     viewRailRightUp[railRightUpCount] = new ImageView(railRightUpPink);
                                 } else {
@@ -225,9 +258,11 @@ public class mapReader {
                             case "D" -> {
                                 // LEFT UP
 
-                                notAllowedBox[columnCounter][row] = true;
-                                dots[columnCounter][row] = false;
-                                powerPills[columnCounter][row] = false;
+                                if (reset) {
+                                    notAllowedBox[columnCounter][row] = true;
+                                    dots[columnCounter][row] = false;
+                                    powerPills[columnCounter][row] = false;
+                                }
                                 if (inPinkMode) {
                                     viewRailLeftUp[railLeftUpCount] = new ImageView(railLeftUpPink);
                                 } else {
@@ -242,9 +277,11 @@ public class mapReader {
                             }
                             case "F" -> {
                                 // Spawning Fruit
-                                powerPills[columnCounter][row] = false;
-                                dots[columnCounter][row] = false;
-                                notAllowedBox[columnCounter][row] = false;
+                                if (reset) {
+                                    powerPills[columnCounter][row] = false;
+                                    dots[columnCounter][row] = false;
+                                    notAllowedBox[columnCounter][row] = false;
+                                }
 
                                 spawningFruitColumn = columnCounter;
                                 spawningFruitRow = row;

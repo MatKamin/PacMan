@@ -23,6 +23,8 @@ public class scaredMode extends Ghost {
 
             viewScaredBlinky.setX(blinkyXPos);
             viewScaredBlinky.setY(blinkyYPos);
+            viewScaredBlinky.setFitWidth(characterWidth);
+            viewScaredBlinky.setFitHeight(characterHeight);
             blinkyXPos += velocityBlinkyHorizontal;
             blinkyYPos += velocityBlinkyVertical;
 
@@ -39,6 +41,8 @@ public class scaredMode extends Ghost {
 
             viewScaredPinky.setX(pinkyXPos);
             viewScaredPinky.setY(pinkyYPos);
+            viewScaredPinky.setFitWidth(characterWidth);
+            viewScaredPinky.setFitHeight(characterHeight);
             pinkyXPos += velocityPinkyHorizontal;
             pinkyYPos += velocityPinkyVertical;
 

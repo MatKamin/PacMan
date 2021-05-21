@@ -6,8 +6,6 @@ package application.canvas;
 import application.ai.chaseMode;
 import application.ai.scaredMode;
 import application.ai.scatterMode;
-import application.gameMechanics;
-import application.sounds;
 import javafx.scene.Group;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -71,7 +69,7 @@ public class gameCanvas {
 
         if (gameStarted) {
 
-            //::::::::::: Ghosts Movement :::::::::::\\
+            //::::::::::: Ghosts :::::::::::\\
 
 
             switch (scatterCount) {
@@ -109,7 +107,8 @@ public class gameCanvas {
 
 
 
-            //::::::::::: Pac-Man Movement :::::::::::\\
+            //::::::::::: Pac-Man :::::::::::\\
+
 
             pacmanMove(gameLayout);                   // Allows moving
 
@@ -122,6 +121,7 @@ public class gameCanvas {
             drawLifesCounter(gameLayout);             // Draws Life Counter in UI
             drawLevelCounter(gameLayout);             // Draws Level Counter in UI
 
+            pacmanDeath(gameLayout, gc);                  // Allows Losing
 
 
 

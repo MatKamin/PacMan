@@ -23,12 +23,12 @@ public class sounds extends Thread{
     static MediaPlayer backgroundMusic;
 
     public static void playBackgroundMusic() {
-        String s = "resources/background.mp3";          // Music file location
+        String s = "resources/sounds/beginning.wav";          // Music file location
         String h = Paths.get(s).toUri().toString();     // Convert to URI
 
         backgroundMusic = new MediaPlayer(new Media(h));            // mediaPlayer -> Selected Music File
         backgroundMusic.setVolume(0.05);                            // change volume
-        backgroundMusic.setCycleCount(MediaPlayer.INDEFINITE);      // play in loop
+        backgroundMusic.setCycleCount(2);      // play in loop
 
         backgroundMusic.play();     // Start Playing
     }

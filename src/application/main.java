@@ -489,6 +489,7 @@ public class main extends Application {
 
         currentStage.setTitle("Pac-Man");      // Window title
         gameStarted = false;
+        currentStage.setResizable(false);
 
 
         //----------------------------------------------------------------------------------------WINDOWS----------------------------------------------------------------------------------------\\
@@ -1244,7 +1245,6 @@ public class main extends Application {
     public static void main(String[] args) {
 
         sounds.playBackgroundMusic();
-        sounds.playChomp();
         // TODO: Music
         // Sets Background Music
         // sounds.playBackgroundMusic();
