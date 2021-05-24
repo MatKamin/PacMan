@@ -139,6 +139,24 @@ public class imageViewerVariables {
     }
 
 
+    //::::::::::: COIN :::::::::::\\
+
+
+
+    // Creating an image
+    static public Image coin;
+
+
+    static {
+        try {
+            coin = new Image(new FileInputStream("resources/mapAssets/coin.png"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static ImageView viewCoin = new ImageView(coin);
+
     //::::::::::: DOTS CLEARER :::::::::::\\
 
     public static ImageView viewClearer = new ImageView();

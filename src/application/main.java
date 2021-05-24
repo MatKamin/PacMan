@@ -20,6 +20,7 @@ import javafx.scene.effect.Bloom;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -27,10 +28,13 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.Window;
 import javafx.util.Duration;
 
+import javax.swing.plaf.nimbus.State;
 import java.awt.geom.RoundRectangle2D;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -54,8 +58,8 @@ public class main extends Application {
     //---------------------------------VARIABLES---------------------------------\\
 
 
-    public static final int width = 1300;       // Window width
-    public static final int height = 1000;      // Window height
+    public static double width = 1300;       // Window width
+    public static double height = 1000;      // Window height
 
     private static final String ANSI_RESET = "\u001B[0m";
     private static final String ANSI_GREEN = "\u001B[32m";
@@ -113,6 +117,8 @@ public class main extends Application {
 
     public static String clickPath = "resources/sounds/click.mp3";                                // Music file location
     public static String clickURI = Paths.get(clickPath).toUri().toString();                      // Convert to URI
+
+    public static boolean isFullscreen = false;
 
 
     private void createSettingsWindow() {
@@ -180,6 +186,7 @@ public class main extends Application {
 
             // Primary Stage -> Settings Canvas
             currentStage.setScene(statsScene);
+            if (isFullscreen) currentStage.setFullScreen(true);
             currentStage.show();
         });
     }
@@ -211,8 +218,8 @@ public class main extends Application {
     private void createGetSchemeButton2() {
         getScheme2 = new ComboBox();
 
-        getScheme2.getItems().add("X");
-        getScheme2.getItems().add("X2");
+        getScheme2.getItems().add("1300x1000");
+        getScheme2.getItems().add("Fullscreen");
 
         getScheme2.setLayoutX(width / 8);
         getScheme2.setLayoutY(height / 6 + (height / 6));
@@ -431,19 +438,20 @@ public class main extends Application {
     private static Text settingsButton;
     private static Text highscoreButton;
 
+    Group menuLayout;
     private void createMenuWindow() {
         // Canvas
         Canvas canvasMenu = new Canvas(width, height);
         gcMenu = canvasMenu.getGraphicsContext2D();
 
         // Layout
-        Group menuLayout = new Group();
+        menuLayout = new Group();
 
         // Scene
         menuScene = new Scene(menuLayout, width, height);
 
         // Add to Layout
-        menuLayout.getChildren().addAll(canvasMenu, playButton, viewMenuAnimation, settingsButton, highscoreButton);
+        menuLayout.getChildren().addAll(canvasMenu, playButton, viewMenuAnimation, settingsButton, highscoreButton, viewCoin, coinCount);
     }
 
     private void createMenuAnimation() {
@@ -452,6 +460,39 @@ public class main extends Application {
         viewMenuAnimation.setY((height / 10) * 3);
         viewMenuAnimation.setFitWidth(width);
         viewMenuAnimation.setFitHeight(150);
+    }
+
+    static Text coinCount;
+
+    private void createShowCoin() {
+        viewCoin.setFitHeight(heightOneBlock*1.5);
+        viewCoin.setFitWidth(widthOneBlock*1.5);
+
+        viewCoin.setY(viewCoin.getFitHeight());
+        viewCoin.setX(viewCoin.getFitWidth());
+
+        String coins = "";
+        try {
+            sqlConnection();
+
+            Statement statement = connection.createStatement();
+            ResultSet results = statement.executeQuery("SELECT * FROM User WHERE name = '" + validUsername.toUpperCase() + "'");
+
+            while (results.next()) {
+                coins = String.valueOf(Integer.parseInt(results.getString("alltimeScore")) / 10);
+            }
+        } catch (Exception e) {
+            System.out.println("Error while reading Database");
+            e.printStackTrace();
+        }
+
+        coinCount = new Text(coins);
+        coinCount.setFill(Color.YELLOW);
+        coinCount.setStroke(Color.DARKGRAY);
+        coinCount.setFont(Font.loadFont("file:resources/fonts/emulogic.ttf", heightOneBlock));
+        coinCount.setX(viewCoin.getFitWidth() + widthOneBlock*2);
+        coinCount.setY(viewCoin.getFitHeight() + coinCount.getBoundsInParent().getHeight());
+
     }
 
     private void createPlayButton(Stage currentStage) {
@@ -474,6 +515,7 @@ public class main extends Application {
 
             // Primary Stage -> Game Canvas
             currentStage.setScene(gameScene);
+            if (isFullscreen) currentStage.setFullScreen(true);
             currentStage.show();
 
             tl.playFromStart();                            // Start Animation
@@ -500,6 +542,7 @@ public class main extends Application {
 
             // Primary Stage -> Settings Canvas
             currentStage.setScene(settingsScene);
+            if (isFullscreen) currentStage.setFullScreen(true);
             currentStage.show();
         });
     }
@@ -524,6 +567,7 @@ public class main extends Application {
 
             // Primary Stage -> Settings Canvas
             currentStage.setScene(highscoreScene);
+            if (isFullscreen) currentStage.setFullScreen(true);
             currentStage.show();
         });
     }
@@ -604,6 +648,7 @@ public class main extends Application {
         //------------------------------------------------------ MENU WINDOW ------------------------------------------------------\\
 
         createMenuAnimation();
+        createShowCoin();
         createPlayButton(currentStage);
         createSettingsButton(currentStage);
         createHighscoreButton(currentStage);
@@ -627,8 +672,13 @@ public class main extends Application {
 
         menuCanvas.play(gcMenu);
         currentStage.setScene(menuScene);
+        if (isFullscreen) currentStage.setFullScreen(true);
 
-        if (!isLoggedIn) currentStage.setScene(loginScene);
+
+        if (!isLoggedIn) {
+            currentStage.setScene(loginScene);
+            if (isFullscreen) currentStage.setFullScreen(true);
+        }
 
         currentStage.show();
 
@@ -646,6 +696,7 @@ public class main extends Application {
                 try {
                     sounds.playClick();
                     currentStage.setScene(settingsScene);
+                    if (isFullscreen) currentStage.setFullScreen(true);
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
@@ -703,12 +754,37 @@ public class main extends Application {
             }
         });
 
+        getScheme2.setOnAction((event) -> {
+            sounds.playClick();
+            int selectedIndex = getScheme2.getSelectionModel().getSelectedIndex();
+
+            switch (selectedIndex) {
+                case 0 -> {
+                    width = 1300;
+                    height = 1000;
+                    isFullscreen = false;
+                    currentStage.setFullScreen(false);
+                    start(currentStage);
+                }
+                case 1 -> {
+                    width = Screen.getPrimary().getBounds().getWidth();
+                    height = Screen.getPrimary().getBounds().getHeight();
+                    isFullscreen = true;
+                    currentStage.setFullScreen(true);
+                    currentStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+                    currentStage.setFullScreenExitHint("Vollbildmodus");
+                    start(currentStage);
+                }
+            }
+        });
+
         //--------------------------------------------HIGHSCORE CONTROLS--------------------------------------------\\
 
         highscoreScene.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ESCAPE) {      // If "Escape" Pressed
                 sounds.playClick();
                 currentStage.setScene(menuScene);   // Go to Menu
+                if (isFullscreen) currentStage.setFullScreen(true);
             }
         });
 
@@ -761,6 +837,7 @@ public class main extends Application {
         exitButton.setOnMouseClicked(e -> {
             sounds.playClick();
             currentStage.setScene(menuScene);
+            if (isFullscreen) currentStage.setFullScreen(true);
             start(currentStage);
         });
     }
@@ -948,6 +1025,7 @@ public class main extends Application {
                                 isPacmanStartingPosVisible = true;
                                 gameStarted = false;
                                 primaryStage.setScene(menuScene);
+                                if (isFullscreen) primaryStage.setFullScreen(true);
                                 chaseTimer.cancel();
                                 scatterTimer.cancel();
                                 chaseTimer = new Timer();
@@ -976,6 +1054,7 @@ public class main extends Application {
                         isPacmanStartingPosVisible = true;
                         gameStarted = false;
                         primaryStage.setScene(menuScene);
+                        if (isFullscreen) primaryStage.setFullScreen(true);
                         chaseTimer.cancel();
                         scatterTimer.cancel();
                         chaseTimer = new Timer();
@@ -1150,7 +1229,10 @@ public class main extends Application {
         GridPane.setMargin(loginButton, new Insets(20, 0, 20, 0));
 
 
-        loginButton.setOnAction(event -> currentStage.setScene(loginScene));
+        loginButton.setOnAction(event -> {
+            currentStage.setScene(loginScene);
+            if (isFullscreen) currentStage.setFullScreen(true);
+        });
 
         submitButton.setOnAction(event -> {
 
@@ -1198,8 +1280,12 @@ public class main extends Application {
             }
             isLoggedIn = true;
             validUsername = nameField.getText();
+            createShowCoin();
+            menuLayout.getChildren().add(coinCount);
             menuCanvas.play(gcMenu);
             currentStage.setScene(menuScene);
+            if (isFullscreen) currentStage.setFullScreen(true);
+
         });
     }
 
@@ -1303,7 +1389,10 @@ public class main extends Application {
         GridPane.setMargin(loginButton, new Insets(20, 0, 20, 0));
 
 
-        loginButton.setOnAction(event -> currentStage.setScene(registrationScene));
+        loginButton.setOnAction(event -> {
+            currentStage.setScene(registrationScene);
+            if (isFullscreen) currentStage.setFullScreen(true);
+        });
 
         submitButton.setOnAction(event -> {
 
@@ -1323,10 +1412,13 @@ public class main extends Application {
                 return;
             }
 
-            currentStage.setScene(menuScene);
             validUsername = nameField.getText();
             isLoggedIn = true;
+            createShowCoin();
+            menuLayout.getChildren().add(coinCount);
             menuCanvas.play(gcMenu);
+            currentStage.setScene(menuScene);
+            if (isFullscreen) currentStage.setFullScreen(true);
         });
 
     }

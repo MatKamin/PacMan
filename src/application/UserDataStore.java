@@ -59,8 +59,8 @@ public class UserDataStore {
         sqlConnection();
 
         // the mysql insert statement
-        String query = "INSERT INTO User(pk_user, name, highscore, eatenGhosts, creationDate)"
-                + " VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO User(pk_user, name, highscore, eatenGhosts, creationDate, alltimeScore, gamesPlayed, finisehLevels)"
+                + " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
 
         Statement queryPKCount = connection.createStatement();
@@ -79,6 +79,9 @@ public class UserDataStore {
         preparedStmt.setInt   (3, 0);
         preparedStmt.setInt(4, 0);
         preparedStmt.setDate(5, date);
+        preparedStmt.setInt(6, 0);
+        preparedStmt.setInt(7, 0);
+        preparedStmt.setInt(8, 0);
 
         // execute the preparedstatement
         preparedStmt.execute();

@@ -136,6 +136,7 @@ public class gameMechanics {
             preparedStmt.execute();
             connection.close();
 
+            // EATEN GHOSTS
             sqlConnection();
 
             Statement statement = connection.createStatement();
@@ -154,6 +155,78 @@ public class gameMechanics {
             preparedStmt2.execute();
             connection.close();
 
+
+            //ALLTIME SCORE
+            sqlConnection();
+
+            Statement statement3 = connection.createStatement();
+            ResultSet results3 = statement3.executeQuery("SELECT * FROM User WHERE name = '" + validUsername.toUpperCase() + "'");
+            int scoreOld = 0;
+            int pk3 = 0;
+            while (results3.next()) {
+                pk3 = Integer.parseInt(results3.getString("pk_user"));
+                scoreOld = Integer.parseInt(results3.getString("alltimeScore"));
+            }
+            int scoreNew = scoreOld + score;
+
+
+            String query3 = "UPDATE User SET alltimeScore = "+scoreNew+" WHERE pk_user = "+pk3;
+            PreparedStatement preparedStmt3 = connection.prepareStatement(query3);
+            preparedStmt3.execute();
+            connection.close();
+
+
+
+            // GAMES PLAYED
+
+            sqlConnection();
+
+            Statement statement4 = connection.createStatement();
+            ResultSet results4 = statement4.executeQuery("SELECT * FROM User WHERE name = '" + validUsername.toUpperCase() + "'");
+            int gamesOld = 0;
+            int pk4 = 0;
+            while (results4.next()) {
+                pk4 = Integer.parseInt(results4.getString("pk_user"));
+                gamesOld = Integer.parseInt(results4.getString("gamesPlayed"));
+            }
+
+            int gamesNew = gamesOld;
+            if (!gameStarted){
+                gamesNew++;
+            }
+
+            String query4 = "UPDATE User SET gamesPlayed = "+gamesNew+" WHERE pk_user = "+pk4;
+            PreparedStatement preparedStmt4 = connection.prepareStatement(query4);
+            preparedStmt4.execute();
+            connection.close();
+
+
+
+
+
+            // LEVELS CLEARED
+
+            sqlConnection();
+
+            Statement statement5 = connection.createStatement();
+            ResultSet results5 = statement5.executeQuery("SELECT * FROM User WHERE name = '" + validUsername.toUpperCase() + "'");
+            int levelsOld = 0;
+            int pk5 = 0;
+            while (results5.next()) {
+                pk5 = Integer.parseInt(results5.getString("pk_user"));
+                levelsOld = Integer.parseInt(results5.getString("finisehLevels"));
+            }
+
+            if (levelCounter == 0) {
+                connection.close();
+                return;
+            }
+            int levelsNew = levelsOld + levelCounter - 1;
+
+            String query5 = "UPDATE User SET finisehLevels = "+levelsNew+" WHERE pk_user = "+pk5;
+            PreparedStatement preparedStmt5 = connection.prepareStatement(query5);
+            preparedStmt5.execute();
+            connection.close();
 
 
         } catch (Exception e) {
