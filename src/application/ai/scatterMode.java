@@ -45,6 +45,23 @@ public class scatterMode extends Ghost {
 
             calculateNextMove("pinky");
             allowTeleport("pinky");
+            return;
+        }
+
+
+        if (ghost.equals("clyde")) {
+            gameLayout.getChildren().remove(viewScaredClyde);
+            gameLayout.getChildren().remove(viewClyde);
+            gameLayout.getChildren().add(viewClyde);
+
+            // Clyde
+            viewClyde.setX(clydeXPos);
+            viewClyde.setY(clydeYPos);
+            clydeXPos += velocityClydeHorizontal;
+            clydeYPos += velocityClydeVertical;
+
+            calculateNextMove("clyde");
+            allowTeleport("clyde");
         }
     }
 
@@ -79,6 +96,24 @@ public class scatterMode extends Ghost {
                 distance3pinky = Math.pow(Math.abs(pinkyColumn - 2), 2) + Math.pow(Math.abs((pinkyRow + 1) - 1 - 1), 2);
             if (pinkyGoLeft)
                 distance4pinky = Math.pow(Math.abs((pinkyColumn - 1) - 2 - 1), 2) + Math.pow(Math.abs(pinkyRow - 1), 2);
+            return;
+        }
+
+        if (ghost.equals("clyde")) {
+            // TARGET SCATTER MODE
+            // COLUMN: 0
+            // ROW: 34
+            if (clydeColumnNew > 10 && clydeColumnNew < 17 && clydeRowNew > 15 && clydeRowNew < 20) {
+                if (clydeGoRight) distance1clyde = Math.pow(Math.abs((clydeColumn + 1) - 26 - 1), 2) + Math.pow(Math.abs(clydeRow - 1), 2);
+                if (clydeGoUp) distance2clyde = Math.pow(Math.abs(clydeColumn - 26), 2) + Math.pow(Math.abs((clydeRow - 1) - 1 - 1), 2);
+                if (clydeGoDown) distance3clyde = Math.pow(Math.abs(clydeColumn - 26), 2) + Math.pow(Math.abs((clydeRow + 1) - 1 - 1), 2);
+                if (clydeGoLeft) distance4clyde = Math.pow(Math.abs((clydeColumn - 1) - 26 - 1), 2) + Math.pow(Math.abs(clydeRow - 1), 2);
+            } else {
+                if (clydeGoRight) distance1clyde = Math.pow(Math.abs((clydeColumn + 1) - 0 - 1), 2) + Math.pow(Math.abs(clydeRow - 34), 2);
+                if (clydeGoUp) distance2clyde = Math.pow(Math.abs(clydeColumn - 0), 2) + Math.pow(Math.abs((clydeRow - 1) - 34 - 1), 2);
+                if (clydeGoDown) distance3clyde = Math.pow(Math.abs(clydeColumn - 0), 2) + Math.pow(Math.abs((clydeRow + 1) - 34 - 1), 2);
+                if (clydeGoLeft) distance4clyde = Math.pow(Math.abs((clydeColumn - 1) - 0 - 1), 2) + Math.pow(Math.abs(clydeRow - 34), 2);
+            }
         }
     }
 
@@ -111,6 +146,17 @@ public class scatterMode extends Ghost {
             distance2 = 10000;
             distance3 = 10000;
             distance4 = 10000;
+
+            if (switchedToScatterBlinky) {
+                getMovingDirection("blinky");
+                if (blinkyGoingRight || blinkyGoingLeft) {
+                    velocityBlinkyHorizontal *= -1;
+                }
+                if (blinkyGoingUp || blinkyGoingDown) {
+                    velocityBlinkyVertical *= -1;
+                }
+                switchedToScatterBlinky = false;
+            }
 
             if (blinkyColumnNew == blinkyColumn + 1 || blinkyColumnNew == blinkyColumn - 1) {
                 blinkyColumn = blinkyColumnNew;
@@ -158,6 +204,17 @@ public class scatterMode extends Ghost {
             distance3pinky = 10000;
             distance4pinky = 10000;
 
+            if (switchedToScatterPinky) {
+                getMovingDirection("pinky");
+                if (pinkyGoingRight || pinkyGoingLeft) {
+                    velocityPinkyHorizontal *= -1;
+                }
+                if (pinkyGoingUp || pinkyGoingDown) {
+                    velocityPinkyVertical *= -1;
+                }
+                switchedToScatterPinky = false;
+            }
+
             if (pinkyColumnNew == pinkyColumn + 1 || pinkyColumnNew == pinkyColumn - 1) {
                 pinkyColumn = pinkyColumnNew;
                 getMovingDirection("pinky");
@@ -175,6 +232,64 @@ public class scatterMode extends Ghost {
                 calculateDistances("pinky");
                 getShortestDistance(distance1pinky, distance2pinky, distance3pinky, distance4pinky, "pinky");
                 move("pinky");
+            }
+            return;
+        }
+
+
+
+        if (ghost.equals("clyde")) {
+            clydeRowNew = (int) Math.round((clydeYPos + characterHeight / 2) / widthOneBlock);
+            clydeColumnNew = (int) Math.round(((clydeXPos - characterWidth / 2) / heightOneBlock));
+
+            if (velocityClydeHorizontal < 0 || velocityClydeVertical > 0) {
+                clydeRowNew = (int) Math.round((clydeYPos - characterHeight / 2) / widthOneBlock);
+                clydeColumnNew = (int) Math.round(((clydeXPos + characterWidth / 2) / heightOneBlock));
+            }
+
+            clydeGoingRight = false;
+            clydeGoingLeft = false;
+            clydeGoingUp = false;
+            clydeGoingDown = false;
+
+            clydeGoRight = true;
+            clydeGoLeft = true;
+            clydeGoUp = true;
+            clydeGoDown = true;
+
+            distance1clyde = 10000;
+            distance2clyde = 10000;
+            distance3clyde = 10000;
+            distance4clyde = 10000;
+
+            if (switchedToScatterClyde) {
+                getMovingDirection("clyde");
+                if (clydeGoingRight || clydeGoingLeft) {
+                    velocityClydeHorizontal *= -1;
+                }
+                if (clydeGoingUp || clydeGoingDown) {
+                    velocityClydeVertical *= -1;
+                }
+                switchedToScatterClyde = false;
+            }
+
+            if (clydeColumnNew == clydeColumn + 1 || clydeColumnNew == clydeColumn - 1) {
+                clydeColumn = clydeColumnNew;
+                getMovingDirection("clyde");
+                blockTurnAround("clyde");
+                blockImpossibleMoves("clyde");
+                calculateDistances("clyde");
+                getShortestDistance(distance1clyde, distance2clyde, distance3clyde, distance4clyde, "clyde");
+                move("clyde");
+            }
+            if (clydeRowNew == clydeRow + 1 || clydeRowNew == clydeRow - 1) {
+                clydeRow = clydeRowNew;
+                getMovingDirection("clyde");
+                blockTurnAround("clyde");
+                blockImpossibleMoves("clyde");
+                calculateDistances("clyde");
+                getShortestDistance(distance1clyde, distance2clyde, distance3clyde, distance4clyde, "clyde");
+                move("clyde");
             }
         }
     }

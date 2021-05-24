@@ -3,6 +3,7 @@ package application.ai;
 import java.util.Timer;
 
 import static application.gameMechanics.*;
+import static application.main.velocityAdder;
 import static application.main.widthOneBlock;
 import static application.mapReader.*;
 
@@ -62,6 +63,39 @@ public class Ghost {
 
 
 
+    static int clydeColumnNew;
+    static int clydeRowNew;
+
+    static boolean clydeGoingUp;
+    static boolean clydeGoingDown;
+    static boolean clydeGoingLeft;
+    static boolean clydeGoingRight;
+
+
+    static double velocityClydeVertical = 0;
+    static double velocityClydeHorizontal = 1;
+
+    static boolean clydeGoRight = true;
+    static boolean clydeGoLeft = true;
+    static boolean clydeGoUp = true;
+    static boolean clydeGoDown = true;
+
+    static double distance1clyde = 10000;
+    static double distance2clyde = 10000;
+    static double distance3clyde = 10000;
+    static double distance4clyde = 10000;
+
+
+
+
+
+    public static boolean switchedToScatterBlinky = false;
+    public static boolean switchedToScatterPinky = false;
+    public static boolean switchedToScatterClyde = false;
+    public static boolean switchedToChaseBlinky = false;
+    public static boolean switchedToChasePinky = false;
+    public static boolean switchedToChaseClyde = false;
+
 
     public static Timer scatterTimer = new Timer();
 
@@ -73,10 +107,13 @@ public class Ghost {
                     new java.util.TimerTask() {
                         @Override
                         public void run() {
-                            if (inScatterMode && !inScaredModeBlinky && !inScaredModePinky) {
+                            if (inScatterMode && !inScaredModeBlinky && !inScaredModePinky && !inScaredModeClyde) {
                                 if (chaseCount < 5) {
                                     inScatterMode = false;
                                     scatterCount++;
+                                    switchedToChaseBlinky = true;
+                                    switchedToChasePinky = true;
+                                    switchedToChaseClyde = true;
                                     chaseModeTimer();
                                 }
                             }
@@ -102,10 +139,13 @@ public class Ghost {
                         new java.util.TimerTask() {
                             @Override
                             public void run() {
-                                if (inChaseMode && !inScaredModeBlinky && !inScaredModePinky) {
+                                if (inChaseMode && !inScaredModeBlinky && !inScaredModePinky && !inScaredModeClyde) {
                                     if (scatterCount < 4) {
                                         inChaseMode = false;
                                         chaseCount++;
+                                        switchedToScatterBlinky = true;
+                                        switchedToScatterPinky = true;
+                                        switchedToScatterClyde = true;
                                         scatterModeTimer();
                                     }
                                 }
@@ -124,15 +164,13 @@ public class Ghost {
 
 
 
-
     public static void getRandomDirection(double d1, double d2, double d3, double d4, String ghost) {
         int random = 0;
 
         try {
             random = (int)(Math.random() * 4 + 1);
-        } catch (StackOverflowError e) {
-            e.printStackTrace();
-        }
+        } catch (Exception ignore) { }
+
 
         double direction = 0;
 
@@ -151,7 +189,9 @@ public class Ghost {
         }
 
         if (direction == 0) {
-            getRandomDirection(d1, d2, d3, d4, ghost);
+            try {
+                getRandomDirection(d1, d2, d3, d4, ghost);
+            } catch (Exception ignore) { }
             return;
         }
 
@@ -159,24 +199,28 @@ public class Ghost {
             switch (ghost) {
                 case "blinky" -> blinkyGoRight = false;
                 case "pinky" -> pinkyGoRight = false;
+                case "clyde" -> clydeGoRight = false;
             }
         }
         if (direction != d2) {
             switch (ghost) {
                 case "blinky" -> blinkyGoUp = false;
                 case "pinky" -> pinkyGoUp = false;
+                case "clyde" -> clydeGoUp = false;
             }
         }
         if (direction != d3) {
             switch (ghost) {
                 case "blinky" -> blinkyGoDown = false;
                 case "pinky" -> pinkyGoDown = false;
+                case "clyde" -> clydeGoDown = false;
             }
         }
         if (direction != d4) {
             switch (ghost) {
                 case "blinky" -> blinkyGoLeft = false;
                 case "pinky" -> pinkyGoLeft = false;
+                case "clyde" -> clydeGoLeft = false;
             }
         }
     }
@@ -191,24 +235,28 @@ public class Ghost {
             switch (ghost) {
                 case "blinky" -> blinkyGoRight = false;
                 case "pinky" -> pinkyGoRight = false;
+                case "clyde" -> clydeGoRight = false;
             }
         }
         if (smallest != d2) {
             switch (ghost) {
                 case "blinky" -> blinkyGoUp = false;
                 case "pinky" -> pinkyGoUp = false;
+                case "clyde" -> clydeGoUp = false;
             }
         }
         if (smallest != d3) {
             switch (ghost) {
                 case "blinky" -> blinkyGoDown = false;
                 case "pinky" -> pinkyGoDown = false;
+                case "clyde" -> clydeGoDown = false;
             }
         }
         if (smallest != d4) {
             switch (ghost) {
                 case "blinky" -> blinkyGoLeft = false;
                 case "pinky" -> pinkyGoLeft = false;
+                case "clyde" -> clydeGoLeft = false;
             }
         }
     }
@@ -218,15 +266,15 @@ public class Ghost {
         if (ghost.equals("blinky")) {
             if (blinkyGoLeft) {
                 velocityBlinkyVertical = 0;
-                velocityBlinkyHorizontal = -1;
+                velocityBlinkyHorizontal = -1 - velocityAdder;
             } else if (blinkyGoRight) {
                 velocityBlinkyVertical = 0;
-                velocityBlinkyHorizontal = 1;
+                velocityBlinkyHorizontal = 1 + velocityAdder;
             } else if (blinkyGoDown) {
-                velocityBlinkyVertical = 1;
+                velocityBlinkyVertical = 1 + velocityAdder;
                 velocityBlinkyHorizontal = 0;
             } else if (blinkyGoUp) {
-                velocityBlinkyVertical = -1;
+                velocityBlinkyVertical = -1 - velocityAdder;
                 velocityBlinkyHorizontal = 0;
             }
             return;
@@ -237,19 +285,36 @@ public class Ghost {
         if (ghost.equals("pinky")) {
             if (pinkyGoLeft) {
                 velocityPinkyVertical = 0;
-                velocityPinkyHorizontal = -1;
+                velocityPinkyHorizontal = -1 - velocityAdder;
             } else if (pinkyGoRight) {
                 velocityPinkyVertical = 0;
-                velocityPinkyHorizontal = 1;
+                velocityPinkyHorizontal = 1 + velocityAdder;
             } else if (pinkyGoDown) {
-                velocityPinkyVertical = 1;
+                velocityPinkyVertical = 1 + velocityAdder;
                 velocityPinkyHorizontal = 0;
             } else if (pinkyGoUp) {
-                velocityPinkyVertical = -1;
+                velocityPinkyVertical = -1 - velocityAdder;
                 velocityPinkyHorizontal = 0;
             }
         }
 
+
+
+        if (ghost.equals("clyde")) {
+            if (clydeGoLeft) {
+                velocityClydeVertical = 0;
+                velocityClydeHorizontal = -1 - velocityAdder;
+            } else if (clydeGoRight) {
+                velocityClydeVertical = 0;
+                velocityClydeHorizontal = 1 + velocityAdder;
+            } else if (clydeGoDown) {
+                velocityClydeVertical = 1 + velocityAdder;
+                velocityClydeHorizontal = 0;
+            } else if (clydeGoUp) {
+                velocityClydeVertical = -1 - velocityAdder;
+                velocityClydeHorizontal = 0;
+            }
+        }
     }
 
 
@@ -267,6 +332,13 @@ public class Ghost {
             if (ghostNotPossibleDown(pinkyColumn, pinkyRow)) pinkyGoDown = false;
             if (ghostNotPossibleLeft(pinkyColumn, pinkyRow)) pinkyGoLeft = false;
             if (ghostNotPossibleRight(pinkyColumn, pinkyRow)) pinkyGoRight = false;
+        }
+
+        if (ghost.equals("clyde")) {
+            if (ghostNotPossibleUp(clydeColumn, clydeRow)) clydeGoUp = false;
+            if (ghostNotPossibleDown(clydeColumn, clydeRow)) clydeGoDown = false;
+            if (ghostNotPossibleLeft(clydeColumn, clydeRow)) clydeGoLeft = false;
+            if (ghostNotPossibleRight(clydeColumn, clydeRow)) clydeGoRight = false;
         }
 
     }
@@ -287,6 +359,13 @@ public class Ghost {
             if (pinkyGoingUp) pinkyGoDown = false;
             if (pinkyGoingDown) pinkyGoUp = false;
         }
+
+        if (ghost.equals("clyde")) {
+            if (clydeGoingRight) clydeGoLeft = false;
+            if (clydeGoingLeft) clydeGoRight = false;
+            if (clydeGoingUp) clydeGoDown = false;
+            if (clydeGoingDown) clydeGoUp = false;
+        }
     }
 
     public static void getMovingDirection(String ghost) {
@@ -303,6 +382,13 @@ public class Ghost {
             if (velocityPinkyHorizontal < 0) pinkyGoingLeft = true;
             if (velocityPinkyVertical < 0) pinkyGoingUp = true;
             if (velocityPinkyVertical > 0) pinkyGoingDown = true;
+        }
+
+        if (ghost.equals("clyde")) {
+            if (velocityClydeHorizontal > 0) clydeGoingRight = true;
+            if (velocityClydeHorizontal < 0) clydeGoingLeft = true;
+            if (velocityClydeVertical < 0) clydeGoingUp = true;
+            if (velocityClydeVertical > 0) clydeGoingDown = true;
         }
     }
 
@@ -343,6 +429,26 @@ public class Ghost {
                     pinkyXPos = blockCountHorizontally * widthOneBlock;
                     pinkyColumnNew = blockCountHorizontally - 1;
                     pinkyColumn = blockCountHorizontally - 1;
+                }
+            }
+        }
+
+
+        if (ghost.equals("clyde")) {
+            if (velocityClydeHorizontal > 0) {
+                if (clydeColumnNew + 1 > blockCountHorizontally) {
+                    // Teleport right to left
+                    clydeXPos = widthOneBlock;
+                    clydeColumnNew = 0;
+                    clydeColumn = 0;
+                }
+            }
+            if (velocityClydeHorizontal < 0) {
+                if (clydeColumnNew - 2 < 0) {
+                    // Teleport left to right
+                    clydeXPos = blockCountHorizontally * widthOneBlock;
+                    clydeColumnNew = blockCountHorizontally - 1;
+                    clydeColumn = blockCountHorizontally - 1;
                 }
             }
         }

@@ -88,6 +88,24 @@ public class imageViewerVariables {
     public static ImageView viewPinky = new ImageView(pinky);
 
 
+
+    //::::::::::: Orange Ghost (Clyde) GIF :::::::::::\\
+
+    // Creating an image
+    static Image clyde;
+
+    static {
+        try {
+            clyde = new Image(new FileInputStream("resources/characters/clyde.gif"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Setting the image view
+    public static ImageView viewClyde = new ImageView(clyde);
+
+
     //::::::::::: DOTS :::::::::::\\
 
     public static ImageView[] viewDot = new ImageView[blockCountHorizontally * blockCountVertically];

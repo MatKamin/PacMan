@@ -9,6 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
 import java.io.*;
+import java.sql.*;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -18,7 +19,7 @@ import static application.mapReader.*;
 
 
 //---------------------------------CLASS---------------------------------\\
-
+@SuppressWarnings("ALL")
 public class gameMechanics {
 
     //---------------------------------VARIABLES---------------------------------\\
@@ -77,6 +78,7 @@ public class gameMechanics {
     public static boolean inChaseMode = false;
     public static boolean inScaredModeBlinky = false;
     public static boolean inScaredModePinky = false;
+    public static boolean inScaredModeClyde = false;
     public static boolean inScatterMode = true;
 
     public static int scatterTime = 7000;
@@ -84,6 +86,8 @@ public class gameMechanics {
     public static int scaredTime = 7000;
     public static int scatterCount = 0;
     public static int chaseCount = 0;
+
+    public static int ghostsEaten = 0;
 
 
     /**
@@ -96,6 +100,66 @@ public class gameMechanics {
         return Pattern.compile(regexp).matcher(USERNAME).matches();
     }
 
+
+    public static void saveScore () {
+
+        try {
+            sqlConnection();
+
+
+            Statement statement2 = connection.createStatement();
+            ResultSet results2 = statement2.executeQuery("SELECT * FROM highscores ORDER BY score DESC LIMIT 1");
+
+            while (results2.next()) {
+                highscore = Integer.parseInt(results2.getString("score"));
+            }
+
+            // the mysql insert statement
+            String query = "INSERT INTO highscores(pk_highscores, username, score)"
+                    + " VALUES (?, ?, ?)";
+
+
+            Statement queryPKCount = connection.createStatement();
+            ResultSet pkCount = queryPKCount.executeQuery("SELECT COUNT(*) AS c FROM highscores");
+            int pk = 0;
+            if(pkCount.next()){
+                pk = Integer.parseInt(pkCount.getString("c"));
+            }
+
+            // create the mysql insert preparedstatement
+            PreparedStatement preparedStmt = connection.prepareStatement(query);
+            preparedStmt.setInt (1, pk);
+            preparedStmt.setString (2, validUsername);
+            preparedStmt.setInt   (3, score);
+
+            // execute the preparedstatement
+            preparedStmt.execute();
+            connection.close();
+
+            sqlConnection();
+
+            Statement statement = connection.createStatement();
+            ResultSet results = statement.executeQuery("SELECT * FROM User WHERE name = '" + validUsername.toUpperCase() + "'");
+            int eaten = 0;
+            int pk2 = 0;
+            while (results.next()) {
+                pk2 = Integer.parseInt(results.getString("pk_user"));
+                eaten = Integer.parseInt(results.getString("eatenGhosts"));
+            }
+            int eatenNew = eaten + ghostsEaten;
+
+
+            String query2 = "UPDATE User SET eatenGhosts = "+eatenNew+" WHERE pk_user = "+pk2;
+            PreparedStatement preparedStmt2 = connection.prepareStatement(query2);
+            preparedStmt2.execute();
+            connection.close();
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Sets and draws the Starting Position of PacMan
@@ -127,38 +191,14 @@ public class gameMechanics {
      */
     public static void resetGame(Group gameLayout) {
 
-        // Save Score
-        Scanner sc = null;
-        try {
-            sc = new Scanner(new File("resources/highscores.txt"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        assert sc != null;
-        sc.useDelimiter(",empty,0");
-        String old = sc.next();
-        String newScore = "," + validUsername + "," + score;
-        String paste = old + newScore;
-
-        paste = paste.replaceAll("," + validUsername + ",0", "");
-
-        try {
-            FileWriter writer = new FileWriter("resources/highscores.txt", false);
-
-            BufferedWriter bufferedWriter = new BufferedWriter(writer);
-            bufferedWriter.write(paste);
-            bufferedWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        saveScore();
 
         removeMap(gameLayout);
         gameLayout.getChildren().removeAll(viewCherry);
         firstRead = true;
         reset = true;
         score = 0;
+        ghostsEaten = 0;
         lifesCounter = 3;
         lifesAtLevelStart = 3;
         levelCounter = 0;
@@ -192,6 +232,8 @@ public class gameMechanics {
         inScatterMode = true;
         inChaseMode = false;
         inScaredModeBlinky = false;
+        inScaredModeClyde = false;
+        inScaredModePinky = false;
 
         scatterCount = 0;
         chaseCount = 0;
@@ -407,8 +449,16 @@ public class gameMechanics {
         viewPinky.setFitHeight(characterHeight);
         viewPinky.setFitWidth(characterWidth);
 
+        //Setting the position of the image
+        viewClyde.setX((clydeColumn * widthOneBlock) + (int) ((widthOneBlock - characterWidth) / 2));
+        viewClyde.setY((clydeRow * heightOneBlock) + (int) ((heightOneBlock - characterHeight) / 2));
+
+        //setting the fit height and width of the image view
+        viewClyde.setFitHeight(characterHeight);
+        viewClyde.setFitWidth(characterWidth);
+
         if (!inScaredModeBlinky) {
-            gameLayout.getChildren().addAll(viewBlinky, viewPinky);
+            gameLayout.getChildren().addAll(viewBlinky, viewPinky, viewClyde);
         }
     }
 
@@ -431,7 +481,7 @@ public class gameMechanics {
             if (mapNumber > maxMaps) mapNumber = 1;
             mapFile = "resources/levels/level" + mapNumber + ".txt";
             removeMap(gameLayout);
-            gameLayout.getChildren().removeAll(viewBlinky, viewPinky);
+            gameLayout.getChildren().removeAll(viewBlinky, viewPinky, viewClyde);
             reset = true;
             nextLevel = false;
             firstRead = true;
@@ -461,6 +511,8 @@ public class gameMechanics {
             inScatterMode = true;
             inChaseMode = false;
             inScaredModeBlinky = false;
+            inScaredModePinky = false;
+            inScaredModeClyde = false;
 
             scatterCount = 0;
             chaseCount = 0;
@@ -576,6 +628,7 @@ public class gameMechanics {
     public static boolean pacmanInPowerMode = false;
     public static boolean switchedToScaredBlinky = false;
     public static boolean switchedToScaredPinky = false;
+    public static boolean switchedToScaredClyde = false;
 
     public static void collectPowerPill(Group gameLayout) {
         if (!powerPills[(int) pacmanColumn][(int) pacmanRow]) return;
@@ -586,8 +639,10 @@ public class gameMechanics {
         pacmanInPowerMode = true;
         switchedToScaredBlinky = true;
         switchedToScaredPinky = true;
+        switchedToScaredClyde = true;
         pacmanPowerModeBlinky(gameLayout);
         pacmanPowerModePinky(gameLayout);
+        pacmanPowerModeClyde(gameLayout);
         clearer(gameLayout);
     }
 
@@ -629,6 +684,24 @@ public class gameMechanics {
         );
     }
 
+    private static void pacmanPowerModeClyde(Group gameLayout) {
+        gameLayout.getChildren().remove(viewClyde);
+        inScaredModeClyde = true;
+        // Timer
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        if (inScaredModeClyde) {
+                            inScaredModeClyde = false;
+                            inScatterMode = true;
+                        }
+                    }
+                },
+                scaredTime
+        );
+    }
+
 
     private static boolean pacmanIsAlive = true;
 
@@ -641,18 +714,18 @@ public class gameMechanics {
             tl.pause();
         }
 
-        if ((!inScaredModeBlinky) && (!inScaredModePinky)) {
+        if ((!inScaredModeBlinky) && (!inScaredModePinky) && (!inScaredModeClyde)) {
             pacmanInPowerMode = false;
         }
 
-        if ((!pacmanInPowerMode) && pacmanIsAlive && ((pacmanColumn == blinkyColumn && pacmanRow == blinkyRow) || (pacmanColumn == pinkyColumn && pacmanRow == pinkyRow))) {
+        if ((!pacmanInPowerMode) && pacmanIsAlive && ((pacmanColumn == blinkyColumn && pacmanRow == blinkyRow) || (pacmanColumn == pinkyColumn && pacmanRow == pinkyRow) || (pacmanColumn == clydeColumn && pacmanRow == clydeRow))) {
 
             reset = false;
             pacmanXPos = pacmanXPosStarting;
             pacmanYPos = pacmanYPosStarting;
 
             removeMap(gameLayout);
-            gameLayout.getChildren().removeAll(viewCherry, viewBlinky, viewPinky);
+            gameLayout.getChildren().removeAll(viewCherry, viewBlinky, viewPinky, viewClyde);
 
 
             firstRead = true;
@@ -694,6 +767,8 @@ public class gameMechanics {
             inScatterMode = true;
             inChaseMode = false;
             inScaredModeBlinky = false;
+            inScaredModePinky = false;
+            inScaredModeClyde = false;
 
             scatterCount = 0;
             chaseCount = 0;
@@ -804,7 +879,7 @@ public class gameMechanics {
         pacmanFacingLeft = false;
         pacmanFacingRight = false;
         velocityPacmanHorizontal = 0;
-        velocityPacmanVertical = -1;
+        velocityPacmanVertical = -1 - velocityAdder;
 
         hitUpWall = false;
         stop = false;
@@ -837,7 +912,7 @@ public class gameMechanics {
         pacmanFacingLeft = false;
         pacmanFacingRight = false;
         velocityPacmanHorizontal = 0;
-        velocityPacmanVertical = 1;
+        velocityPacmanVertical = 1 + velocityAdder;
 
         hitDownWall = false;
         stop = false;
@@ -869,7 +944,7 @@ public class gameMechanics {
         pacmanFacingDown = false;
         pacmanFacingLeft = true;
         pacmanFacingRight = false;
-        velocityPacmanHorizontal = -1;
+        velocityPacmanHorizontal = -1 - velocityAdder;
         velocityPacmanVertical = 0;
 
         hitLeftWall = false;
@@ -902,7 +977,7 @@ public class gameMechanics {
         pacmanFacingDown = false;
         pacmanFacingLeft = false;
         pacmanFacingRight = true;
-        velocityPacmanHorizontal = 1;
+        velocityPacmanHorizontal = 1 + velocityAdder;
         velocityPacmanVertical = 0;
 
         hitRightWall = false;

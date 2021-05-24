@@ -9,7 +9,10 @@ import application.ai.scatterMode;
 import javafx.scene.Group;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+
+import java.text.DecimalFormat;
 
 import static application.gameMechanics.*;
 import static application.main.*;
@@ -67,6 +70,17 @@ public class gameCanvas {
         gc.fillText("Score: " + score, (int) ((widthOneBlock * blockCountHorizontally) / 6), heightOneBlock * 2);
 
 
+        //::::::::::: Speed UP/DOWN :::::::::::\\
+        gc.setFill(Color.BLUE);
+        if (inPinkMode) gc.setFill(Color.HOTPINK);
+        gc.fillRoundRect((double) width-370, (double)height-130, 110, 40, 30, 30);
+        gc.setFill(Color.YELLOW);
+        gc.setFont(Font.loadFont("file:resources/fonts/emulogic.ttf", 15));
+        DecimalFormat df = new DecimalFormat("0.00");
+        gc.fillText("Speed Controls (" + df.format(velocityAdder) + ")", width - 325, height - 150);
+
+
+
         if (gameStarted) {
 
             //::::::::::: Ghosts :::::::::::\\
@@ -84,6 +98,9 @@ public class gameCanvas {
                 if (!inScaredModeBlinky) {
                     scatterMode.ghostAnimate(gameLayout, "blinky");
                 }
+                if (!inScaredModeClyde) {
+                    scatterMode.ghostAnimate(gameLayout, "clyde");
+                }
             }
 
 
@@ -95,6 +112,7 @@ public class gameCanvas {
             if (inChaseMode) {
                 chaseMode.ghostAnimate(gameLayout, "blinky");
                 chaseMode.ghostAnimate(gameLayout, "pinky");
+                chaseMode.ghostAnimate(gameLayout, "clyde");
             }
 
 
@@ -103,6 +121,9 @@ public class gameCanvas {
             }
             if (inScaredModePinky) {
                 scaredMode.ghostAnimate(gameLayout, "pinky");
+            }
+            if (inScaredModeClyde) {
+                scaredMode.ghostAnimate(gameLayout, "clyde");
             }
 
 
@@ -127,7 +148,6 @@ public class gameCanvas {
 
         } else {
 
-            // TODO
             resetGame(gameLayout);
 
         }

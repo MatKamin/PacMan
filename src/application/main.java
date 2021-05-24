@@ -2,10 +2,7 @@ package application;
 
 //---------------------------------IMPORTS---------------------------------\\
 
-import application.canvas.gameCanvas;
-import application.canvas.highscoreCanvas;
-import application.canvas.menuCanvas;
-import application.canvas.settingsCanvas;
+import application.canvas.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -27,15 +24,18 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.Duration;
 
+import java.awt.geom.RoundRectangle2D;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.sql.*;
 import java.util.Timer;
 
 import static application.ai.Ghost.chaseTimer;
@@ -44,6 +44,7 @@ import static application.gameMechanics.*;
 import static application.imageViewerVariables.*;
 import static application.mapReader.blockCountHorizontally;
 import static application.mapReader.blockCountVertically;
+import static application.sounds.s;
 import static application.sounds.sfxSoundsOn;
 
 
@@ -94,6 +95,7 @@ public class main extends Application {
 
     static double velocityPacmanHorizontal = 0;
     static double velocityPacmanVertical = 0;
+    public static double velocityAdder = 0;
 
     static boolean hitRightWall = false;
     static boolean hitLeftWall = false;
@@ -127,7 +129,7 @@ public class main extends Application {
         settingsScene = new Scene(settingsLayout, width, height);
 
         // Adds Canvas to Layout
-        settingsLayout.getChildren().addAll(canvasSettings, logoffButton, deleteAccountButton, exitButton, getScheme, getScheme2, getScheme3, getSFX, getScheme5, getScheme6);
+        settingsLayout.getChildren().addAll(canvasSettings, logoffButton, deleteAccountButton, exitButton, getScheme, getScheme2, getScheme3, getSFX, getScheme5, getScheme6, statsButton);
     }
 
     private void createLogoffButton() {
@@ -140,6 +142,49 @@ public class main extends Application {
         logoffButton.setLayoutY(height - 50);
         logoffButton.setLayoutX(0.05 * width);
     }
+
+
+    private static GraphicsContext gcStats;
+    private static Scene statsScene;
+    private static Group statsLayout;
+    private static Text statsButton;
+
+    private void createStatsWindow() {
+        // Canvas
+        Canvas canvasStats = new Canvas(width, height);
+        gcStats = canvasStats.getGraphicsContext2D();
+
+        // Layout
+        statsLayout = new Group();
+
+        // Scene
+        statsScene = new Scene(statsLayout, width, height);
+        statsLayout.getChildren().add(canvasStats);
+    }
+
+    private void createStatsButton(Stage currentStage) {
+        // Label
+        statsButton = new Text("stats");
+        statsButton.setStroke(fontColor);
+        pacmanFontSize = 60;
+        statsButton.setFont(pacmanFontUI);
+
+        // Option Label Position
+        statsButton.setLayoutY(height - 50);
+        statsButton.setLayoutX(width / 2 - statsButton.getBoundsInParent().getWidth()/2);
+
+        statsButton.setOnMouseClicked(e -> {
+
+            sounds.playClick();
+            statsCanvas.play(gcStats);
+
+            // Primary Stage -> Settings Canvas
+            currentStage.setScene(statsScene);
+            currentStage.show();
+        });
+    }
+
+
 
     private static ComboBox getScheme;
 
@@ -321,7 +366,36 @@ public class main extends Application {
 
         // Scene
         gameScene = new Scene(gameLayout, width, height);
-        gameLayout.getChildren().add(canvasGame);
+        gameLayout.getChildren().addAll(canvasGame, speedUpButton, speedDownButton);
+    }
+
+
+    public static Text speedUpButton;
+
+    private void createSpeedUpButton() {
+        // Label
+        speedUpButton = new Text("+");
+        speedUpButton.setStroke(Color.YELLOW);
+        speedUpButton.setFill(Color.YELLOW);
+        speedUpButton.setFont(pacmanFontUI);
+
+        // Option Label Position
+        speedUpButton.setLayoutY(height - 100);
+        speedUpButton.setLayoutX(width - 300); // TODO: Improve "- 300"
+    }
+
+    public static Text speedDownButton;
+
+    private void createSpeedDownButton() {
+        // Label
+        speedDownButton = new Text("-");
+        speedDownButton.setStroke(Color.YELLOW);
+        speedDownButton.setFill(Color.YELLOW);
+        speedDownButton.setFont(pacmanFontUI);
+
+        // Option Label Position
+        speedDownButton.setLayoutY(height - 100);
+        speedDownButton.setLayoutX(width - 350); // TODO: Improve "- 350"
     }
 
     private void createTimeline() {
@@ -497,6 +571,8 @@ public class main extends Application {
 
         //------------------------------------------------------ GAME WINDOW ------------------------------------------------------\\
 
+        createSpeedUpButton();
+        createSpeedDownButton();
         createGameWindow();
         createTimeline();
 
@@ -512,6 +588,7 @@ public class main extends Application {
         createGetSFX();
         createGetSchemeButton5();
         createGetSchemeButton6();
+        createStatsButton(currentStage);
         createSettingsWindow();
         settingsScene.getStylesheets().add("file:resources/css/settings.css");
 
@@ -520,6 +597,9 @@ public class main extends Application {
 
         createHighscoreWindow();
 
+        //------------------------------------------------------ STATS WINDOW ------------------------------------------------------\\
+
+        createStatsWindow();
 
         //------------------------------------------------------ MENU WINDOW ------------------------------------------------------\\
 
@@ -559,6 +639,19 @@ public class main extends Application {
 
         //----------------------------------------------------------------------------------------CONTROLS----------------------------------------------------------------------------------------\\
 
+        //--------------------------------------------STATS CONTROLS--------------------------------------------\\
+
+        statsScene.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ESCAPE) {      // If "Escape" Pressed
+                try {
+                    sounds.playClick();
+                    currentStage.setScene(settingsScene);
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+            }
+        });
+
         //--------------------------------------------SETTINGS CONTROLS--------------------------------------------\\
 
         settingsScene.setOnKeyPressed(e -> {
@@ -591,7 +684,6 @@ public class main extends Application {
                     viewPacmanRight = new ImageView(MrspacmanRight);
                     viewPacmanUp = new ImageView(MrspacmanUp);
                     viewPacmanDown = new ImageView(MrspacmanDown);
-
                     inPinkMode = true;
                 }
             }
@@ -623,6 +715,16 @@ public class main extends Application {
         //--------------------------------------------GAME CONTROLS--------------------------------------------\\
 
         controls(currentStage);     // Controls
+
+        speedUpButton.setOnMouseClicked(e -> {
+            if (velocityAdder >= 2.0) return;
+            velocityAdder += 0.1;
+        });
+
+        speedDownButton.setOnMouseClicked(e -> {
+            if (velocityAdder <= 0.0) return;
+            velocityAdder -= 0.1;
+        });
 
 
         long endTime = System.currentTimeMillis();
@@ -699,7 +801,7 @@ public class main extends Application {
                         pacmanFacingLeft = false;
                         pacmanFacingRight = false;
                         velocityPacmanHorizontal = 0;
-                        velocityPacmanVertical = -1;
+                        velocityPacmanVertical = -1 - velocityAdder;
 
                         hitUpWall = false;
                     }
@@ -732,7 +834,7 @@ public class main extends Application {
                         pacmanFacingDown = false;
                         pacmanFacingLeft = false;
                         pacmanFacingUp = false;
-                        velocityPacmanHorizontal = 1;
+                        velocityPacmanHorizontal = 1 + velocityAdder;
                         velocityPacmanVertical = 0;
 
                         hitRightWall = false;
@@ -767,7 +869,7 @@ public class main extends Application {
                         pacmanFacingDown = false;
                         pacmanFacingUp = false;
                         pacmanFacingRight = false;
-                        velocityPacmanHorizontal = -1;
+                        velocityPacmanHorizontal = -1 - velocityAdder;
                         velocityPacmanVertical = 0;
 
                         hitLeftWall = false;
@@ -803,7 +905,7 @@ public class main extends Application {
                         pacmanFacingLeft = false;
                         pacmanFacingRight = false;
                         velocityPacmanHorizontal = 0;
-                        velocityPacmanVertical = 1;
+                        velocityPacmanVertical = 1 + velocityAdder;
 
                         hitDownWall = false;
                     }
@@ -1090,7 +1192,7 @@ public class main extends Application {
 
             try {
                 application.UserDataStore.getInstance().registerUser(nameField.getText().toUpperCase(), passwordField.getText());
-            } catch (IOException e) {
+            } catch (IOException | SQLException e) {
                 System.out.println("Registration Error");
                 e.printStackTrace();
             }
@@ -1239,6 +1341,28 @@ public class main extends Application {
         alert.show();
     }
 
+    public static String url = "jdbc:mysql://localhost:3306/javabase";
+    public static String username = "root";
+    public static String password = "";
+    public static Connection connection = null;
+
+
+    public static void sqlConnection() {
+
+        /**
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException("Cannot find the driver in the classpath!", e);
+        }
+         **/
+
+        try {
+            connection = DriverManager.getConnection(url, username, password);
+        } catch (SQLException e) {
+            throw new IllegalStateException("Cannot connect the database!", e);
+        }
+    }
 
     public static long startingTime;
 

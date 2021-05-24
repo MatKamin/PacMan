@@ -40,7 +40,10 @@ public class TrivialEchoServer {
                     System.out.println("Verbindung angenommen von " +
                             verbindung.getRemoteSocketAddress());
                     while (true) {
+
                         myLaunch(main.class);
+
+
                         // Eingabeaufforderung senden und Zeile einlesen
                         bw.write("WILLKOMMEN:\r\n");
                         bw.flush();
