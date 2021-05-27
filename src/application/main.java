@@ -7,7 +7,10 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -28,10 +31,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.stage.Screen;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.stage.Window;
+import javafx.stage.*;
 import javafx.util.Duration;
 
 import javax.swing.plaf.nimbus.State;
@@ -42,6 +42,7 @@ import java.nio.file.Paths;
 import java.sql.*;
 import java.util.Timer;
 
+import static application.Server.javaFxLaunched;
 import static application.ai.Ghost.chaseTimer;
 import static application.ai.Ghost.scatterTimer;
 import static application.gameMechanics.*;
@@ -119,6 +120,21 @@ public class main extends Application {
     public static String clickURI = Paths.get(clickPath).toUri().toString();                      // Convert to URI
 
     public static boolean isFullscreen = false;
+
+
+
+
+
+
+    TextArea receivedMsgArea = new TextArea();
+    TextField ipText = new TextField();
+    TextField portText = new TextField();
+    TextArea sendMsgArea = new TextArea();
+    TextField statusText = new TextField();
+    Button sendButton = new Button(" Send ");
+    ObservableList<String> clients = FXCollections.observableArrayList();
+    ListView<String> clientListView = new ListView<>(clients);
+
 
 
     private void createSettingsWindow() {
@@ -573,7 +589,7 @@ public class main extends Application {
     }
 
 
-    private static volatile boolean javaFxLaunched = false;
+
 
     public static void myLaunch(Class<? extends Application> applicationClass) {
         if (!javaFxLaunched) { // First time
@@ -803,8 +819,14 @@ public class main extends Application {
         });
 
 
-        long endTime = System.currentTimeMillis();
-        System.out.println("Exec Time: " + (endTime - startingTime) + "ms");
+
+         // Close the UI thread while closing each child thread
+        currentStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                System.exit(0);
+            }
+        });
     }
 
 
@@ -1460,17 +1482,12 @@ public class main extends Application {
 
     public static void main(String[] args) {
 
-        sounds.playBackgroundMusic();
+        //sounds.playBackgroundMusic();
         // TODO: Music
         // Sets Background Music
         // sounds.playBackgroundMusic();
-
-        startingTime = System.currentTimeMillis();
-
-        System.out.println(ANSI_GREEN);
         //Application.launch(args);
         myLaunch(main.class);
-        System.out.println(ANSI_RESET);
     }
 }
 
