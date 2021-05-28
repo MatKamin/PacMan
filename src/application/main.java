@@ -38,11 +38,13 @@ import javax.swing.plaf.nimbus.State;
 import java.awt.geom.RoundRectangle2D;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.nio.file.Paths;
 import java.sql.*;
 import java.util.Timer;
 
-import static application.Server.javaFxLaunched;
 import static application.ai.Ghost.chaseTimer;
 import static application.ai.Ghost.scatterTimer;
 import static application.gameMechanics.*;
@@ -61,6 +63,11 @@ public class main extends Application {
 
     public static double width = 1300;       // Window width
     public static double height = 1000;      // Window height
+
+    public static ObjectOutputStream out;
+    public static ObjectInputStream in;
+
+    public static volatile boolean javaFxLaunched = false;
 
     private static final String ANSI_RESET = "\u001B[0m";
     private static final String ANSI_GREEN = "\u001B[32m";
@@ -819,14 +826,6 @@ public class main extends Application {
         });
 
 
-
-         // Close the UI thread while closing each child thread
-        currentStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent event) {
-                System.exit(0);
-            }
-        });
     }
 
 
@@ -1479,15 +1478,23 @@ public class main extends Application {
     }
 
     public static long startingTime;
-
     public static void main(String[] args) {
+        try {
+            Socket verbindung = new Socket("localhost", 10024);
+            System.out.println("Verbunden");
+            out = new ObjectOutputStream(verbindung.getOutputStream());
+            in = new ObjectInputStream(verbindung.getInputStream());
+            out.writeObject("Hallo");
+        } catch (Exception e){
+            System.out.println("Verbindung fehlgeschlagen");
+        }
 
         //sounds.playBackgroundMusic();
         // TODO: Music
         // Sets Background Music
         // sounds.playBackgroundMusic();
         //Application.launch(args);
-        myLaunch(main.class);
+        //myLaunch(main.class);
     }
 }
 

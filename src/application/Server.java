@@ -8,18 +8,15 @@ import java.net.Socket;
 public class Server {
     public static int PORT = 10024;
     public static ServerSocket serverSocket;
-    public static volatile boolean javaFxLaunched = false;
 
     public static void main(String[] args) throws IOException {
         serverSocket = new ServerSocket(PORT);
         System.out.println("Server running on " + InetAddress.getLocalHost() + " and Port " + PORT);
         Thread wait = new Thread(() -> {
-            while (true) {
-                try {
-                    waitForClient(serverSocket.accept());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            while (true) try {
+                waitForClient(serverSocket.accept());
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
 
@@ -28,7 +25,7 @@ public class Server {
 
     }
 
-    public static void waitForClient(Socket connection) throws IOException{
+    public static void waitForClient(Socket connection) throws IOException, ClassNotFoundException {
         Client client = new Client(connection);
         client.start();
     }
