@@ -43,8 +43,11 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.nio.file.Paths;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 
+import static application.Server.clientsScoreMap;
 import static application.ai.Ghost.chaseTimer;
 import static application.ai.Ghost.scatterTimer;
 import static application.gameMechanics.*;
@@ -81,7 +84,7 @@ public class main extends Application {
     public static Color backgroundColor = Color.BLACK;    // Background Color
     public static Color fontColor = Color.WHITE;          // Font Color
 
-    public static String validUsername = "Player 1";
+    public static String validUsername = "Unknown Player";
     static final String regexp = "\\w{1,10}" + "\\s?+" + "\\d{0,3}";
 
     public static int lifesCounter = 3;
@@ -633,6 +636,7 @@ public class main extends Application {
         currentStage.setResizable(false);
 
 
+
         //----------------------------------------------------------------------------------------WINDOWS----------------------------------------------------------------------------------------\\
 
 
@@ -825,7 +829,7 @@ public class main extends Application {
             velocityAdder -= 0.1;
         });
 
-
+        checkScore(gcGame);
     }
 
 
@@ -1478,13 +1482,14 @@ public class main extends Application {
     }
 
     public static long startingTime;
+
     public static void main(String[] args) {
         try {
             Socket verbindung = new Socket("localhost", 10024);
             System.out.println("Verbunden");
             out = new ObjectOutputStream(verbindung.getOutputStream());
             in = new ObjectInputStream(verbindung.getInputStream());
-            out.writeObject("Hallo");
+            launch(args);
         } catch (Exception e){
             System.out.println("Verbindung fehlgeschlagen");
         }

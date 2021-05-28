@@ -7,12 +7,24 @@ import javafx.scene.Group;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
-import java.io.*;
-import java.sql.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+import static application.Server.checkScore;
+import static application.Server.clientsScoreMap;
 import static application.imageViewerVariables.*;
 import static application.main.*;
 import static application.mapReader.*;
@@ -101,7 +113,7 @@ public class gameMechanics {
     }
 
 
-    public static void saveScore () {
+    public static void saveScore() {
 
         try {
             sqlConnection();
@@ -122,15 +134,15 @@ public class gameMechanics {
             Statement queryPKCount = connection.createStatement();
             ResultSet pkCount = queryPKCount.executeQuery("SELECT COUNT(*) AS c FROM highscores");
             int pk = 0;
-            if(pkCount.next()){
+            if (pkCount.next()) {
                 pk = Integer.parseInt(pkCount.getString("c"));
             }
 
             // create the mysql insert preparedstatement
             PreparedStatement preparedStmt = connection.prepareStatement(query);
-            preparedStmt.setInt (1, pk);
-            preparedStmt.setString (2, validUsername);
-            preparedStmt.setInt   (3, score);
+            preparedStmt.setInt(1, pk);
+            preparedStmt.setString(2, validUsername);
+            preparedStmt.setInt(3, score);
 
             // execute the preparedstatement
             preparedStmt.execute();
@@ -150,7 +162,7 @@ public class gameMechanics {
             int eatenNew = eaten + ghostsEaten;
 
 
-            String query2 = "UPDATE User SET eatenGhosts = "+eatenNew+" WHERE pk_user = "+pk2;
+            String query2 = "UPDATE User SET eatenGhosts = " + eatenNew + " WHERE pk_user = " + pk2;
             PreparedStatement preparedStmt2 = connection.prepareStatement(query2);
             preparedStmt2.execute();
             connection.close();
@@ -170,11 +182,10 @@ public class gameMechanics {
             int scoreNew = scoreOld + score;
 
 
-            String query3 = "UPDATE User SET alltimeScore = "+scoreNew+" WHERE pk_user = "+pk3;
+            String query3 = "UPDATE User SET alltimeScore = " + scoreNew + " WHERE pk_user = " + pk3;
             PreparedStatement preparedStmt3 = connection.prepareStatement(query3);
             preparedStmt3.execute();
             connection.close();
-
 
 
             // GAMES PLAYED
@@ -191,17 +202,14 @@ public class gameMechanics {
             }
 
             int gamesNew = gamesOld;
-            if (!gameStarted){
+            if (!gameStarted) {
                 gamesNew++;
             }
 
-            String query4 = "UPDATE User SET gamesPlayed = "+gamesNew+" WHERE pk_user = "+pk4;
+            String query4 = "UPDATE User SET gamesPlayed = " + gamesNew + " WHERE pk_user = " + pk4;
             PreparedStatement preparedStmt4 = connection.prepareStatement(query4);
             preparedStmt4.execute();
             connection.close();
-
-
-
 
 
             // LEVELS CLEARED
@@ -223,7 +231,7 @@ public class gameMechanics {
             }
             int levelsNew = levelsOld + levelCounter - 1;
 
-            String query5 = "UPDATE User SET finisehLevels = "+levelsNew+" WHERE pk_user = "+pk5;
+            String query5 = "UPDATE User SET finisehLevels = " + levelsNew + " WHERE pk_user = " + pk5;
             PreparedStatement preparedStmt5 = connection.prepareStatement(query5);
             preparedStmt5.execute();
             connection.close();
@@ -738,6 +746,52 @@ public class gameMechanics {
         );
     }
 
+    public static void checkScore(GraphicsContext gc) {
+        Runnable helloRunnable = new Runnable() {
+            public void run() {
+                try {
+                    out.writeObject(validUsername + "," + score);
+                    System.out.println();
+                    readClientScores(gc);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        executor.scheduleAtFixedRate(helloRunnable, 0, 2, TimeUnit.SECONDS);
+    }
+
+
+    public static String[] clientUsernames = {"", "", "", "", ""};
+    public static String[] clientScores = {"", "", "", "", ""};
+
+    public static void readClientScores(GraphicsContext gc) {
+        try {
+            File myObj = new File("printWriter.txt");
+            Scanner myReader = new Scanner(myObj);
+            int i = 0;
+            while (myReader.hasNextLine()) {
+                String data = myReader.nextLine();
+                System.out.println(data);
+                if (!data.split(",")[0].equals("Unknown Player")) {
+                    clientUsernames[i] = data.split(",")[0];
+                    clientScores[i] = data.split(",")[1];
+                    i++;
+                }
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+
+
+
+    }
+
+
 
     private static void pacmanPowerModePinky(Group gameLayout) {
         gameLayout.getChildren().remove(viewPinky);
@@ -814,7 +868,6 @@ public class gameMechanics {
             railLeftUpCount = 0;
 
 
-
             velocityPacmanHorizontal = 0;
             velocityPacmanVertical = 0;
 
@@ -852,7 +905,7 @@ public class gameMechanics {
     }
 
 
-    private static void deleteLifeCounter (Group gameLayout) {
+    private static void deleteLifeCounter(Group gameLayout) {
         viewClearer = new ImageView(clearer);
         viewClearer.setX((lifesCounter + 1) * (widthOneBlock + 10));
         viewClearer.setY((blockCountVertically - 1) * heightOneBlock);

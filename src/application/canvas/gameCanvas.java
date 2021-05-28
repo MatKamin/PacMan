@@ -3,6 +3,8 @@ package application.canvas;
 
 //---------------------------------IMPORTS---------------------------------\\
 
+import application.Client;
+import application.Server;
 import application.ai.chaseMode;
 import application.ai.scaredMode;
 import application.ai.scatterMode;
@@ -12,8 +14,17 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
+import static application.Client.printScores;
+import static application.Server.checkScore;
+import static application.Server.clientsScoreMap;
 import static application.gameMechanics.*;
 import static application.main.*;
 import static application.mapReader.blockCountHorizontally;
@@ -80,6 +91,11 @@ public class gameCanvas {
         gc.fillText("Speed Controls (" + df.format(velocityAdder) + ")", width - 325, height - 150);
 
 
+        gc.fillText("#1 " + clientUsernames[0] + "    " + clientScores[0], width - 325, height - 750);
+        gc.fillText("#2 " + clientUsernames[1] + "    " + clientScores[1], width - 325, height - 700);
+
+
+
 
         if (gameStarted) {
 
@@ -143,7 +159,6 @@ public class gameCanvas {
             drawLevelCounter(gameLayout);             // Draws Level Counter in UI
 
             pacmanDeath(gameLayout, gc);                  // Allows Losing
-
 
 
         } else {

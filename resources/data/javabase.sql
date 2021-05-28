@@ -34,3 +34,12 @@ INSERT INTO User (pk_user, name, highscore, eatenGhosts, creationDate, alltimeSc
 VALUES (0, 'A', 540, 23, '2021-05-23', 5000, 10, 3);
 
 
+CREATE TABLE IF NOT EXISTS LiveFeed (
+    pk_live INT NOT NULL,
+    name TEXT,
+    score INT,
+
+    PRIMARY KEY (pk_live)
+);
+
+
