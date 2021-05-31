@@ -7,24 +7,12 @@ import javafx.scene.Group;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.Scanner;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 
-import static application.Server.checkScore;
-import static application.Server.clientsScoreMap;
+import java.util.regex.Pattern;
 import static application.imageViewerVariables.*;
 import static application.main.*;
 import static application.mapReader.*;
@@ -746,50 +734,6 @@ public class gameMechanics {
         );
     }
 
-    public static void checkScore(GraphicsContext gc) {
-        Runnable helloRunnable = new Runnable() {
-            public void run() {
-                try {
-                    out.writeObject(validUsername + "," + score);
-                    System.out.println();
-                    readClientScores(gc);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-
-        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-        executor.scheduleAtFixedRate(helloRunnable, 0, 2, TimeUnit.SECONDS);
-    }
-
-
-    public static String[] clientUsernames = {"", "", "", "", ""};
-    public static String[] clientScores = {"", "", "", "", ""};
-
-    public static void readClientScores(GraphicsContext gc) {
-        try {
-            File myObj = new File("printWriter.txt");
-            Scanner myReader = new Scanner(myObj);
-            int i = 0;
-            while (myReader.hasNextLine()) {
-                String data = myReader.nextLine();
-                System.out.println(data);
-                if (!data.split(",")[0].equals("Unknown Player")) {
-                    clientUsernames[i] = data.split(",")[0];
-                    clientScores[i] = data.split(",")[1];
-                    i++;
-                }
-            }
-            myReader.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-        }
-
-
-
-    }
 
 
 

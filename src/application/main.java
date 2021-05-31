@@ -10,7 +10,6 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
-import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -28,38 +27,35 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.stage.*;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 import javafx.util.Duration;
 
-import javax.swing.plaf.nimbus.State;
-import java.awt.geom.RoundRectangle2D;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.nio.file.Paths;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Timer;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-import static application.Server.clientsScoreMap;
+import static application.Client.getConnectionCount;
 import static application.ai.Ghost.chaseTimer;
 import static application.ai.Ghost.scatterTimer;
 import static application.gameMechanics.*;
 import static application.imageViewerVariables.*;
 import static application.mapReader.blockCountHorizontally;
 import static application.mapReader.blockCountVertically;
-import static application.sounds.s;
 import static application.sounds.sfxSoundsOn;
 
 
 @SuppressWarnings("ALL")
-public class main extends Application {
+public class main extends Application implements Serializable {
 
     //---------------------------------VARIABLES---------------------------------\\
 
@@ -132,10 +128,6 @@ public class main extends Application {
     public static boolean isFullscreen = false;
 
 
-
-
-
-
     TextArea receivedMsgArea = new TextArea();
     TextField ipText = new TextField();
     TextField portText = new TextField();
@@ -144,7 +136,6 @@ public class main extends Application {
     Button sendButton = new Button(" Send ");
     ObservableList<String> clients = FXCollections.observableArrayList();
     ListView<String> clientListView = new ListView<>(clients);
-
 
 
     private void createSettingsWindow() {
@@ -203,7 +194,7 @@ public class main extends Application {
 
         // Option Label Position
         statsButton.setLayoutY(height - 50);
-        statsButton.setLayoutX(width / 2 - statsButton.getBoundsInParent().getWidth()/2);
+        statsButton.setLayoutX(width / 2 - statsButton.getBoundsInParent().getWidth() / 2);
 
         statsButton.setOnMouseClicked(e -> {
 
@@ -216,7 +207,6 @@ public class main extends Application {
             currentStage.show();
         });
     }
-
 
 
     private static ComboBox getScheme;
@@ -465,6 +455,7 @@ public class main extends Application {
     private static Text highscoreButton;
 
     Group menuLayout;
+
     private void createMenuWindow() {
         // Canvas
         Canvas canvasMenu = new Canvas(width, height);
@@ -491,8 +482,8 @@ public class main extends Application {
     static Text coinCount;
 
     private void createShowCoin() {
-        viewCoin.setFitHeight(heightOneBlock*1.5);
-        viewCoin.setFitWidth(widthOneBlock*1.5);
+        viewCoin.setFitHeight(heightOneBlock * 1.5);
+        viewCoin.setFitWidth(widthOneBlock * 1.5);
 
         viewCoin.setY(viewCoin.getFitHeight());
         viewCoin.setX(viewCoin.getFitWidth());
@@ -516,7 +507,7 @@ public class main extends Application {
         coinCount.setFill(Color.YELLOW);
         coinCount.setStroke(Color.DARKGRAY);
         coinCount.setFont(Font.loadFont("file:resources/fonts/emulogic.ttf", heightOneBlock));
-        coinCount.setX(viewCoin.getFitWidth() + widthOneBlock*2);
+        coinCount.setX(viewCoin.getFitWidth() + widthOneBlock * 2);
         coinCount.setY(viewCoin.getFitHeight() + coinCount.getBoundsInParent().getHeight());
 
     }
@@ -599,8 +590,6 @@ public class main extends Application {
     }
 
 
-
-
     public static void myLaunch(Class<? extends Application> applicationClass) {
         if (!javaFxLaunched) { // First time
             Platform.setImplicitExit(false);
@@ -634,7 +623,6 @@ public class main extends Application {
         currentStage.setTitle("Pac-Man");      // Window title
         gameStarted = false;
         currentStage.setResizable(false);
-
 
 
         //----------------------------------------------------------------------------------------WINDOWS----------------------------------------------------------------------------------------\\
@@ -829,7 +817,8 @@ public class main extends Application {
             velocityAdder -= 0.1;
         });
 
-        checkScore(gcGame);
+        sendScore(gcGame);
+        readAllScores();
     }
 
 
@@ -1467,11 +1456,11 @@ public class main extends Application {
     public static void sqlConnection() {
 
         /**
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException("Cannot find the driver in the classpath!", e);
-        }
+         try {
+         Class.forName("com.mysql.jdbc.Driver");
+         } catch (ClassNotFoundException e) {
+         throw new IllegalStateException("Cannot find the driver in the classpath!", e);
+         }
          **/
 
         try {
@@ -1481,16 +1470,68 @@ public class main extends Application {
         }
     }
 
+    public static HashMap<String, Integer> clientsScoreMap2 = new HashMap<>();
+
+
+    public static void sendScore(GraphicsContext gc) {
+        Runnable helloRunnable = new Runnable() {
+            public void run() {
+                try {
+                    out.writeObject(validUsername + "," + score);
+                    out.flush();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        executor.scheduleAtFixedRate(helloRunnable, 0, 2, TimeUnit.SECONDS);
+    }
+
+    public static void readAllScores() {
+        Runnable helloRunnable = () -> {
+            try {
+                System.out.println(in.readObject());
+
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        };
+
+        ScheduledExecutorService executor2 = Executors.newScheduledThreadPool(1);
+        executor2.scheduleAtFixedRate(helloRunnable, 0, 2, TimeUnit.SECONDS);
+    }
+
+
+    public static int connectionCount() {
+        final int[] res = {0};
+        Runnable helloRunnable = () -> {
+            res[0] = getConnectionCount();
+        };
+
+        ScheduledExecutorService executor4 = Executors.newScheduledThreadPool(1);
+        executor4.scheduleAtFixedRate(helloRunnable, 0, 1, TimeUnit.SECONDS);
+
+        return res[0];
+    }
+
+
     public static long startingTime;
 
     public static void main(String[] args) {
         try {
             Socket verbindung = new Socket("localhost", 10024);
             System.out.println("Verbunden");
+
             out = new ObjectOutputStream(verbindung.getOutputStream());
             in = new ObjectInputStream(verbindung.getInputStream());
+            out.flush();
+
+
             launch(args);
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Verbindung fehlgeschlagen");
         }
 

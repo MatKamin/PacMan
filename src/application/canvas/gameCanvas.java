@@ -22,7 +22,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static application.Client.printScores;
 import static application.Server.checkScore;
 import static application.Server.clientsScoreMap;
 import static application.gameMechanics.*;
@@ -90,9 +89,6 @@ public class gameCanvas {
         DecimalFormat df = new DecimalFormat("0.00");
         gc.fillText("Speed Controls (" + df.format(velocityAdder) + ")", width - 325, height - 150);
 
-
-        gc.fillText("#1 " + clientUsernames[0] + "    " + clientScores[0], width - 325, height - 750);
-        gc.fillText("#2 " + clientUsernames[1] + "    " + clientScores[1], width - 325, height - 700);
 
 
 

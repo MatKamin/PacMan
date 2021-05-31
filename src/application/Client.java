@@ -8,25 +8,44 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static application.Server.clientsScoreMap;
+import static application.Server.connections;
 
-public class Client extends Thread {
+public class Client extends Thread implements Serializable {
 
-    Socket connection;
+    static Socket connection;
     static ObjectInputStream in;
     static ObjectOutputStream out;
 
     public Client(Socket connection) throws IOException {
-        this.connection = connection;
+        Client.connection = connection;
         in = new ObjectInputStream(connection.getInputStream());
         out = new ObjectOutputStream(connection.getOutputStream());
+        out.flush();
+        readReceivedScore();
     }
+
 
     public static void readReceivedScore() {
         Runnable helloRunnable = () -> {
             try {
-                clientsScoreMap.put(read().toString().split(",")[0], Integer.parseInt(read().toString().split(",")[1]));
-                System.out.println();
-                printScores();
+                clientsScoreMap.put(in.readObject().toString().split(",")[0], Integer.parseInt(in.readObject().toString().split(",")[1]));
+
+                clientsScoreMap.forEach((key, value) -> {
+
+                    if (key.equals("Unknown Player")) return;
+                    try {
+                        out.writeObject(key + "," + value + "," + connections.size());
+                        out.reset();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+
+                out.flush();
+
+
+
+                //printScores();
 
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
@@ -36,6 +55,9 @@ public class Client extends Thread {
         ScheduledExecutorService executor2 = Executors.newScheduledThreadPool(1);
         executor2.scheduleAtFixedRate(helloRunnable, 0, 2, TimeUnit.SECONDS);
     }
+
+
+
 
     @Override
     public void run() {
@@ -47,29 +69,13 @@ public class Client extends Thread {
         out.flush();
     }
 
-    static PrintWriter outPrint;
-
-    static {
-        try {
-            outPrint = new PrintWriter("printWriter.txt");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+    public static void writeToAll(Object obj) throws IOException {
+        for (Client connection : connections) {
+            connection.write(obj);
         }
     }
 
-    public static void printScores() {
-        outPrint.print("");
-        outPrint.close();
-        try (PrintWriter outPrint = new PrintWriter("printWriter.txt")) {
-            clientsScoreMap.forEach((key, value) -> outPrint.println(key + "," + value));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        clientsScoreMap.forEach((key, value) -> System.out.println(key + "," + value));
-    }
-
-    public static Object read() throws IOException, ClassNotFoundException {
-        return in.readObject();
+    public static int getConnectionCount() {
+        return connections.size();
     }
 }

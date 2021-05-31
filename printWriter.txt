@@ -1,3 +1,0 @@
-tom,190
-Josh,430
-Unknown Player,0
