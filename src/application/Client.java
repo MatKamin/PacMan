@@ -7,10 +7,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static application.Server.clientsScoreMap;
-import static application.Server.connections;
+import static application.Server.*;
 
-public class Client extends Thread implements Serializable {
+public class Client extends Thread {
 
     static Socket connection;
     static ObjectInputStream in;
@@ -21,6 +20,7 @@ public class Client extends Thread implements Serializable {
         in = new ObjectInputStream(connection.getInputStream());
         out = new ObjectOutputStream(connection.getOutputStream());
         out.flush();
+
         readReceivedScore();
     }
 
@@ -28,14 +28,21 @@ public class Client extends Thread implements Serializable {
     public static void readReceivedScore() {
         Runnable helloRunnable = () -> {
             try {
-                clientsScoreMap.put(in.readObject().toString().split(",")[0], Integer.parseInt(in.readObject().toString().split(",")[1]));
+
+                if (in.readUTF().equals("Unknown Player,0")) return;
+                //writeToAll(in.readUTF());
+
+
+                clientsScoreMap.put(in.readUTF().split(",")[0], Integer.parseInt(in.readUTF().split(",")[1]));
+
 
                 clientsScoreMap.forEach((key, value) -> {
 
                     if (key.equals("Unknown Player")) return;
                     try {
-                        out.writeObject(key + "," + value + "," + connections.size());
-                        out.reset();
+                        writeToAll(key + "," + value);
+                        //out.writeUTF(key + "," + value + "," + connections.size());
+                        //out.reset();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -47,13 +54,13 @@ public class Client extends Thread implements Serializable {
 
                 //printScores();
 
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         };
 
         ScheduledExecutorService executor2 = Executors.newScheduledThreadPool(1);
-        executor2.scheduleAtFixedRate(helloRunnable, 0, 2, TimeUnit.SECONDS);
+        executor2.scheduleAtFixedRate(helloRunnable, 0, 5, TimeUnit.SECONDS);
     }
 
 
@@ -64,18 +71,14 @@ public class Client extends Thread implements Serializable {
         System.out.println("Connected to " + connection.getRemoteSocketAddress());
     }
 
-    public static void write(Object obj) throws IOException {
-        out.writeObject(obj);
+    public static void write(String obj) throws IOException {
+        out.writeUTF(obj);
         out.flush();
     }
 
-    public static void writeToAll(Object obj) throws IOException {
-        for (Client connection : connections) {
-            connection.write(obj);
+    public static void writeToAll(String obj) throws IOException {
+        for (Client c : connections) {
+            c.write(obj);
         }
-    }
-
-    public static int getConnectionCount() {
-        return connections.size();
     }
 }

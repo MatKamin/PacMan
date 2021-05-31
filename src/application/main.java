@@ -44,7 +44,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static application.Client.getConnectionCount;
 import static application.ai.Ghost.chaseTimer;
 import static application.ai.Ghost.scatterTimer;
 import static application.gameMechanics.*;
@@ -1477,7 +1476,7 @@ public class main extends Application implements Serializable {
         Runnable helloRunnable = new Runnable() {
             public void run() {
                 try {
-                    out.writeObject(validUsername + "," + score);
+                    out.writeUTF(validUsername + "," + score);
                     out.flush();
 
                 } catch (IOException e) {
@@ -1487,34 +1486,21 @@ public class main extends Application implements Serializable {
         };
 
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-        executor.scheduleAtFixedRate(helloRunnable, 0, 2, TimeUnit.SECONDS);
+        executor.scheduleAtFixedRate(helloRunnable, 0, 1, TimeUnit.SECONDS);
     }
 
     public static void readAllScores() {
         Runnable helloRunnable = () -> {
             try {
-                System.out.println(in.readObject());
+                System.out.println(in.readUTF());
 
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         };
 
         ScheduledExecutorService executor2 = Executors.newScheduledThreadPool(1);
-        executor2.scheduleAtFixedRate(helloRunnable, 0, 2, TimeUnit.SECONDS);
-    }
-
-
-    public static int connectionCount() {
-        final int[] res = {0};
-        Runnable helloRunnable = () -> {
-            res[0] = getConnectionCount();
-        };
-
-        ScheduledExecutorService executor4 = Executors.newScheduledThreadPool(1);
-        executor4.scheduleAtFixedRate(helloRunnable, 0, 1, TimeUnit.SECONDS);
-
-        return res[0];
+        executor2.scheduleAtFixedRate(helloRunnable, 0, 5, TimeUnit.SECONDS);
     }
 
 
@@ -1527,7 +1513,6 @@ public class main extends Application implements Serializable {
 
             out = new ObjectOutputStream(verbindung.getOutputStream());
             in = new ObjectInputStream(verbindung.getInputStream());
-            out.flush();
 
 
             launch(args);
