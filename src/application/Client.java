@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import static application.Server.*;
 
-public class Client extends Thread {
+public class Client extends Thread implements Serializable{
 
     static Socket connection;
     static ObjectInputStream in;
@@ -21,7 +21,6 @@ public class Client extends Thread {
         out = new ObjectOutputStream(connection.getOutputStream());
         out.flush();
 
-        readReceivedScore();
     }
 
 
@@ -51,9 +50,6 @@ public class Client extends Thread {
                 out.flush();
 
 
-
-                //printScores();
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -69,6 +65,8 @@ public class Client extends Thread {
     @Override
     public void run() {
         System.out.println("Connected to " + connection.getRemoteSocketAddress());
+
+        readReceivedScore();
     }
 
     public static void write(String obj) throws IOException {

@@ -44,6 +44,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static application.Server.verbindung;
 import static application.ai.Ghost.chaseTimer;
 import static application.ai.Ghost.scatterTimer;
 import static application.gameMechanics.*;
@@ -1478,6 +1479,7 @@ public class main extends Application implements Serializable {
                 try {
                     out.writeUTF(validUsername + "," + score);
                     out.flush();
+                    System.out.println("SENT");
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -1508,9 +1510,11 @@ public class main extends Application implements Serializable {
 
     public static void main(String[] args) {
         try {
-            Socket verbindung = new Socket("localhost", 10024);
-            System.out.println("Verbunden");
 
+
+            verbindung = new Socket("localhost", 10024);
+
+            System.out.println("Verbunden");
             out = new ObjectOutputStream(verbindung.getOutputStream());
             in = new ObjectInputStream(verbindung.getInputStream());
 

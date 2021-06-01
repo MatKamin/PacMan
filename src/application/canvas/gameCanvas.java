@@ -105,7 +105,7 @@ public class gameCanvas {
 
             if (inScatterMode) {
                 if (!inScaredModePinky) {
-                    scatterMode.ghostAnimate(gameLayout, "pinky");
+                    scattermode.ghostAnimate(gameLayout, "pinky");
                 }
                 if (!inScaredModeBlinky) {
                     scatterMode.ghostAnimate(gameLayout, "blinky");
