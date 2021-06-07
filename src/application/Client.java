@@ -24,58 +24,52 @@ public class Client extends Thread implements Serializable{
     }
 
 
-    public static void readReceivedScore() {
-        Runnable helloRunnable = () -> {
-            try {
+    public void readReceivedScore() {
 
-                if (in.readUTF().equals("Unknown Player,0")) return;
-                //writeToAll(in.readUTF());
-
-
-                clientsScoreMap.put(in.readUTF().split(",")[0], Integer.parseInt(in.readUTF().split(",")[1]));
-
-
-                clientsScoreMap.forEach((key, value) -> {
-
-                    if (key.equals("Unknown Player")) return;
-                    try {
-                        writeToAll(key + "," + value);
-                        //out.writeUTF(key + "," + value + "," + connections.size());
-                        //out.reset();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
-
-                out.flush();
-
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        };
-
-        ScheduledExecutorService executor2 = Executors.newScheduledThreadPool(1);
-        executor2.scheduleAtFixedRate(helloRunnable, 0, 5, TimeUnit.SECONDS);
     }
 
 
 
+    private ScheduledExecutorService executor2;
+    private Runnable helloRunnable;
 
     @Override
     public void run() {
         System.out.println("Connected to " + connection.getRemoteSocketAddress());
 
-        readReceivedScore();
+        helloRunnable = () -> {
+            try {
+                if (in.readUTF().equals("Unknown Player,0")) return;
+
+                clientsScoreMap.put(in.readUTF().split(",")[0], Integer.parseInt(in.readUTF().split(",")[1]));
+
+                clientsScoreMap.forEach((key, value) -> {
+                    if (key.equals("Unknown Player")) return;
+                    try {
+                        writeToAll(key + "," + value);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        };
+
+
+        executor2 = Executors.newScheduledThreadPool(1);
+        executor2.scheduleAtFixedRate(helloRunnable, 0, 3, TimeUnit.SECONDS);
+
+
     }
 
-    public static void write(String obj) throws IOException {
+    private void write(String obj) throws IOException {
         out.writeUTF(obj);
         out.flush();
     }
 
-    public static void writeToAll(String obj) throws IOException {
-        for (Client c : connections) {
+    private void writeToAll(String obj) throws IOException {
+        for (Client c : connections){
             c.write(obj);
         }
     }

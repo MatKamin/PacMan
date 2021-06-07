@@ -60,8 +60,8 @@ public class main extends Application implements Serializable {
     //---------------------------------VARIABLES---------------------------------\\
 
 
-    public static double width = 1300;       // Window width
-    public static double height = 1000;      // Window height
+    public static double width = 1000;       // Window width
+    public static double height = 800;      // Window height
 
     public static ObjectOutputStream out;
     public static ObjectInputStream in;
@@ -1479,8 +1479,6 @@ public class main extends Application implements Serializable {
                 try {
                     out.writeUTF(validUsername + "," + score);
                     out.flush();
-                    System.out.println("SENT");
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -1495,14 +1493,13 @@ public class main extends Application implements Serializable {
         Runnable helloRunnable = () -> {
             try {
                 System.out.println(in.readUTF());
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
         };
 
         ScheduledExecutorService executor2 = Executors.newScheduledThreadPool(1);
-        executor2.scheduleAtFixedRate(helloRunnable, 0, 5, TimeUnit.SECONDS);
+        executor2.scheduleAtFixedRate(helloRunnable, 0, 3, TimeUnit.SECONDS);
     }
 
 
@@ -1511,13 +1508,11 @@ public class main extends Application implements Serializable {
     public static void main(String[] args) {
         try {
 
-
             verbindung = new Socket("localhost", 10024);
 
             System.out.println("Verbunden");
             out = new ObjectOutputStream(verbindung.getOutputStream());
             in = new ObjectInputStream(verbindung.getInputStream());
-
 
             launch(args);
         } catch (Exception e) {

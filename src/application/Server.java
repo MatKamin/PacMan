@@ -1,7 +1,6 @@
 package application;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -9,9 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static application.Client.readReceivedScore;
-
-public class Server  implements Serializable {
+public class Server {
     public static int PORT = 10024;
     public static ServerSocket serverSocket;
     public static boolean checkScore = true;
