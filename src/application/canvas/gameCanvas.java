@@ -16,8 +16,7 @@ import javafx.scene.text.TextAlignment;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -90,7 +89,17 @@ public class gameCanvas {
         gc.fillText("Speed Controls (" + df.format(velocityAdder) + ")", width - 325, height - 150);
 
 
+        final double[] heightStart = {height - 850};
+        final int[] rank = {1};
 
+        Map<String, Integer> sortedMapDesc = sortByComparator(clientScores, false);
+
+        sortedMapDesc.forEach((key, value) -> {
+            gc.fillText("#" + rank[0] + ".", width - 455, heightStart[0]);
+            gc.fillText(key + " | " + value, width - 325, heightStart[0]);
+            heightStart[0] += 30;
+            rank[0] ++;
+        });
 
 
         if (gameStarted) {

@@ -38,12 +38,12 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.file.Paths;
 import java.sql.*;
-import java.util.HashMap;
-import java.util.Timer;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static application.Server.clientsScoreMap;
 import static application.Server.verbindung;
 import static application.ai.Ghost.chaseTimer;
 import static application.ai.Ghost.scatterTimer;
@@ -60,8 +60,8 @@ public class main extends Application implements Serializable {
     //---------------------------------VARIABLES---------------------------------\\
 
 
-    public static double width = 1000;       // Window width
-    public static double height = 800;      // Window height
+    public static double width = 1300;       // Window width
+    public static double height = 1000;      // Window height
 
     public static ObjectOutputStream out;
     public static ObjectInputStream in;
@@ -817,8 +817,8 @@ public class main extends Application implements Serializable {
             velocityAdder -= 0.1;
         });
 
-        sendScore(gcGame);
-        readAllScores();
+        sendScore();
+        readAllScores(gcGame);
     }
 
 
@@ -1470,10 +1470,8 @@ public class main extends Application implements Serializable {
         }
     }
 
-    public static HashMap<String, Integer> clientsScoreMap2 = new HashMap<>();
 
-
-    public static void sendScore(GraphicsContext gc) {
+    public static void sendScore() {
         Runnable helloRunnable = new Runnable() {
             public void run() {
                 try {
@@ -1489,26 +1487,61 @@ public class main extends Application implements Serializable {
         executor.scheduleAtFixedRate(helloRunnable, 0, 1, TimeUnit.SECONDS);
     }
 
-    public static void readAllScores() {
+    public static HashMap<String, Integer> clientScores = new HashMap<>();
+
+    public static void readAllScores(GraphicsContext gcGame) {
         Runnable helloRunnable = () -> {
             try {
-                System.out.println(in.readUTF());
+
+                String x = in.readUTF().replace("{", "");
+                x = x.replace("}", "");
+                x = x.replace(", ", "=");
+
+                for (int i = 0; i + 1 < x.split("=").length; i += 2) {
+                    clientScores.put(x.split("=")[i], Integer.parseInt(x.split("=")[i + 1]));
+                }
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
         };
 
         ScheduledExecutorService executor2 = Executors.newScheduledThreadPool(1);
-        executor2.scheduleAtFixedRate(helloRunnable, 0, 3, TimeUnit.SECONDS);
+        executor2.scheduleAtFixedRate(helloRunnable, 0, 1, TimeUnit.SECONDS);
     }
 
 
-    public static long startingTime;
+    public static Map<String, Integer> sortByComparator(Map<String, Integer> unsortMap, final boolean order) {
+        List<Map.Entry<String, Integer>> list = new LinkedList<Map.Entry<String, Integer>>(unsortMap.entrySet());
+
+        Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
+            public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
+                if (order) {
+                    return o1.getValue().compareTo(o2.getValue());
+                } else {
+                    return o2.getValue().compareTo(o1.getValue());
+                }
+            }
+        });
+
+        Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
+
+        for (Map.Entry<String, Integer> entry : list) {
+            sortedMap.put(entry.getKey(), entry.getValue());
+        }
+
+        return sortedMap;
+    }
+
+
+
+
+        public static long startingTime;
 
     public static void main(String[] args) {
         try {
 
-            verbindung = new Socket("localhost", 10024);
+            verbindung = new Socket("192.168.66.1", 10024);
 
             System.out.println("Verbunden");
             out = new ObjectOutputStream(verbindung.getOutputStream());

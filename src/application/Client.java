@@ -11,23 +11,17 @@ import static application.Server.*;
 
 public class Client extends Thread implements Serializable{
 
-    static Socket connection;
-    static ObjectInputStream in;
-    static ObjectOutputStream out;
+    Socket connection;
+    ObjectInputStream in;
+    ObjectOutputStream out;
 
     public Client(Socket connection) throws IOException {
-        Client.connection = connection;
+        this.connection = connection;
         in = new ObjectInputStream(connection.getInputStream());
         out = new ObjectOutputStream(connection.getOutputStream());
         out.flush();
 
     }
-
-
-    public void readReceivedScore() {
-
-    }
-
 
 
     private ScheduledExecutorService executor2;
@@ -41,16 +35,11 @@ public class Client extends Thread implements Serializable{
             try {
                 if (in.readUTF().equals("Unknown Player,0")) return;
 
+                clientsScoreMap.clear();
                 clientsScoreMap.put(in.readUTF().split(",")[0], Integer.parseInt(in.readUTF().split(",")[1]));
 
-                clientsScoreMap.forEach((key, value) -> {
-                    if (key.equals("Unknown Player")) return;
-                    try {
-                        writeToAll(key + "," + value);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
+                writeToAll(clientsScoreMap.toString());
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -58,7 +47,7 @@ public class Client extends Thread implements Serializable{
 
 
         executor2 = Executors.newScheduledThreadPool(1);
-        executor2.scheduleAtFixedRate(helloRunnable, 0, 3, TimeUnit.SECONDS);
+        executor2.scheduleAtFixedRate(helloRunnable, 1, 1, TimeUnit.SECONDS);
 
 
     }
@@ -69,7 +58,7 @@ public class Client extends Thread implements Serializable{
     }
 
     private void writeToAll(String obj) throws IOException {
-        for (Client c : connections){
+        for (Client c : connections) {
             c.write(obj);
         }
     }
