@@ -1541,7 +1541,7 @@ public class main extends Application implements Serializable {
     public static void main(String[] args) {
         try {
 
-            verbindung = new Socket("192.168.66.1", 10024);
+            verbindung = new Socket("localhost", 10024);
 
             System.out.println("Verbunden");
             out = new ObjectOutputStream(verbindung.getOutputStream());
