@@ -12,13 +12,13 @@ public class Server {
     public static int PORT = 10024;
     public static ServerSocket serverSocket;
     public static boolean checkScore = true;
-    public static HashMap<String, Integer> clientsScoreMap = new HashMap<>();
+    public static HashMap<String, String> clientsScoreMap = new HashMap<>();
     static List<Client> connections = new ArrayList<Client>();   // Array List of all connections
     public static Socket verbindung;
 
     public static void main(String[] args) throws IOException {
         serverSocket = new ServerSocket(PORT);
-        System.out.println("Server running on " + InetAddress.getLocalHost() + " and Port " + PORT);
+        System.out.println("Server running on " + InetAddress.getLocalHost().getHostAddress() + " and Port " + PORT);
 
         Thread wait = new Thread(() -> {
             while (true) try {

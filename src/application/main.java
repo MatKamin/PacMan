@@ -3,6 +3,7 @@ package application;
 //---------------------------------IMPORTS---------------------------------\\
 
 import application.canvas.*;
+import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -43,7 +44,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static application.Server.clientsScoreMap;
 import static application.Server.verbindung;
 import static application.ai.Ghost.chaseTimer;
 import static application.ai.Ghost.scatterTimer;
@@ -1471,12 +1471,23 @@ public class main extends Application implements Serializable {
     }
 
 
+    private static int sendPauseCounter = 0;
+
     public static void sendScore() {
         Runnable helloRunnable = new Runnable() {
             public void run() {
                 try {
-                    out.writeUTF(validUsername + "," + score);
-                    out.flush();
+                    if (tl.getStatus() == Animation.Status.RUNNING) {
+                        out.writeUTF(validUsername + "," + score + "-" + tl.getStatus());
+                        out.flush();
+                        sendPauseCounter = 0;
+                    } else if (tl.getStatus() == Animation.Status.STOPPED && sendPauseCounter < 5) {
+                        System.out.println("SENT");
+                        out.writeUTF(validUsername + "," + score + "-" + tl.getStatus());
+                        out.flush();
+                        sendPauseCounter++;
+                    }
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -1487,7 +1498,8 @@ public class main extends Application implements Serializable {
         executor.scheduleAtFixedRate(helloRunnable, 0, 1, TimeUnit.SECONDS);
     }
 
-    public static HashMap<String, Integer> clientScores = new HashMap<>();
+    public static HashMap<String, String> clientScores = new HashMap<>();
+
 
     public static void readAllScores(GraphicsContext gcGame) {
         Runnable helloRunnable = () -> {
@@ -1498,7 +1510,7 @@ public class main extends Application implements Serializable {
                 x = x.replace(", ", "=");
 
                 for (int i = 0; i + 1 < x.split("=").length; i += 2) {
-                    clientScores.put(x.split("=")[i], Integer.parseInt(x.split("=")[i + 1]));
+                    clientScores.put(x.split("=")[i], x.split("=")[i + 1]);
                 }
 
             } catch (IOException e) {
@@ -1511,22 +1523,22 @@ public class main extends Application implements Serializable {
     }
 
 
-    public static Map<String, Integer> sortByComparator(Map<String, Integer> unsortMap, final boolean order) {
-        List<Map.Entry<String, Integer>> list = new LinkedList<Map.Entry<String, Integer>>(unsortMap.entrySet());
+    public static Map<String, String> sortByComparator(Map<String, String> unsortMap, final boolean order) {
+        List<Map.Entry<String, String>> list = new LinkedList<Map.Entry<String, String>>(unsortMap.entrySet());
 
-        Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
-            public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
+        Collections.sort(list, new Comparator<Map.Entry<String, String>>() {
+            public int compare(Map.Entry<String, String> o1, Map.Entry<String, String> o2) {
                 if (order) {
-                    return o1.getValue().compareTo(o2.getValue());
+                    return o1.getValue().split("-")[0].compareTo(o2.getValue());
                 } else {
-                    return o2.getValue().compareTo(o1.getValue());
+                    return o2.getValue().split("-")[0].compareTo(o1.getValue());
                 }
             }
         });
 
-        Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
+        Map<String, String> sortedMap = new LinkedHashMap<String, String>();
 
-        for (Map.Entry<String, Integer> entry : list) {
+        for (Map.Entry<String, String> entry : list) {
             sortedMap.put(entry.getKey(), entry.getValue());
         }
 
@@ -1534,9 +1546,7 @@ public class main extends Application implements Serializable {
     }
 
 
-
-
-        public static long startingTime;
+    public static long startingTime;
 
     public static void main(String[] args) {
         try {

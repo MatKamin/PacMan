@@ -33,10 +33,10 @@ public class Client extends Thread implements Serializable{
 
         helloRunnable = () -> {
             try {
-                if (in.readUTF().equals("Unknown Player,0")) return;
+                if (in.readUTF().startsWith("Unknown Player,0")) return;
 
                 clientsScoreMap.clear();
-                clientsScoreMap.put(in.readUTF().split(",")[0], Integer.parseInt(in.readUTF().split(",")[1]));
+                clientsScoreMap.put(in.readUTF().split(",")[0], in.readUTF().split(",")[1]);
 
                 writeToAll(clientsScoreMap.toString());
 
