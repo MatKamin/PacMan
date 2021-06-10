@@ -74,17 +74,13 @@ public class chaseMode extends Ghost {
             // TARGET SCATTER MODE
             // COLUMN: 26
             // ROW: 1
-            if (blinkyGoRight)
-                distance1 = Math.pow(Math.abs((blinkyColumn + 1) - pacmanColumn - 1), 2) + Math.pow(Math.abs(blinkyRow - pacmanRow), 2);
-            if (blinkyGoUp)
-                distance2 = Math.pow(Math.abs(blinkyColumn - pacmanColumn), 2) + Math.pow(Math.abs((blinkyRow - 1) - pacmanRow - 1), 2);
-            if (blinkyGoDown)
-                distance3 = Math.pow(Math.abs(blinkyColumn - pacmanColumn), 2) + Math.pow(Math.abs((blinkyRow + 1) - pacmanRow - 1), 2);
-            if (blinkyGoLeft)
-                distance4 = Math.pow(Math.abs((blinkyColumn - 1) - pacmanColumn - 1), 2) + Math.pow(Math.abs(blinkyRow - pacmanRow), 2);
+
+            if (blinkyGoRight) distance1 = Math.pow(Math.abs((blinkyColumn + 1) - pacmanColumn - 1), 2) + Math.pow(Math.abs(blinkyRow - pacmanRow), 2);
+            if (blinkyGoUp) distance2 = Math.pow(Math.abs(blinkyColumn - pacmanColumn), 2) + Math.pow(Math.abs((blinkyRow - 1) - pacmanRow - 1), 2);
+            if (blinkyGoDown) distance3 = Math.pow(Math.abs(blinkyColumn - pacmanColumn), 2) + Math.pow(Math.abs((blinkyRow + 1) - pacmanRow - 1), 2);
+            if (blinkyGoLeft) distance4 = Math.pow(Math.abs((blinkyColumn - 1) - pacmanColumn - 1), 2) + Math.pow(Math.abs(blinkyRow - pacmanRow), 2);
             return;
         }
-
 
         if (ghost.equals("pinky")) {
             // TARGET SCATTER MODE
@@ -100,6 +96,7 @@ public class chaseMode extends Ghost {
             if (pacmanFacingDown) vertical = 4;
             if (pacmanFacingLeft) horizontal = -4;
             if (pacmanFacingRight) horizontal = 4;
+
 
             if (pinkyGoRight)
                 distance1pinky = Math.pow(Math.abs((pinkyColumn + 1) - (pacmanColumn + horizontal) - 1), 2) + Math.pow(Math.abs(pinkyRow - (pacmanRow + vertical)), 2);
@@ -128,14 +125,10 @@ public class chaseMode extends Ghost {
             }
 
 
-            if (clydeGoRight)
-                distance1clyde = Math.pow(Math.abs((clydeColumn + 1) - targetColumn - 1), 2) + Math.pow(Math.abs(clydeRow - targetRow), 2);
-            if (clydeGoUp)
-                distance2clyde = Math.pow(Math.abs(clydeColumn - targetColumn), 2) + Math.pow(Math.abs((clydeRow - 1) - targetRow - 1), 2);
-            if (clydeGoDown)
-                distance3clyde = Math.pow(Math.abs(clydeColumn - targetColumn), 2) + Math.pow(Math.abs((clydeRow + 1) - targetRow - 1), 2);
-            if (clydeGoLeft)
-                distance4clyde = Math.pow(Math.abs((clydeColumn - 1) - targetColumn - 1), 2) + Math.pow(Math.abs(clydeRow - targetRow), 2);
+            if (clydeGoRight) distance1clyde = Math.pow(Math.abs((clydeColumn + 1) - targetColumn - 1), 2) + Math.pow(Math.abs(clydeRow - targetRow), 2);
+            if (clydeGoUp) distance2clyde = Math.pow(Math.abs(clydeColumn - targetColumn), 2) + Math.pow(Math.abs((clydeRow - 1) - targetRow - 1), 2);
+            if (clydeGoDown) distance3clyde = Math.pow(Math.abs(clydeColumn - targetColumn), 2) + Math.pow(Math.abs((clydeRow + 1) - targetRow - 1), 2);
+            if (clydeGoLeft) distance4clyde = Math.pow(Math.abs((clydeColumn - 1) - targetColumn - 1), 2) + Math.pow(Math.abs(clydeRow - targetRow), 2);
 
 
         }

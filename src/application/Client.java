@@ -3,6 +3,7 @@ package application;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -27,6 +28,7 @@ public class Client extends Thread implements Serializable{
     private ScheduledExecutorService executor2;
     private Runnable helloRunnable;
 
+    int s = 0;
     @Override
     public void run() {
         System.out.println("Connected to " + connection.getRemoteSocketAddress());
@@ -40,6 +42,11 @@ public class Client extends Thread implements Serializable{
 
                 writeToAll(clientsScoreMap.toString());
 
+            } catch (EOFException | SocketException f) {
+                if (s == 0) {
+                    System.out.println("No more data to read");
+                    s++;
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

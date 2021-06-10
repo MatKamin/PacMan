@@ -81,7 +81,15 @@ public class main extends Application implements Serializable {
     public static Color fontColor = Color.WHITE;          // Font Color
 
     public static String validUsername = "Unknown Player";
-    static final String regexp = "\\w{1,10}" + "\\s?+" + "\\d{0,3}";
+    static final String regexpName = "\\w{1,10}" + "\\s?+" + "\\d{0,3}";
+
+    /**
+     * min. 8 characters
+     * min. 1 digit
+     * min. 1 lower & upper letter
+     * min. one special character (@, #, $, %, ^, &, +, =, .)
+     */
+    static final String regexpPass = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=.])(?=\\S+$).{8,}$";
 
     public static int lifesCounter = 3;
     static int lifesAtLevelStart = 3;
@@ -1051,6 +1059,7 @@ public class main extends Application implements Serializable {
                                 exception.printStackTrace();
                             }
 
+
                             tl.jumpTo(Duration.millis(0));          // Restart Animation
                             tl.stop();
 
@@ -1275,6 +1284,12 @@ public class main extends Application implements Serializable {
                         "Please enter a password");
                 return;
             }
+            // Not matching password regexp
+            if (!isValidPassword(passwordField.getText())) {
+                showAlert(gridPane.getScene().getWindow(),
+                        "Not allowed Password!");
+                return;
+            }
             if (passwordConfirmField.getText().isEmpty()) {
                 showAlert(gridPane.getScene().getWindow(),
                         "Please confirm your password!");
@@ -1415,6 +1430,11 @@ public class main extends Application implements Serializable {
                         "Please enter your name!");
                 return;
             }
+            if (clientScores.containsKey(nameField.getText())) {
+                showAlert(gridPane.getScene().getWindow(),
+                        "User already logged in!");
+                return;
+            }
             if (passwordField.getText().isEmpty()) {
                 showAlert(gridPane.getScene().getWindow(),
                         "Please enter a password");
@@ -1482,7 +1502,6 @@ public class main extends Application implements Serializable {
                         out.flush();
                         sendPauseCounter = 0;
                     } else if (tl.getStatus() == Animation.Status.STOPPED && sendPauseCounter < 5) {
-                        System.out.println("SENT");
                         out.writeUTF(validUsername + "," + score + "-" + tl.getStatus());
                         out.flush();
                         sendPauseCounter++;
@@ -1511,6 +1530,13 @@ public class main extends Application implements Serializable {
 
                 for (int i = 0; i + 1 < x.split("=").length; i += 2) {
                     clientScores.put(x.split("=")[i], x.split("=")[i + 1]);
+                }
+
+            } catch (EOFException i) {
+                int s = 0;
+                if (s == 0) {
+                    System.out.println("No more data to read");
+                    s++;
                 }
 
             } catch (IOException e) {

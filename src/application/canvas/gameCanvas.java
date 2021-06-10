@@ -117,11 +117,28 @@ public class gameCanvas {
 
             //::::::::::: Ghosts :::::::::::\\
 
-
-            switch (scatterCount) {
-                case 0, 1 -> scatterTime = 7000;
-                case 2, 3 -> scatterTime = 5000;
+            switch (levelCounter) {
+                case 0, 1 -> {
+                    switch (scatterCount) {
+                        case 0, 1 -> scatterTime = 7000;
+                        case 2, 3 -> scatterTime = 5000;
+                    }
+                }
+                case 2, 3, 4 -> {
+                    switch (scatterCount) {
+                        case 0, 1 -> scatterTime = 7000;
+                        case 2 -> scatterTime = 5000;
+                        case 3 -> scatterTime = 17;
+                    }
+                }
+                default -> {
+                    switch (scatterCount) {
+                        case 0, 1, 2 -> scatterTime = 5000;
+                        case 3 -> scatterTime = 17;
+                    }
+                }
             }
+
 
             if (inScatterMode) {
                 if (!inScaredModePinky) {
@@ -136,10 +153,30 @@ public class gameCanvas {
             }
 
 
-            switch (chaseCount) {
-                case 0, 1, 2, 3 -> chaseTime = 20000;
-                default -> chaseTime = 50;
+            switch (levelCounter) {
+                case 0, 1 -> {
+                    switch (chaseCount) {
+                        case 0, 1, 2, 3 -> chaseTime = 20000;
+                        default -> chaseTime = 50;
+                    }
+                }
+                case 2, 3, 4 -> {
+                    switch (chaseCount) {
+                        case 0, 1, 2 -> chaseTime = 20000;
+                        case 3 -> chaseTime = 1033000;
+                        default -> chaseTime = 50;
+                    }
+                }
+                default -> {
+                    switch (chaseCount) {
+                        case 0, 1, 2 -> chaseTime = 20000;
+                        case 3 -> chaseTime = 1037000;
+                        default -> chaseTime = 50;
+                    }
+                }
             }
+
+
 
             if (inChaseMode) {
                 chaseMode.ghostAnimate(gameLayout, "blinky");

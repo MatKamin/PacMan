@@ -32,7 +32,7 @@ public class gameMechanics {
 
     static String mapFile = "resources/levels/level1.txt";
 
-    static int levelCounter = 0;
+    public static int levelCounter = 0;
     static final int startingLevel = 1;
 
     static boolean firstRead = true;
@@ -97,7 +97,11 @@ public class gameMechanics {
      * @return true or false
      */
     public static boolean isValidNickname(String USERNAME) {
-        return Pattern.compile(regexp).matcher(USERNAME).matches();
+        return Pattern.compile(regexpName).matcher(USERNAME).matches();
+    }
+
+    public static boolean isValidPassword(String PASSWORD) {
+        return Pattern.compile(regexpPass).matcher(PASSWORD).matches();
     }
 
 
