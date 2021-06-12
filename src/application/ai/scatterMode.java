@@ -72,14 +72,10 @@ public class scatterMode extends Ghost {
             // TARGET SCATTER MODE
             // COLUMN: 26
             // ROW: 1
-            if (blinkyGoRight)
-                distance1 = Math.pow(Math.abs((blinkyColumn + 1) - 26 - 1), 2) + Math.pow(Math.abs(blinkyRow - 1), 2);
-            if (blinkyGoUp)
-                distance2 = Math.pow(Math.abs(blinkyColumn - 26), 2) + Math.pow(Math.abs((blinkyRow - 1) - 1 - 1), 2);
-            if (blinkyGoDown)
-                distance3 = Math.pow(Math.abs(blinkyColumn - 26), 2) + Math.pow(Math.abs((blinkyRow + 1) - 1 - 1), 2);
-            if (blinkyGoLeft)
-                distance4 = Math.pow(Math.abs((blinkyColumn - 1) - 26 - 1), 2) + Math.pow(Math.abs(blinkyRow - 1), 2);
+            if (blinkyGoRight) distance1 = Math.pow(Math.abs((blinkyColumn + 1) - 26 - 1), 2) + Math.pow(Math.abs(blinkyRow - 1), 2);
+            if (blinkyGoUp) distance2 = Math.pow(Math.abs(blinkyColumn - 26), 2) + Math.pow(Math.abs((blinkyRow - 1) - 1 - 1), 2);
+            if (blinkyGoDown) distance3 = Math.pow(Math.abs(blinkyColumn - 26), 2) + Math.pow(Math.abs((blinkyRow + 1) - 1 - 1), 2);
+            if (blinkyGoLeft) distance4 = Math.pow(Math.abs((blinkyColumn - 1) - 26 - 1), 2) + Math.pow(Math.abs(blinkyRow - 1), 2);
             return;
         }
 
@@ -88,14 +84,10 @@ public class scatterMode extends Ghost {
             // TARGET SCATTER MODE
             // COLUMN: 2
             // ROW: 1
-            if (pinkyGoRight)
-                distance1pinky = Math.pow(Math.abs((pinkyColumn + 1) - 2 - 1), 2) + Math.pow(Math.abs(pinkyRow - 1), 2);
-            if (pinkyGoUp)
-                distance2pinky = Math.pow(Math.abs(pinkyColumn - 2), 2) + Math.pow(Math.abs((pinkyRow - 1) - 1 - 1), 2);
-            if (pinkyGoDown)
-                distance3pinky = Math.pow(Math.abs(pinkyColumn - 2), 2) + Math.pow(Math.abs((pinkyRow + 1) - 1 - 1), 2);
-            if (pinkyGoLeft)
-                distance4pinky = Math.pow(Math.abs((pinkyColumn - 1) - 2 - 1), 2) + Math.pow(Math.abs(pinkyRow - 1), 2);
+            if (pinkyGoRight) distance1pinky = Math.pow(Math.abs((pinkyColumn + 1) - 2 - 1), 2) + Math.pow(Math.abs(pinkyRow - 1), 2);
+            if (pinkyGoUp) distance2pinky = Math.pow(Math.abs(pinkyColumn - 2), 2) + Math.pow(Math.abs((pinkyRow - 1) - 1 - 1), 2);
+            if (pinkyGoDown) distance3pinky = Math.pow(Math.abs(pinkyColumn - 2), 2) + Math.pow(Math.abs((pinkyRow + 1) - 1 - 1), 2);
+            if (pinkyGoLeft) distance4pinky = Math.pow(Math.abs((pinkyColumn - 1) - 2 - 1), 2) + Math.pow(Math.abs(pinkyRow - 1), 2);
             return;
         }
 
@@ -103,7 +95,7 @@ public class scatterMode extends Ghost {
             // TARGET SCATTER MODE
             // COLUMN: 0
             // ROW: 34
-            if (clydeColumnNew > 10 && clydeColumnNew < 17 && clydeRowNew > 15 && clydeRowNew < 20) {
+            if (clydeColumnNew > 10 && clydeColumnNew < 17 && clydeRowNew > 14 && clydeRowNew < 20) {
                 if (clydeGoRight) distance1clyde = Math.pow(Math.abs((clydeColumn + 1) - 26 - 1), 2) + Math.pow(Math.abs(clydeRow - 1), 2);
                 if (clydeGoUp) distance2clyde = Math.pow(Math.abs(clydeColumn - 26), 2) + Math.pow(Math.abs((clydeRow - 1) - 1 - 1), 2);
                 if (clydeGoDown) distance3clyde = Math.pow(Math.abs(clydeColumn - 26), 2) + Math.pow(Math.abs((clydeRow + 1) - 1 - 1), 2);
@@ -147,16 +139,19 @@ public class scatterMode extends Ghost {
             distance3 = 10000;
             distance4 = 10000;
 
+            /**
             if (switchedToScatterBlinky) {
                 getMovingDirection("blinky");
-                if (blinkyGoingRight || blinkyGoingLeft) {
+                if (blinkyGoingRight || blinkyGoingLeft && ( (blinkyXPos/blinkyColumn) % 1 == 0 ) ) {
                     velocityBlinkyHorizontal *= -1;
                 }
-                if (blinkyGoingUp || blinkyGoingDown) {
+                if (blinkyGoingUp || blinkyGoingDown && ( (blinkyYPos/blinkyColumn) % 1 == 0 ) ) {
                     velocityBlinkyVertical *= -1;
                 }
                 switchedToScatterBlinky = false;
             }
+
+             **/
 
             if (blinkyColumnNew == blinkyColumn + 1 || blinkyColumnNew == blinkyColumn - 1) {
                 blinkyColumn = blinkyColumnNew;
@@ -204,16 +199,18 @@ public class scatterMode extends Ghost {
             distance3pinky = 10000;
             distance4pinky = 10000;
 
+            /**
             if (switchedToScatterPinky) {
                 getMovingDirection("pinky");
-                if (pinkyGoingRight || pinkyGoingLeft) {
+                if (pinkyGoingRight || pinkyGoingLeft && ( (pinkyXPos/pinkyColumn) % 1 == 0 ) ) {
                     velocityPinkyHorizontal *= -1;
                 }
-                if (pinkyGoingUp || pinkyGoingDown) {
+                if (pinkyGoingUp || pinkyGoingDown && ( (pinkyYPos/pinkyColumn) % 1 == 0 ) ) {
                     velocityPinkyVertical *= -1;
                 }
                 switchedToScatterPinky = false;
             }
+             **/
 
             if (pinkyColumnNew == pinkyColumn + 1 || pinkyColumnNew == pinkyColumn - 1) {
                 pinkyColumn = pinkyColumnNew;
@@ -262,16 +259,18 @@ public class scatterMode extends Ghost {
             distance3clyde = 10000;
             distance4clyde = 10000;
 
+            /**
             if (switchedToScatterClyde) {
                 getMovingDirection("clyde");
-                if (clydeGoingRight || clydeGoingLeft) {
+                if (clydeGoingRight || clydeGoingLeft && ( (clydeXPos/clydeColumn) % 1 == 0 ) ) {
                     velocityClydeHorizontal *= -1;
                 }
-                if (clydeGoingUp || clydeGoingDown) {
+                if (clydeGoingUp || clydeGoingDown && ( (clydeYPos/clydeColumn) % 1 == 0 ) ) {
                     velocityClydeVertical *= -1;
                 }
                 switchedToScatterClyde = false;
             }
+             **/
 
             if (clydeColumnNew == clydeColumn + 1 || clydeColumnNew == clydeColumn - 1) {
                 clydeColumn = clydeColumnNew;

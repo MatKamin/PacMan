@@ -89,6 +89,21 @@ public class gameMechanics {
 
     public static int ghostsEaten = 0;
 
+    /**
+     * min. 3 word characters
+     * max. 10 word characters + optional 3 digits at end
+     */
+    static final String regexpName = "\\w{3,10}" + "\\d{0,3}";
+
+    /**
+     * min. 8 characters
+     * min. 1 digit
+     * min. 1 lower & upper letter
+     * min. one special character (@, #, $, %, ^, &, +, =, .)
+     */
+    static final String regexpPass = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=.])(?=\\S+$).{8,}$";
+
+
 
     /**
      * checks if given Username is valid

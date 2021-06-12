@@ -94,18 +94,15 @@ public class gameCanvas {
         final int[] shownClients = {0};
 
         gc.setFont(Font.loadFont("file:resources/fonts/emulogic.ttf", 20));
-        Map<String, String> sortedMapDesc = sortByComparator(clientScores, false);
-        sortedMapDesc.forEach((key, value) -> {
-            if (shownClients[0] < 10 && Integer.parseInt(value.split("-")[0]) != 0) {
-                if (value.split("-")[1].equalsIgnoreCase("running")) {
-                    gc.setFill(Color.GREENYELLOW);
-                } else {
-                    gc.setFill(Color.RED);
-                }
+        //Map<String, String> sortedMapDesc = sortByComparator(clientScores);
+
+
+        sortedMap.forEach((key, value) -> {
+            if (shownClients[0] < 10 && value != 0) {
                 gc.fillText("#" + rank[0] + ".", width - 455, heightStart[0]);
                 gc.fillText(key, width - 355, heightStart[0]);
                 gc.fillText(" | ", width - 285, heightStart[0]);
-                gc.fillText(value.split("-")[0], width - 225, heightStart[0]);
+                gc.fillText(value + "", width - 225, heightStart[0]);
                 heightStart[0] += 40;
                 rank[0]++;
                 shownClients[0]++;

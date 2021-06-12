@@ -59,9 +59,14 @@ public class Client extends Thread implements Serializable{
 
     }
 
-    private void write(String obj) throws IOException {
-        out.writeUTF(obj);
-        out.flush();
+    private void write(String obj) {
+        try {
+            out.writeUTF(obj);
+            out.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void writeToAll(String obj) throws IOException {

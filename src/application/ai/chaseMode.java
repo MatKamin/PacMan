@@ -98,14 +98,10 @@ public class chaseMode extends Ghost {
             if (pacmanFacingRight) horizontal = 4;
 
 
-            if (pinkyGoRight)
-                distance1pinky = Math.pow(Math.abs((pinkyColumn + 1) - (pacmanColumn + horizontal) - 1), 2) + Math.pow(Math.abs(pinkyRow - (pacmanRow + vertical)), 2);
-            if (pinkyGoUp)
-                distance2pinky = Math.pow(Math.abs(pinkyColumn - (pacmanColumn + horizontal)), 2) + Math.pow(Math.abs((pinkyRow - 1) - (pacmanRow + vertical) - 1), 2);
-            if (pinkyGoDown)
-                distance3pinky = Math.pow(Math.abs(pinkyColumn - (pacmanColumn + horizontal)), 2) + Math.pow(Math.abs((pinkyRow + 1) - (pacmanRow + vertical) - 1), 2);
-            if (pinkyGoLeft)
-                distance4pinky = Math.pow(Math.abs((pinkyColumn - 1) - (pacmanColumn + horizontal) - 1), 2) + Math.pow(Math.abs(pinkyRow - (pacmanRow + vertical)), 2);
+            if (pinkyGoRight) distance1pinky = Math.pow(Math.abs((pinkyColumn + 1) - (pacmanColumn + horizontal) - 1), 2) + Math.pow(Math.abs(pinkyRow - (pacmanRow + vertical)), 2);
+            if (pinkyGoUp) distance2pinky = Math.pow(Math.abs(pinkyColumn - (pacmanColumn + horizontal)), 2) + Math.pow(Math.abs((pinkyRow - 1) - (pacmanRow + vertical) - 1), 2);
+            if (pinkyGoDown) distance3pinky = Math.pow(Math.abs(pinkyColumn - (pacmanColumn + horizontal)), 2) + Math.pow(Math.abs((pinkyRow + 1) - (pacmanRow + vertical) - 1), 2);
+            if (pinkyGoLeft) distance4pinky = Math.pow(Math.abs((pinkyColumn - 1) - (pacmanColumn + horizontal) - 1), 2) + Math.pow(Math.abs(pinkyRow - (pacmanRow + vertical)), 2);
         }
 
 
@@ -164,16 +160,18 @@ public class chaseMode extends Ghost {
             distance3 = 10000;
             distance4 = 10000;
 
+            /**
             if (switchedToChaseBlinky) {
                 getMovingDirection("blinky");
-                if (blinkyGoingRight || blinkyGoingLeft) {
+                if (blinkyGoingRight || blinkyGoingLeft && ( (blinkyXPos/blinkyColumn) % 1 == 0 ) ){
                     velocityBlinkyHorizontal *= -1;
                 }
-                if (blinkyGoingUp || blinkyGoingDown) {
+                if (blinkyGoingUp || blinkyGoingDown  && ( (blinkyYPos/blinkyRow) % 1 == 0 ) ) {
                     velocityBlinkyVertical *= -1;
                 }
                 switchedToChaseBlinky = false;
             }
+             **/
 
             if (blinkyColumnNew == blinkyColumn + 1 || blinkyColumnNew == blinkyColumn - 1) {
                 blinkyColumn = blinkyColumnNew;
@@ -221,16 +219,18 @@ public class chaseMode extends Ghost {
             distance3pinky = 10000;
             distance4pinky = 10000;
 
+            /**
             if (switchedToChasePinky) {
                 getMovingDirection("pinky");
-                if (pinkyGoingRight || pinkyGoingLeft) {
+                if (pinkyGoingRight || pinkyGoingLeft  && ( (pinkyXPos/pinkyColumn) % 1 == 0 ) ) {
                     velocityPinkyHorizontal *= -1;
                 }
-                if (pinkyGoingUp || pinkyGoingDown) {
+                if (pinkyGoingUp || pinkyGoingDown  && ( (pinkyYPos/pinkyColumn) % 1 == 0 ) ) {
                     velocityPinkyVertical *= -1;
                 }
                 switchedToChasePinky = false;
             }
+             **/
 
             if (pinkyColumnNew == pinkyColumn + 1 || pinkyColumnNew == pinkyColumn - 1) {
                 pinkyColumn = pinkyColumnNew;
@@ -278,16 +278,18 @@ public class chaseMode extends Ghost {
             distance3clyde = 10000;
             distance4clyde = 10000;
 
+            /**
             if (switchedToChaseClyde) {
                 getMovingDirection("clyde");
-                if (clydeGoingRight || clydeGoingLeft) {
+                if (clydeGoingRight || clydeGoingLeft && ( (clydeXPos/clydeColumn) % 1 == 0 ) ) {
                     velocityClydeHorizontal *= -1;
                 }
-                if (clydeGoingUp || clydeGoingDown) {
+                if (clydeGoingUp || clydeGoingDown && ( (clydeYPos/clydeColumn) % 1 == 0 ) ) {
                     velocityClydeVertical *= -1;
                 }
                 switchedToChaseClyde = false;
             }
+             **/
 
             if (clydeColumnNew == clydeColumn + 1 || clydeColumnNew == clydeColumn - 1) {
                 clydeColumn = clydeColumnNew;

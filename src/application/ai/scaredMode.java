@@ -243,6 +243,7 @@ public class scaredMode extends Ghost {
             distance3 = 10000;
             distance4 = 10000;
 
+            /**
             if (switchedToScaredBlinky) {
                 getMovingDirection("blinky");
                 if (blinkyGoingRight || blinkyGoingLeft) {
@@ -253,6 +254,7 @@ public class scaredMode extends Ghost {
                 }
                 switchedToScaredBlinky = false;
             }
+             **/
 
             if (blinkyColumnNew == blinkyColumn + 1 || blinkyColumnNew == blinkyColumn - 1) {
                 blinkyColumn = blinkyColumnNew;
@@ -300,6 +302,8 @@ public class scaredMode extends Ghost {
             distance3pinky = 10000;
             distance4pinky = 10000;
 
+            /**
+
             if (switchedToScaredPinky) {
                 getMovingDirection("pinky");
                 if (pinkyGoingRight || pinkyGoingLeft) {
@@ -310,6 +314,8 @@ public class scaredMode extends Ghost {
                 }
                 switchedToScaredPinky = false;
             }
+
+             */
 
             if (pinkyColumnNew == pinkyColumn + 1 || pinkyColumnNew == pinkyColumn - 1) {
                 pinkyColumn = pinkyColumnNew;
@@ -358,6 +364,7 @@ public class scaredMode extends Ghost {
             distance3clyde = 10000;
             distance4clyde = 10000;
 
+            /**
             if (switchedToScaredClyde) {
                 getMovingDirection("clyde");
                 if (clydeGoingRight || clydeGoingLeft) {
@@ -368,6 +375,7 @@ public class scaredMode extends Ghost {
                 }
                 switchedToScaredClyde = false;
             }
+             */
 
             if (clydeColumnNew == clydeColumn + 1 || clydeColumnNew == clydeColumn - 1) {
                 clydeColumn = clydeColumnNew;

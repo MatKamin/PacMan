@@ -3,7 +3,6 @@ package application;
 //---------------------------------IMPORTS---------------------------------\\
 
 import application.canvas.*;
-import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -39,10 +38,14 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.file.Paths;
 import java.sql.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Timer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static application.Server.verbindung;
 import static application.ai.Ghost.chaseTimer;
@@ -81,15 +84,7 @@ public class main extends Application implements Serializable {
     public static Color fontColor = Color.WHITE;          // Font Color
 
     public static String validUsername = "Unknown Player";
-    static final String regexpName = "\\w{1,10}" + "\\s?+" + "\\d{0,3}";
 
-    /**
-     * min. 8 characters
-     * min. 1 digit
-     * min. 1 lower & upper letter
-     * min. one special character (@, #, $, %, ^, &, +, =, .)
-     */
-    static final String regexpPass = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=.])(?=\\S+$).{8,}$";
 
     public static int lifesCounter = 3;
     static int lifesAtLevelStart = 3;
@@ -598,7 +593,7 @@ public class main extends Application implements Serializable {
     }
 
 
-    public static void myLaunch(Class<? extends Application> applicationClass) {
+    public void myLaunch(Class<? extends Application> applicationClass) {
         if (!javaFxLaunched) { // First time
             Platform.setImplicitExit(false);
             new Thread(() -> Application.launch(applicationClass)).start();
@@ -1033,9 +1028,9 @@ public class main extends Application implements Serializable {
                         if (el.getCode() == KeyCode.P) {      // If "P" pressed again
 
                             sounds.playClick();
-                            tl.play();      // Continue Timeline/Animation
+                            tl.play();                       // Continue Timeline/Animation
 
-                            controls(primaryStage);      // Recursion -> Check if pressed again
+                            controls(primaryStage);          // Recursion -> Check if pressed again
                         }
 
                         // Leave Game on Esc with Pause
@@ -1474,15 +1469,6 @@ public class main extends Application implements Serializable {
 
 
     public static void sqlConnection() {
-
-        /**
-         try {
-         Class.forName("com.mysql.jdbc.Driver");
-         } catch (ClassNotFoundException e) {
-         throw new IllegalStateException("Cannot find the driver in the classpath!", e);
-         }
-         **/
-
         try {
             connection = DriverManager.getConnection(url, username, password);
         } catch (SQLException e) {
@@ -1497,15 +1483,10 @@ public class main extends Application implements Serializable {
         Runnable helloRunnable = new Runnable() {
             public void run() {
                 try {
-                    if (tl.getStatus() == Animation.Status.RUNNING) {
-                        out.writeUTF(validUsername + "," + score + "-" + tl.getStatus());
-                        out.flush();
-                        sendPauseCounter = 0;
-                    } else if (tl.getStatus() == Animation.Status.STOPPED && sendPauseCounter < 5) {
-                        out.writeUTF(validUsername + "," + score + "-" + tl.getStatus());
-                        out.flush();
-                        sendPauseCounter++;
-                    }
+
+                    out.writeUTF(validUsername + "," + score);
+                    out.flush();
+                    sendPauseCounter = 0;
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -1517,8 +1498,8 @@ public class main extends Application implements Serializable {
         executor.scheduleAtFixedRate(helloRunnable, 0, 1, TimeUnit.SECONDS);
     }
 
-    public static HashMap<String, String> clientScores = new HashMap<>();
-
+    public static Map<String, Integer> clientScores = new HashMap<>();
+    public static Map<String, Integer> sortedMap = new HashMap<>();
 
     public static void readAllScores(GraphicsContext gcGame) {
         Runnable helloRunnable = () -> {
@@ -1529,8 +1510,10 @@ public class main extends Application implements Serializable {
                 x = x.replace(", ", "=");
 
                 for (int i = 0; i + 1 < x.split("=").length; i += 2) {
-                    clientScores.put(x.split("=")[i], x.split("=")[i + 1]);
+                    clientScores.put(x.split("=")[i], Integer.parseInt(x.split("=")[i + 1]));
                 }
+
+                sortedMap = sortByValue(clientScores);
 
             } catch (EOFException i) {
                 int s = 0;
@@ -1549,26 +1532,11 @@ public class main extends Application implements Serializable {
     }
 
 
-    public static Map<String, String> sortByComparator(Map<String, String> unsortMap, final boolean order) {
-        List<Map.Entry<String, String>> list = new LinkedList<Map.Entry<String, String>>(unsortMap.entrySet());
-
-        Collections.sort(list, new Comparator<Map.Entry<String, String>>() {
-            public int compare(Map.Entry<String, String> o1, Map.Entry<String, String> o2) {
-                if (order) {
-                    return o1.getValue().split("-")[0].compareTo(o2.getValue());
-                } else {
-                    return o2.getValue().split("-")[0].compareTo(o1.getValue());
-                }
-            }
-        });
-
-        Map<String, String> sortedMap = new LinkedHashMap<String, String>();
-
-        for (Map.Entry<String, String> entry : list) {
-            sortedMap.put(entry.getKey(), entry.getValue());
-        }
-
-        return sortedMap;
+    public static Map<String, Integer> sortByValue(final Map<String, Integer> map) {
+        return map.entrySet()
+                .stream()
+                .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
     }
 
 

@@ -15,9 +15,9 @@ E D H H H H L B V D H H L B V V B R H H U V B R H H H H U ?
 E E E E E E V B V R H H U B D U B D H H L V B V E E E E E ?
 E E E E E E V B V V E E E E E E E E E E V V B V E E E E E ?
 E E E E E E V B V V E R H H E E H H L E V V B V E E E E E ?
-E H H H H H U B D U E V E E E E E E V E D U B D H H H H H ?
-E E E E E E E B E E E V E E 1 2 E E V E E E B E E E E E E ?
-E H H H H H L B R L E V E E 3 E E E V E R L B R H H H H H ?
+E H H H H H U B D U E V E 3 E E E E V E D U B D H H H H H ?
+E E E E E E E B E E E V E 1 2 E E E V E E E B E E E E E E ?
+E H H H H H L B R L E V E E E E E E V E R L B R H H H H H ?
 E E E E E E V B V V E D H H H H H H U E V V B V E E E E E ?
 E E E E E E V B V V E E E E F E E E E E V V B V E E E E E ?
 E E E E E E V B V V E R H H H H H H L E V V B V E E E E E ?
