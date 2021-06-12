@@ -35,7 +35,6 @@ public class Client extends Thread implements Serializable{
 
         helloRunnable = () -> {
             try {
-                if (in.readUTF().startsWith("Unknown Player,0")) return;
 
                 clientsScoreMap.clear();
                 clientsScoreMap.put(in.readUTF().split(",")[0], in.readUTF().split(",")[1]);
@@ -43,10 +42,7 @@ public class Client extends Thread implements Serializable{
                 writeToAll(clientsScoreMap.toString());
 
             } catch (EOFException | SocketException f) {
-                if (s == 0) {
-                    System.out.println("No more data to read");
-                    s++;
-                }
+                System.out.println("No more data to read");
             } catch (IOException e) {
                 e.printStackTrace();
             }

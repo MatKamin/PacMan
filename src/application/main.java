@@ -1504,10 +1504,12 @@ public class main extends Application implements Serializable {
     public static void readAllScores(GraphicsContext gcGame) {
         Runnable helloRunnable = () -> {
             try {
+                if (in.readUTF().startsWith("{Unknown Player=0")) return;
 
                 String x = in.readUTF().replace("{", "");
                 x = x.replace("}", "");
                 x = x.replace(", ", "=");
+                System.out.println(x);
 
                 for (int i = 0; i + 1 < x.split("=").length; i += 2) {
                     clientScores.put(x.split("=")[i], Integer.parseInt(x.split("=")[i + 1]));
@@ -1516,19 +1518,14 @@ public class main extends Application implements Serializable {
                 sortedMap = sortByValue(clientScores);
 
             } catch (EOFException i) {
-                int s = 0;
-                if (s == 0) {
-                    System.out.println("No more data to read");
-                    s++;
-                }
-
+                System.out.println("No more data to read");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         };
 
         ScheduledExecutorService executor2 = Executors.newScheduledThreadPool(1);
-        executor2.scheduleAtFixedRate(helloRunnable, 0, 1, TimeUnit.SECONDS);
+        executor2.scheduleAtFixedRate(helloRunnable, 0, 1500, TimeUnit.MILLISECONDS);
     }
 
 
