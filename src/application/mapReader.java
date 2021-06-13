@@ -53,6 +53,16 @@ public class mapReader {
     public static double clydeXPosStarting;
     public static double clydeYPosStarting;
 
+
+    public static double inkyRow;
+    public static double inkyColumn;
+    public static double inkyColumnStart;
+    public static double inkyRowStart;
+    public static double inkyXPos;
+    public static double inkyYPos;
+    public static double inkyXPosStarting;
+    public static double inkyYPosStarting;
+
     static int spawningFruitColumn = 14;
     static int spawningFruitRow = 21;
 
@@ -156,6 +166,24 @@ public class mapReader {
                                 clydeColumn = columnCounter;
                                 clydeColumnStart = columnCounter;
                                 clydeRowStart = row;
+                                if (reset) {
+                                    powerPills[columnCounter][row] = false;
+                                    dots[columnCounter][row] = false;
+                                    notAllowedBox[columnCounter][row] = false;
+                                }
+                            }
+                            case "4" -> {
+                                // Inky
+
+                                inkyXPos = (widthOneBlock * columnCounter);
+                                inkyYPos = (heightOneBlock * row);
+                                inkyXPosStarting = inkyXPos;
+                                inkyYPosStarting = inkyYPos;
+
+                                inkyRow = row;
+                                inkyColumn = columnCounter;
+                                inkyColumnStart = columnCounter;
+                                inkyRowStart = row;
                                 if (reset) {
                                     powerPills[columnCounter][row] = false;
                                     dots[columnCounter][row] = false;

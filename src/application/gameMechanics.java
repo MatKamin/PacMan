@@ -3,6 +3,7 @@ package application;
 
 //---------------------------------IMPORTS---------------------------------\\
 
+import application.ai.Ghost;
 import javafx.scene.Group;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
@@ -12,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import java.util.Timer;
 import java.util.regex.Pattern;
 import static application.imageViewerVariables.*;
 import static application.main.*;
@@ -79,6 +81,7 @@ public class gameMechanics {
     public static boolean inScaredModeBlinky = false;
     public static boolean inScaredModePinky = false;
     public static boolean inScaredModeClyde = false;
+    public static boolean inScaredModeInky = false;
     public static boolean inScatterMode = true;
 
     public static int scatterTime = 7000;
@@ -322,6 +325,7 @@ public class gameMechanics {
         inScaredModeBlinky = false;
         inScaredModeClyde = false;
         inScaredModePinky = false;
+        inScaredModeInky = false;
 
         scatterCount = 0;
         chaseCount = 0;
@@ -332,7 +336,6 @@ public class gameMechanics {
 
     /**
      * Draws The Spawning Fruit
-     *
      * @param gameLayout Group Layout of the Game window
      */
     private static void drawFruit(Group gameLayout) {
@@ -522,38 +525,45 @@ public class gameMechanics {
         }
 
         //Setting the position of the image
-        viewBlinky.setX((blinkyColumn * widthOneBlock) + (int) ((widthOneBlock - characterWidth) / 2));
-        viewBlinky.setY((blinkyRow * heightOneBlock) + (int) ((heightOneBlock - characterHeight) / 2));
+        viewBlinky.setX((blinkyColumnStart * widthOneBlock) + (int) ((widthOneBlock - characterWidth) / 2));
+        viewBlinky.setY((blinkyRowStart * heightOneBlock) + (int) ((heightOneBlock - characterHeight) / 2));
 
         //setting the fit height and width of the image view
         viewBlinky.setFitHeight(characterHeight);
         viewBlinky.setFitWidth(characterWidth);
 
         //Setting the position of the image
-        viewPinky.setX((pinkyColumn * widthOneBlock) + (int) ((widthOneBlock - characterWidth) / 2));
-        viewPinky.setY((pinkyRow * heightOneBlock) + (int) ((heightOneBlock - characterHeight) / 2));
+        viewPinky.setX((pinkyColumnStart * widthOneBlock) + (int) ((widthOneBlock - characterWidth) / 2));
+        viewPinky.setY((pinkyRowStart * heightOneBlock) + (int) ((heightOneBlock - characterHeight) / 2));
 
         //setting the fit height and width of the image view
         viewPinky.setFitHeight(characterHeight);
         viewPinky.setFitWidth(characterWidth);
 
         //Setting the position of the image
-        viewClyde.setX((clydeColumn * widthOneBlock) + (int) ((widthOneBlock - characterWidth) / 2));
-        viewClyde.setY((clydeRow * heightOneBlock) + (int) ((heightOneBlock - characterHeight) / 2));
+        viewClyde.setX((clydeColumnStart * widthOneBlock) + (int) ((widthOneBlock - characterWidth) / 2));
+        viewClyde.setY((clydeRowStart * heightOneBlock) + (int) ((heightOneBlock - characterHeight) / 2));
 
         //setting the fit height and width of the image view
         viewClyde.setFitHeight(characterHeight);
         viewClyde.setFitWidth(characterWidth);
 
+        //Setting the position of the image
+        viewInky.setX((inkyColumnStart * widthOneBlock) + (int) ((widthOneBlock - characterWidth) / 2));
+        viewInky.setY((inkyRowStart * heightOneBlock) + (int) ((heightOneBlock - characterHeight) / 2));
+
+        //setting the fit height and width of the image view
+        viewInky.setFitHeight(characterHeight);
+        viewInky.setFitWidth(characterWidth);
+
         if (!inScaredModeBlinky) {
-            gameLayout.getChildren().addAll(viewBlinky, viewPinky, viewClyde);
+            gameLayout.getChildren().addAll(viewBlinky, viewPinky, viewClyde, viewInky);
         }
     }
 
 
     /**
      * Sets the next level
-     *
      * @param gameLayout Group Layout of the Game window
      */
 
@@ -569,7 +579,7 @@ public class gameMechanics {
             if (mapNumber > maxMaps) mapNumber = 1;
             mapFile = "resources/levels/level" + mapNumber + ".txt";
             removeMap(gameLayout);
-            gameLayout.getChildren().removeAll(viewBlinky, viewPinky, viewClyde);
+            gameLayout.getChildren().removeAll(viewBlinky, viewPinky, viewClyde, viewInky);
             reset = true;
             nextLevel = false;
             firstRead = true;
@@ -601,9 +611,22 @@ public class gameMechanics {
             inScaredModeBlinky = false;
             inScaredModePinky = false;
             inScaredModeClyde = false;
+            inScaredModeInky = false;
 
             scatterCount = 0;
             chaseCount = 0;
+            Ghost.chaseTimer.cancel();
+            Ghost.chaseTimer = new Timer();
+            Ghost.scatterTimer.cancel();
+            Ghost.scatterTimer = new Timer();
+            Ghost.velocityBlinkyVertical = -1;
+            Ghost.velocityBlinkyHorizontal = 0;
+            Ghost.velocityPinkyVertical = -1;
+            Ghost.velocityPinkyHorizontal = 0;
+            Ghost.velocityInkyVertical = -1;
+            Ghost.velocityInkyHorizontal = 0;
+            Ghost.velocityClydeVertical = -1;
+            Ghost.velocityClydeHorizontal = 0;
 
             drawLevelCounterOnce = true;
             drawLifesCounterOnce = true;
@@ -616,7 +639,6 @@ public class gameMechanics {
 
     /**
      * Makes Spawning Fruit collectable
-     *
      * @param gameLayout Group Layout of the Game window
      */
     public static void collectFruit(Group gameLayout) {
@@ -657,7 +679,6 @@ public class gameMechanics {
 
     /**
      * Hides Dots and Power Pills
-     *
      * @param gameLayout Group Layout of the Game window
      */
     private static void clearer(Group gameLayout) {
@@ -694,7 +715,6 @@ public class gameMechanics {
 
     /**
      * Makes Dots collectable
-     *
      * @param gameLayout Group Layout of the Game window
      */
     public static void collectPoints(Group gameLayout) {
@@ -710,13 +730,9 @@ public class gameMechanics {
 
     /**
      * Makes Power Pills collectable
-     *
      * @param gameLayout Group Layout of the Game window
      */
     public static boolean pacmanInPowerMode = false;
-    public static boolean switchedToScaredBlinky = false;
-    public static boolean switchedToScaredPinky = false;
-    public static boolean switchedToScaredClyde = false;
 
     public static void collectPowerPill(Group gameLayout) {
         if (!powerPills[(int) pacmanColumn][(int) pacmanRow]) return;
@@ -725,12 +741,10 @@ public class gameMechanics {
         score += 50;        // A Power Pill gives 50 points
         inChaseMode = false;
         pacmanInPowerMode = true;
-        switchedToScaredBlinky = true;
-        switchedToScaredPinky = true;
-        switchedToScaredClyde = true;
         pacmanPowerModeBlinky(gameLayout);
         pacmanPowerModePinky(gameLayout);
         pacmanPowerModeClyde(gameLayout);
+        pacmanPowerModeInky(gameLayout);
         clearer(gameLayout);
     }
 
@@ -792,6 +806,24 @@ public class gameMechanics {
         );
     }
 
+    private static void pacmanPowerModeInky(Group gameLayout) {
+        gameLayout.getChildren().remove(viewInky);
+        inScaredModeInky = true;
+        // Timer
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        if (inScaredModeInky) {
+                            inScaredModeInky = false;
+                            inScatterMode = true;
+                        }
+                    }
+                },
+                scaredTime
+        );
+    }
+
 
     private static boolean pacmanIsAlive = true;
 
@@ -808,15 +840,14 @@ public class gameMechanics {
             pacmanInPowerMode = false;
         }
 
-        if ((!pacmanInPowerMode) && pacmanIsAlive && ((pacmanColumn == blinkyColumn && pacmanRow == blinkyRow) || (pacmanColumn == pinkyColumn && pacmanRow == pinkyRow) || (pacmanColumn == clydeColumn && pacmanRow == clydeRow))) {
+        if ((!pacmanInPowerMode) && pacmanIsAlive && ((pacmanColumn == blinkyColumn && pacmanRow == blinkyRow) || (pacmanColumn == pinkyColumn && pacmanRow == pinkyRow) || (pacmanColumn == clydeColumn && pacmanRow == clydeRow) || (pacmanColumn == inkyColumn && pacmanRow == inkyRow))) {
 
             reset = false;
             pacmanXPos = pacmanXPosStarting;
             pacmanYPos = pacmanYPosStarting;
 
             removeMap(gameLayout);
-            gameLayout.getChildren().removeAll(viewCherry, viewBlinky, viewPinky, viewClyde);
-
+            gameLayout.getChildren().removeAll(viewCherry, viewBlinky, viewPinky, viewClyde, viewInky);
 
             firstRead = true;
             lifesCounter -= 1;
@@ -829,7 +860,6 @@ public class gameMechanics {
             railUpLeftCount = 0;
             railRightUpCount = 0;
             railLeftUpCount = 0;
-
 
             velocityPacmanHorizontal = 0;
             velocityPacmanVertical = 0;
@@ -858,12 +888,21 @@ public class gameMechanics {
             inScaredModeBlinky = false;
             inScaredModePinky = false;
             inScaredModeClyde = false;
+            inScaredModeInky = false;
+
+            Ghost.velocityBlinkyVertical = -1;
+            Ghost.velocityBlinkyHorizontal = 0;
+            Ghost.velocityPinkyVertical = -1;
+            Ghost.velocityPinkyHorizontal = 0;
+            Ghost.velocityInkyVertical = -1;
+            Ghost.velocityInkyHorizontal = 0;
+            Ghost.velocityClydeVertical = -1;
+            Ghost.velocityClydeHorizontal = 0;
 
             scatterCount = 0;
             chaseCount = 0;
             drawLevelCounterOnce = true;
             pacmanIsAlive = true;
-
         }
     }
 
@@ -880,7 +919,6 @@ public class gameMechanics {
 
     /**
      * Checks if UP move is possible
-     *
      * @param direction direction Pacman is heading (1 = going Right, -1 = going Left)
      */
     private static void checkUpPossible(int direction) {
@@ -896,7 +934,6 @@ public class gameMechanics {
 
     /**
      * Checks if DOWN move is possible
-     *
      * @param direction direction Pacman is heading (1 = going Right, -1 = going Left)
      */
     private static void checkDownPossible(int direction) {
@@ -912,7 +949,6 @@ public class gameMechanics {
 
     /**
      * Checks if LEFT move is possible
-     *
      * @param direction direction Pacman is heading (1 = going Down, -1 = going Up)
      */
     private static void checkLeftPossible(int direction) {
@@ -928,7 +964,6 @@ public class gameMechanics {
 
     /**
      * Checks if RIGHT move is possible
-     *
      * @param direction direction Pacman is heading (1 = going Down, -1 = going Up)
      */
     private static void checkRightPossible(int direction) {
@@ -944,7 +979,6 @@ public class gameMechanics {
 
     /**
      * Turns Pacman UP
-     *
      * @param gameLayout Group Layout of the Game window
      */
     private static void turnPacmanUp(Group gameLayout) {
@@ -977,7 +1011,6 @@ public class gameMechanics {
 
     /**
      * Turns Pacman DOWN
-     *
      * @param gameLayout Group Layout of the Game window
      */
     private static void turnPacmanDown(Group gameLayout) {
@@ -1010,7 +1043,6 @@ public class gameMechanics {
 
     /**
      * Turns Pacman LEFT
-     *
      * @param gameLayout Group Layout of the Game window
      */
     private static void turnPacmanLeft(Group gameLayout) {
@@ -1043,7 +1075,6 @@ public class gameMechanics {
 
     /**
      * Turns Pacman RIGHT
-     *
      * @param gameLayout Group Layout of the Game window
      */
     private static void turnPacmanRight(Group gameLayout) {
@@ -1077,7 +1108,6 @@ public class gameMechanics {
 
     /**
      * Checks if horizontal Wall got Hit
-     *
      * @param MovingDirection Pacmans moving direction
      */
     private static void horizontalWallHit(String MovingDirection) {
@@ -1101,7 +1131,6 @@ public class gameMechanics {
 
     /**
      * Checks if vertical Wall got Hit
-     *
      * @param MovingDirection Pacmans moving direction
      */
     private static void verticalWallHit(String MovingDirection) {
@@ -1126,7 +1155,6 @@ public class gameMechanics {
 
     /**
      * Allows Moving Pacman
-     *
      * @param gameLayout Group Layout of the Game window
      */
     public static void pacmanMove(Group gameLayout) {

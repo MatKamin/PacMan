@@ -37,7 +37,4 @@ public class Server {
         connections.add(client);
         client.start();
     }
-
-
-
 }

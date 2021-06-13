@@ -90,17 +90,22 @@ public class gameCanvas {
 
 
         final double[] heightStart = {height - 850};
+        final double[] heightStart2 = {height - 850};
         final int[] rank = {1};
         final int[] shownClients = {0};
 
         gc.setFont(Font.loadFont("file:resources/fonts/emulogic.ttf", 20));
-        //Map<String, String> sortedMapDesc = sortByComparator(clientScores);
 
 
+        gc.setFont(Font.loadFont("file:resources/fonts/emulogic.ttf", 20));
         sortedMap.forEach((key, value) -> {
+
+            gc.setFill(Color.GREENYELLOW);
+
+
             if (shownClients[0] < 10 && value != 0) {
                 gc.fillText("#" + rank[0] + ".", width - 455, heightStart[0]);
-                gc.fillText(key, width - 355, heightStart[0]);
+                gc.fillText(key.split("-")[0], width - 355, heightStart[0]);
                 gc.fillText(" | ", width - 285, heightStart[0]);
                 gc.fillText(value + "", width - 225, heightStart[0]);
                 heightStart[0] += 40;
@@ -147,6 +152,9 @@ public class gameCanvas {
                 if (!inScaredModeClyde) {
                     scatterMode.ghostAnimate(gameLayout, "clyde");
                 }
+                if (!inScaredModeInky) {
+                    scatterMode.ghostAnimate(gameLayout, "inky");
+                }
             }
 
 
@@ -179,6 +187,7 @@ public class gameCanvas {
                 chaseMode.ghostAnimate(gameLayout, "blinky");
                 chaseMode.ghostAnimate(gameLayout, "pinky");
                 chaseMode.ghostAnimate(gameLayout, "clyde");
+                chaseMode.ghostAnimate(gameLayout, "inky");
             }
 
 
@@ -190,6 +199,9 @@ public class gameCanvas {
             }
             if (inScaredModeClyde) {
                 scaredMode.ghostAnimate(gameLayout, "clyde");
+            }
+            if (inScaredModeInky) {
+                scaredMode.ghostAnimate(gameLayout, "inky");
             }
 
 

@@ -130,6 +130,7 @@ public class main extends Application implements Serializable {
 
     public static boolean isFullscreen = false;
 
+    boolean connect = true;
 
     TextArea receivedMsgArea = new TextArea();
     TextField ipText = new TextField();
@@ -820,8 +821,12 @@ public class main extends Application implements Serializable {
             velocityAdder -= 0.1;
         });
 
-        sendScore();
-        readAllScores(gcGame);
+
+        if (connect) {
+            sendScore();
+            readAllScores(gcGame);
+            connect = false;
+        }
     }
 
 
@@ -1484,7 +1489,7 @@ public class main extends Application implements Serializable {
             public void run() {
                 try {
 
-                    out.writeUTF(validUsername + "," + score);
+                    out.writeUTF(validUsername + "," + score );
                     out.flush();
                     sendPauseCounter = 0;
 
@@ -1495,7 +1500,7 @@ public class main extends Application implements Serializable {
         };
 
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-        executor.scheduleAtFixedRate(helloRunnable, 0, 1, TimeUnit.SECONDS);
+        executor.scheduleAtFixedRate(helloRunnable, 0, 500, TimeUnit.MILLISECONDS);
     }
 
     public static Map<String, Integer> clientScores = new HashMap<>();
@@ -1504,18 +1509,23 @@ public class main extends Application implements Serializable {
     public static void readAllScores(GraphicsContext gcGame) {
         Runnable helloRunnable = () -> {
             try {
-                if (in.readUTF().startsWith("{Unknown Player=0")) return;
+
+
 
                 String x = in.readUTF().replace("{", "");
                 x = x.replace("}", "");
                 x = x.replace(", ", "=");
-                System.out.println(x);
+
+                System.out.println();
 
                 for (int i = 0; i + 1 < x.split("=").length; i += 2) {
                     clientScores.put(x.split("=")[i], Integer.parseInt(x.split("=")[i + 1]));
                 }
 
+
+
                 sortedMap = sortByValue(clientScores);
+
 
             } catch (EOFException i) {
                 System.out.println("No more data to read");
@@ -1525,7 +1535,7 @@ public class main extends Application implements Serializable {
         };
 
         ScheduledExecutorService executor2 = Executors.newScheduledThreadPool(1);
-        executor2.scheduleAtFixedRate(helloRunnable, 0, 1500, TimeUnit.MILLISECONDS);
+        executor2.scheduleAtFixedRate(helloRunnable, 0, 1000, TimeUnit.MILLISECONDS);
     }
 
 
@@ -1553,7 +1563,7 @@ public class main extends Application implements Serializable {
             System.out.println("Verbindung fehlgeschlagen");
         }
 
-        //sounds.playBackgroundMusic();
+
         // TODO: Music
         // Sets Background Music
         // sounds.playBackgroundMusic();

@@ -21,7 +21,6 @@ public class Client extends Thread implements Serializable{
         in = new ObjectInputStream(connection.getInputStream());
         out = new ObjectOutputStream(connection.getOutputStream());
         out.flush();
-
     }
 
 
@@ -36,7 +35,8 @@ public class Client extends Thread implements Serializable{
         helloRunnable = () -> {
             try {
 
-                clientsScoreMap.clear();
+                if (in.readUTF().contains("Unknown Player,0")) return;
+
                 clientsScoreMap.put(in.readUTF().split(",")[0], in.readUTF().split(",")[1]);
 
                 writeToAll(clientsScoreMap.toString());
@@ -50,19 +50,14 @@ public class Client extends Thread implements Serializable{
 
 
         executor2 = Executors.newScheduledThreadPool(1);
-        executor2.scheduleAtFixedRate(helloRunnable, 1, 1, TimeUnit.SECONDS);
+        executor2.scheduleAtFixedRate(helloRunnable, 500, 500, TimeUnit.MILLISECONDS);
 
 
     }
 
-    private void write(String obj) {
-        try {
-            out.writeUTF(obj);
-            out.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+    private void write(String obj) throws IOException {
+        out.writeUTF(obj);
+        out.flush();
     }
 
     private void writeToAll(String obj) throws IOException {

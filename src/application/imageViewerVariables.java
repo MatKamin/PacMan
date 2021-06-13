@@ -106,6 +106,24 @@ public class imageViewerVariables {
     public static ImageView viewClyde = new ImageView(clyde);
 
 
+
+    //::::::::::: Blue Ghost (Inky) GIF :::::::::::\\
+
+    // Creating an image
+    static Image inky;
+
+    static {
+        try {
+            inky = new Image(new FileInputStream("resources/characters/inky.gif"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Setting the image view
+    public static ImageView viewInky = new ImageView(inky);
+
+
     //::::::::::: DOTS :::::::::::\\
 
     public static ImageView[] viewDot = new ImageView[blockCountHorizontally * blockCountVertically];

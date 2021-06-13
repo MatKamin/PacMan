@@ -3,8 +3,7 @@ package application.ai;
 import java.util.Timer;
 
 import static application.gameMechanics.*;
-import static application.main.velocityAdder;
-import static application.main.widthOneBlock;
+import static application.main.*;
 import static application.mapReader.*;
 
 public class Ghost {
@@ -19,8 +18,8 @@ public class Ghost {
     static boolean blinkyGoingRight;
 
 
-    static double velocityBlinkyVertical = 0;
-    static double velocityBlinkyHorizontal = 1;
+    public static double velocityBlinkyVertical = 0;
+    public static double velocityBlinkyHorizontal = 1;
 
     static boolean blinkyGoRight = true;
     static boolean blinkyGoLeft = true;
@@ -46,8 +45,8 @@ public class Ghost {
     static boolean pinkyGoingRight;
 
 
-    static double velocityPinkyVertical = 0;
-    static double velocityPinkyHorizontal = 1;
+    public static double velocityPinkyVertical = 0;
+    public static double velocityPinkyHorizontal = 1;
 
     static boolean pinkyGoRight = true;
     static boolean pinkyGoLeft = true;
@@ -72,8 +71,8 @@ public class Ghost {
     static boolean clydeGoingRight;
 
 
-    static double velocityClydeVertical = 0;
-    static double velocityClydeHorizontal = 1;
+    public static double velocityClydeVertical = 0;
+    public static double velocityClydeHorizontal = 1;
 
     static boolean clydeGoRight = true;
     static boolean clydeGoLeft = true;
@@ -88,17 +87,34 @@ public class Ghost {
 
 
 
+    static int inkyColumnNew;
+    static int inkyRowNew;
 
-    public static boolean switchedToScatterBlinky = false;
-    public static boolean switchedToScatterPinky = false;
-    public static boolean switchedToScatterClyde = false;
-    public static boolean switchedToChaseBlinky = false;
-    public static boolean switchedToChasePinky = false;
-    public static boolean switchedToChaseClyde = false;
+    static boolean inkyGoingUp;
+    static boolean inkyGoingDown;
+    static boolean inkyGoingLeft;
+    static boolean inkyGoingRight;
+
+
+    public static double velocityInkyVertical = 0;
+    public static double velocityInkyHorizontal = 1;
+
+    static boolean inkyGoRight = true;
+    static boolean inkyGoLeft = true;
+    static boolean inkyGoUp = true;
+    static boolean inkyGoDown = true;
+
+    static double distance1inky = 10000;
+    static double distance2inky = 10000;
+    static double distance3inky = 10000;
+    static double distance4inky = 10000;
+
+
+
+
 
 
     public static Timer scatterTimer = new Timer();
-
     public static void scatterModeTimer() {
         inScatterMode = true;
 
@@ -107,13 +123,10 @@ public class Ghost {
                     new java.util.TimerTask() {
                         @Override
                         public void run() {
-                            if (inScatterMode && !inScaredModeBlinky && !inScaredModePinky && !inScaredModeClyde) {
+                            if (gameStarted && inScatterMode && !inScaredModeBlinky && !inScaredModePinky && !inScaredModeClyde && !inScaredModeInky) {
                                 if (chaseCount < 5) {
                                     inScatterMode = false;
                                     scatterCount++;
-                                    switchedToChaseBlinky = true;
-                                    switchedToChasePinky = true;
-                                    switchedToChaseClyde = true;
                                     chaseModeTimer();
                                 }
                             }
@@ -128,8 +141,9 @@ public class Ghost {
         }
     }
 
-    public static Timer chaseTimer = new Timer();
 
+
+    public static Timer chaseTimer = new Timer();
     public static void chaseModeTimer() {
         inChaseMode = true;
 
@@ -139,13 +153,10 @@ public class Ghost {
                         new java.util.TimerTask() {
                             @Override
                             public void run() {
-                                if (inChaseMode && !inScaredModeBlinky && !inScaredModePinky && !inScaredModeClyde) {
+                                if (gameStarted && inChaseMode && !inScatterMode && !inScaredModeBlinky && !inScaredModePinky && !inScaredModeClyde & !inScaredModeInky) {
                                     if (scatterCount < 4) {
                                         inChaseMode = false;
                                         chaseCount++;
-                                        switchedToScatterBlinky = true;
-                                        switchedToScatterPinky = true;
-                                        switchedToScatterClyde = true;
                                         scatterModeTimer();
                                     }
                                 }
@@ -155,7 +166,7 @@ public class Ghost {
                         },
                         chaseTime
                 );
-            }catch (IllegalStateException a){
+            } catch (IllegalStateException a){
                 a.printStackTrace();
             }
 
@@ -217,6 +228,7 @@ public class Ghost {
                 case "blinky" -> blinkyGoRight = false;
                 case "pinky" -> pinkyGoRight = false;
                 case "clyde" -> clydeGoRight = false;
+                case "inky" -> inkyGoRight = false;
             }
         }
         if (direction != d2) {
@@ -224,6 +236,7 @@ public class Ghost {
                 case "blinky" -> blinkyGoUp = false;
                 case "pinky" -> pinkyGoUp = false;
                 case "clyde" -> clydeGoUp = false;
+                case "inky" -> inkyGoUp = false;
             }
         }
         if (direction != d3) {
@@ -231,6 +244,7 @@ public class Ghost {
                 case "blinky" -> blinkyGoDown = false;
                 case "pinky" -> pinkyGoDown = false;
                 case "clyde" -> clydeGoDown = false;
+                case "inky" -> inkyGoDown = false;
             }
         }
         if (direction != d4) {
@@ -238,6 +252,7 @@ public class Ghost {
                 case "blinky" -> blinkyGoLeft = false;
                 case "pinky" -> pinkyGoLeft = false;
                 case "clyde" -> clydeGoLeft = false;
+                case "inky" -> inkyGoLeft = false;
             }
         }
     }
@@ -245,14 +260,16 @@ public class Ghost {
 
     public static void getShortestDistance(double d1, double d2, double d3, double d4, String ghost) {
         double smallest = d1;
-        if (d2 < smallest) smallest = d2;
         if (d3 < smallest) smallest = d3;
         if (d4 < smallest) smallest = d4;
+        if (d2 <= smallest) smallest = d2;
+
         if (smallest != d1) {
             switch (ghost) {
                 case "blinky" -> blinkyGoRight = false;
                 case "pinky" -> pinkyGoRight = false;
                 case "clyde" -> clydeGoRight = false;
+                case "inky" -> inkyGoRight = false;
             }
         }
         if (smallest != d2) {
@@ -260,6 +277,7 @@ public class Ghost {
                 case "blinky" -> blinkyGoUp = false;
                 case "pinky" -> pinkyGoUp = false;
                 case "clyde" -> clydeGoUp = false;
+                case "inky" -> inkyGoUp = false;
             }
         }
         if (smallest != d3) {
@@ -267,6 +285,7 @@ public class Ghost {
                 case "blinky" -> blinkyGoDown = false;
                 case "pinky" -> pinkyGoDown = false;
                 case "clyde" -> clydeGoDown = false;
+                case "inky" -> inkyGoDown = false;
             }
         }
         if (smallest != d4) {
@@ -274,6 +293,7 @@ public class Ghost {
                 case "blinky" -> blinkyGoLeft = false;
                 case "pinky" -> pinkyGoLeft = false;
                 case "clyde" -> clydeGoLeft = false;
+                case "inky" -> inkyGoLeft = false;
             }
         }
     }
@@ -332,6 +352,23 @@ public class Ghost {
                 velocityClydeHorizontal = 0;
             }
         }
+
+
+        if (ghost.equals("inky")) {
+            if (inkyGoLeft) {
+                velocityInkyVertical = 0;
+                velocityInkyHorizontal = -1 - velocityAdder;
+            } else if (inkyGoRight) {
+                velocityInkyVertical = 0;
+                velocityInkyHorizontal = 1 + velocityAdder;
+            } else if (inkyGoDown) {
+                velocityInkyVertical = 1 + velocityAdder;
+                velocityInkyHorizontal = 0;
+            } else if (inkyGoUp) {
+                velocityInkyVertical = -1 - velocityAdder;
+                velocityInkyHorizontal = 0;
+            }
+        }
     }
 
 
@@ -356,6 +393,13 @@ public class Ghost {
             if (ghostNotPossibleDown(clydeColumn, clydeRow)) clydeGoDown = false;
             if (ghostNotPossibleLeft(clydeColumn, clydeRow)) clydeGoLeft = false;
             if (ghostNotPossibleRight(clydeColumn, clydeRow)) clydeGoRight = false;
+        }
+
+        if (ghost.equals("inky")) {
+            if (ghostNotPossibleUp(inkyColumn, inkyRow)) inkyGoUp = false;
+            if (ghostNotPossibleDown(inkyColumn, inkyRow)) inkyGoDown = false;
+            if (ghostNotPossibleLeft(inkyColumn, inkyRow)) inkyGoLeft = false;
+            if (ghostNotPossibleRight(inkyColumn, inkyRow)) inkyGoRight = false;
         }
 
     }
@@ -383,6 +427,13 @@ public class Ghost {
             if (clydeGoingUp) clydeGoDown = false;
             if (clydeGoingDown) clydeGoUp = false;
         }
+
+        if (ghost.equals("inky")) {
+            if (inkyGoingRight) inkyGoLeft = false;
+            if (inkyGoingLeft) inkyGoRight = false;
+            if (inkyGoingUp) inkyGoDown = false;
+            if (inkyGoingDown) inkyGoUp = false;
+        }
     }
 
     public static void getMovingDirection(String ghost) {
@@ -406,6 +457,13 @@ public class Ghost {
             if (velocityClydeHorizontal < 0) clydeGoingLeft = true;
             if (velocityClydeVertical < 0) clydeGoingUp = true;
             if (velocityClydeVertical > 0) clydeGoingDown = true;
+        }
+
+        if (ghost.equals("inky")) {
+            if (velocityInkyHorizontal > 0) inkyGoingRight = true;
+            if (velocityInkyHorizontal < 0) inkyGoingLeft = true;
+            if (velocityInkyVertical < 0) inkyGoingUp = true;
+            if (velocityInkyVertical > 0) inkyGoingDown = true;
         }
     }
 
@@ -466,6 +524,26 @@ public class Ghost {
                     clydeXPos = blockCountHorizontally * widthOneBlock;
                     clydeColumnNew = blockCountHorizontally - 1;
                     clydeColumn = blockCountHorizontally - 1;
+                }
+            }
+        }
+
+
+        if (ghost.equals("inky")) {
+            if (velocityInkyHorizontal > 0) {
+                if (inkyColumnNew + 1 > blockCountHorizontally) {
+                    // Teleport right to left
+                    inkyXPos = widthOneBlock;
+                    inkyColumnNew = 0;
+                    inkyColumn = 0;
+                }
+            }
+            if (velocityInkyHorizontal < 0) {
+                if (inkyColumnNew - 2 < 0) {
+                    // Teleport left to right
+                    inkyXPos = blockCountHorizontally * widthOneBlock;
+                    inkyColumnNew = blockCountHorizontally - 1;
+                    inkyColumn = blockCountHorizontally - 1;
                 }
             }
         }
