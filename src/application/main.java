@@ -6,10 +6,8 @@ import application.canvas.*;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.embed.swing.JFXPanel;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -47,13 +45,14 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static application.Server.verbindung;
+import static application.server.Server.verbindung;
 import static application.ai.Ghost.chaseTimer;
 import static application.ai.Ghost.scatterTimer;
 import static application.gameMechanics.*;
 import static application.imageViewerVariables.*;
 import static application.mapReader.blockCountHorizontally;
 import static application.mapReader.blockCountVertically;
+import static application.sounds.backgroundMusic;
 import static application.sounds.sfxSoundsOn;
 
 
@@ -61,7 +60,6 @@ import static application.sounds.sfxSoundsOn;
 public class main extends Application implements Serializable {
 
     //---------------------------------VARIABLES---------------------------------\\
-
 
     public static double width = 1300;       // Window width
     public static double height = 1000;      // Window height
@@ -84,7 +82,6 @@ public class main extends Application implements Serializable {
     public static Color fontColor = Color.WHITE;          // Font Color
 
     public static String validUsername = "Unknown Player";
-
 
     public static int lifesCounter = 3;
     static int lifesAtLevelStart = 3;
@@ -116,7 +113,6 @@ public class main extends Application implements Serializable {
     static boolean hitUpWall = false;
     static boolean hitDownWall = false;
 
-
     private static GraphicsContext gcSettings;
     private static Scene settingsScene;
     private static Text logoffButton;
@@ -131,6 +127,7 @@ public class main extends Application implements Serializable {
     public static boolean isFullscreen = false;
 
     boolean connect = true;
+    public static boolean debug = false;
 
     TextArea receivedMsgArea = new TextArea();
     TextField ipText = new TextField();
@@ -142,9 +139,10 @@ public class main extends Application implements Serializable {
     ListView<String> clientListView = new ListView<>(clients);
 
 
+    /**
+     * Creates Settings Window
+     */
     private void createSettingsWindow() {
-        // TODO: Settings
-
         // Canvas
         Canvas canvasSettings = new Canvas(width, height);
         gcSettings = canvasSettings.getGraphicsContext2D();
@@ -156,9 +154,12 @@ public class main extends Application implements Serializable {
         settingsScene = new Scene(settingsLayout, width, height);
 
         // Adds Canvas to Layout
-        settingsLayout.getChildren().addAll(canvasSettings, logoffButton, deleteAccountButton, exitButton, getScheme, getScheme2, getScheme3, getSFX, getScheme5, getScheme6, statsButton);
+        settingsLayout.getChildren().addAll(canvasSettings, logoffButton, deleteAccountButton, exitButton, getScheme, getScreenSize, getDebugMode, getSFX, toggleMusic, emptyComboBox, statsButton);
     }
 
+    /**
+     * Creates Logoff "Button"
+     */
     private void createLogoffButton() {
         // Label
         logoffButton = new Text("Log out");
@@ -176,6 +177,9 @@ public class main extends Application implements Serializable {
     private static Group statsLayout;
     private static Text statsButton;
 
+    /**
+     * Creates Stats Window
+     */
     private void createStatsWindow() {
         // Canvas
         Canvas canvasStats = new Canvas(width, height);
@@ -189,6 +193,10 @@ public class main extends Application implements Serializable {
         statsLayout.getChildren().add(canvasStats);
     }
 
+    /**
+     * Creates Stats "Button"
+     * @param currentStage Stage
+     */
     private void createStatsButton(Stage currentStage) {
         // Label
         statsButton = new Text("stats");
@@ -215,6 +223,9 @@ public class main extends Application implements Serializable {
 
     private static ComboBox getScheme;
 
+    /**
+     * Creates get Scheme "Button"
+     */
     private void createGetSchemeButton() {
         getScheme = new ComboBox();
 
@@ -233,48 +244,57 @@ public class main extends Application implements Serializable {
     }
 
 
-    private static ComboBox getScheme2;
+    private static ComboBox getScreenSize;
 
-    private void createGetSchemeButton2() {
-        getScheme2 = new ComboBox();
+    /**
+     * Creates get Screen Size "Button"
+     */
+    private void createGetScreenSizeButton() {
+        getScreenSize = new ComboBox();
 
-        getScheme2.getItems().add("1300x1000");
-        getScheme2.getItems().add("Fullscreen");
+        getScreenSize.getItems().add("1300x1000");
+        getScreenSize.getItems().add("Fullscreen");
 
-        getScheme2.setLayoutX(width / 8);
-        getScheme2.setLayoutY(height / 6 + (height / 6));
+        getScreenSize.setLayoutX(width / 8);
+        getScreenSize.setLayoutY(height / 6 + (height / 6));
 
-        getScheme2.setPrefWidth(250);
-        getScheme2.setPrefHeight(40);
+        getScreenSize.setPrefWidth(250);
+        getScreenSize.setPrefHeight(40);
 
-        getScheme2.setPromptText("SCREEN SIZE");
-        getScheme2.setEffect(addShadowDropdown(0.1));
-        addHoverDropdown(getScheme2);
+        getScreenSize.setPromptText("SCREEN SIZE");
+        getScreenSize.setEffect(addShadowDropdown(0.1));
+        addHoverDropdown(getScreenSize);
     }
 
 
-    private static ComboBox getScheme3;
+    private static ComboBox getDebugMode;
 
-    private void createGetSchemeButton3() {
-        getScheme3 = new ComboBox();
+    /**
+     * Creates Get Debug "Button"
+     */
+    private void createGetDebugButton() {
+        getDebugMode = new ComboBox();
 
-        getScheme3.getItems().add("ON");
-        getScheme3.getItems().add("OFF");
+        getDebugMode.getItems().add("ON");
+        getDebugMode.getItems().add("OFF");
 
-        getScheme3.setLayoutX(width / 8);
-        getScheme3.setLayoutY(height / 6 + (height / 6) * 2);
+        getDebugMode.setLayoutX(width / 8);
+        getDebugMode.setLayoutY(height / 6 + (height / 6) * 2);
 
-        getScheme3.setPrefWidth(250);
-        getScheme3.setPrefHeight(40);
+        getDebugMode.setPrefWidth(250);
+        getDebugMode.setPrefHeight(40);
 
-        getScheme3.setPromptText("");
-        getScheme3.setEffect(addShadowDropdown(0.1));
-        addHoverDropdown(getScheme3);
+        getDebugMode.setPromptText("DEBUG");
+        getDebugMode.setEffect(addShadowDropdown(0.1));
+        addHoverDropdown(getDebugMode);
     }
 
 
     private static ComboBox getSFX;
 
+    /**
+     * Creates Get SFX "Button"
+     */
     private void createGetSFX() {
         getSFX = new ComboBox();
 
@@ -293,46 +313,60 @@ public class main extends Application implements Serializable {
     }
 
 
-    private static ComboBox getScheme5;
+    private static ComboBox toggleMusic;
 
-    private void createGetSchemeButton5() {
-        getScheme5 = new ComboBox();
+    /**
+     * Creates Get Music "Button"
+     */
+    private void createGetMusicButton() {
+        toggleMusic = new ComboBox();
 
-        getScheme5.getItems().add("ON");
-        getScheme5.getItems().add("OFF");
+        toggleMusic.getItems().add("ON");
+        toggleMusic.getItems().add("OFF");
 
-        getScheme5.setLayoutX(width / 8 + (width / 8) * 4);
-        getScheme5.setLayoutY(height / 6 + (height / 6));
+        toggleMusic.setLayoutX(width / 8 + (width / 8) * 4);
+        toggleMusic.setLayoutY(height / 6 + (height / 6));
 
-        getScheme5.setPrefWidth(250);
-        getScheme5.setPrefHeight(40);
+        toggleMusic.setPrefWidth(250);
+        toggleMusic.setPrefHeight(40);
 
-        getScheme5.setPromptText("TOGGLE MUSIC");
-        getScheme5.setEffect(addShadowDropdown(0.1));
-        addHoverDropdown(getScheme5);
+        toggleMusic.setPromptText("TOGGLE MUSIC");
+        toggleMusic.setEffect(addShadowDropdown(0.1));
+        addHoverDropdown(toggleMusic);
     }
 
 
-    private static ComboBox getScheme6;
+    private static ComboBox emptyComboBox;
 
-    private void createGetSchemeButton6() {
-        getScheme6 = new ComboBox();
+    /**
+     * Creates Empty Combo Box
+     */
+    private void createEmptyComboBox() {
+        emptyComboBox = new ComboBox();
 
-        getScheme6.getItems().add("Pac-Man");
-        getScheme6.getItems().add("Mrs. Pac-Man");
+        emptyComboBox.getItems().add("Lorem Ipsum");
+        emptyComboBox.getItems().add("Lorem Ipsum");
+        emptyComboBox.getItems().add("Lorem Ipsum");
+        emptyComboBox.getItems().add("Lorem Ipsum");
+        emptyComboBox.getItems().add("Lorem Ipsum");
 
-        getScheme6.setLayoutX(width / 8 + (width / 8) * 4);
-        getScheme6.setLayoutY(height / 6 + (height / 6) * 2);
+        emptyComboBox.setLayoutX(width / 8 + (width / 8) * 4);
+        emptyComboBox.setLayoutY(height / 6 + (height / 6) * 2);
 
-        getScheme6.setPrefWidth(250);
-        getScheme6.setPrefHeight(40);
+        emptyComboBox.setPrefWidth(250);
+        emptyComboBox.setPrefHeight(40);
 
-        getScheme6.setPromptText("");
-        getScheme6.setEffect(addShadowDropdown(0.1));
-        addHoverDropdown(getScheme6);
+        emptyComboBox.setPromptText("Empty");
+        emptyComboBox.setEffect(addShadowDropdown(0.1));
+        addHoverDropdown(emptyComboBox);
     }
 
 
+    /**
+     * Gives DropShadow effect with specified spread
+     * @param spread    double
+     * @return          DropShadow
+     */
     private DropShadow addShadowDropdown(double spread) {
         DropShadow ds = new DropShadow();
         ds.setSpread(spread);
@@ -342,19 +376,25 @@ public class main extends Application implements Serializable {
         return ds;
     }
 
-    private void addHoverDropdown(ComboBox c) {
 
+    /**
+     * Creates Hover effect on Dropdown box
+     * @param c ComboBox
+     */
+    private void addHoverDropdown(ComboBox c) {
         c.addEventHandler(MouseEvent.MOUSE_ENTERED,
                 e -> {
                     c.setEffect(addShadowDropdown(0.5));
                 });
-
         c.addEventHandler(MouseEvent.MOUSE_EXITED,
                 e -> {
                     c.setEffect(addShadowDropdown(0.1));
                 });
     }
 
+    /**
+     * Creates Button for deleting Account
+     */
     private void createDeleteAccountButton() {
         // Label
         deleteAccountButton = new Text("Delete account");
@@ -367,6 +407,9 @@ public class main extends Application implements Serializable {
     }
 
 
+    /**
+     * Creates Exit Button
+     */
     private void createExitButton() {
         // Label
         exitButton = new Text("Exit");
@@ -378,11 +421,14 @@ public class main extends Application implements Serializable {
         exitButton.setLayoutX(0.05 * width);
     }
 
-    private static GraphicsContext gcGame;
+    public static GraphicsContext gcGame;
     private static Group gameLayout;
     private static Scene gameScene;
     public static Timeline tl;
 
+    /**
+     * Creates Game Window
+     */
     private void createGameWindow() {
         // Canvas
         Canvas canvasGame = new Canvas(width, height);
@@ -399,6 +445,9 @@ public class main extends Application implements Serializable {
 
     public static Text speedUpButton;
 
+    /**
+     * Creates Speed Up button
+     */
     private void createSpeedUpButton() {
         // Label
         speedUpButton = new Text("+");
@@ -413,6 +462,9 @@ public class main extends Application implements Serializable {
 
     public static Text speedDownButton;
 
+    /**
+     * Creates Speed Down button
+     */
     private void createSpeedDownButton() {
         // Label
         speedDownButton = new Text("-");
@@ -425,6 +477,10 @@ public class main extends Application implements Serializable {
         speedDownButton.setLayoutX(width - 350); // TODO: Improve "- 350"
     }
 
+
+    /**
+     * Creates Timeline for Game
+     */
     private void createTimeline() {
         // JavaFX Timeline = Free form animation defined by KeyFrames and their duration
         KeyFrame kf = new KeyFrame(Duration.millis(10), e -> gameCanvas.play(gcGame, gameLayout));
@@ -437,6 +493,9 @@ public class main extends Application implements Serializable {
     private static GraphicsContext gcHighscore;
     private static Scene highscoreScene;
 
+    /**
+     * Creates Highscores Window
+     */
     private void createHighscoreWindow() {
         // Canvas
         Canvas canvasHighscore = new Canvas(width, height);
@@ -460,6 +519,9 @@ public class main extends Application implements Serializable {
 
     Group menuLayout;
 
+    /**
+     * Creates Menu Window
+     */
     private void createMenuWindow() {
         // Canvas
         Canvas canvasMenu = new Canvas(width, height);
@@ -475,6 +537,9 @@ public class main extends Application implements Serializable {
         menuLayout.getChildren().addAll(canvasMenu, playButton, viewMenuAnimation, settingsButton, highscoreButton, viewCoin, coinCount);
     }
 
+    /**
+     * Creates Animation for Menu
+     */
     private void createMenuAnimation() {
         //Setting the position of the image
         viewMenuAnimation.setX(10);
@@ -485,6 +550,9 @@ public class main extends Application implements Serializable {
 
     static Text coinCount;
 
+    /**
+     * Creates Coin Image and Score for menu
+     */
     private void createShowCoin() {
         viewCoin.setFitHeight(heightOneBlock * 1.5);
         viewCoin.setFitWidth(widthOneBlock * 1.5);
@@ -516,6 +584,10 @@ public class main extends Application implements Serializable {
 
     }
 
+    /**
+     * Creates Play Button
+     * @param currentStage Stage
+     */
     private void createPlayButton(Stage currentStage) {
         // Label
         playButton = new Text("play");
@@ -526,7 +598,6 @@ public class main extends Application implements Serializable {
         // Option Label Position
         playButton.setLayoutY(height - (height / 10) * 3);
         playButton.setLayoutX((width / 2) - playButton.getBoundsInParent().getWidth() / 2);
-
 
         playButton.setOnMouseClicked(e -> {            // If clicked
             sounds.playClick();
@@ -540,11 +611,14 @@ public class main extends Application implements Serializable {
             currentStage.show();
 
             tl.playFromStart();                            // Start Animation
-
             lifesCounter--;
         });
     }
 
+    /**
+     * Creates Settings Button
+     * @param currentStage  Stage
+     */
     private void createSettingsButton(Stage currentStage) {
         // Label
         settingsButton = new Text("settings");
@@ -568,6 +642,10 @@ public class main extends Application implements Serializable {
         });
     }
 
+    /**
+     * Creates Highscore Button
+     * @param currentStage  Stage
+     */
     private void createHighscoreButton(Stage currentStage) {
         // Label
         highscoreButton = new Text("highscores");
@@ -594,35 +672,12 @@ public class main extends Application implements Serializable {
     }
 
 
-    public void myLaunch(Class<? extends Application> applicationClass) {
-        if (!javaFxLaunched) { // First time
-            Platform.setImplicitExit(false);
-            new Thread(() -> Application.launch(applicationClass)).start();
-            javaFxLaunched = true;
-        } else { // Next times
-            new JFXPanel();
-            Platform.runLater(() -> {
-                try {
-                    Application application = applicationClass.newInstance();
-                    Stage primaryStage = new Stage();
-                    application.start(primaryStage);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
-        }
-    }
-
-
     /**
      * Launching Game
-     *
-     * @param currentStage -> current Stage
+     * @param currentStage -> Stage currentStage
      */
-
     @Override
     public void start(Stage currentStage) {
-
 
         currentStage.setTitle("Pac-Man");      // Window title
         gameStarted = false;
@@ -646,11 +701,11 @@ public class main extends Application implements Serializable {
         createDeleteAccountButton();
         createExitButton();
         createGetSchemeButton();
-        createGetSchemeButton2();
-        createGetSchemeButton3();
+        createGetScreenSizeButton();
+        createGetDebugButton();
         createGetSFX();
-        createGetSchemeButton5();
-        createGetSchemeButton6();
+        createGetMusicButton();
+        createEmptyComboBox();
         createStatsButton(currentStage);
         createSettingsWindow();
         settingsScene.getStylesheets().add("file:resources/css/settings.css");
@@ -682,17 +737,12 @@ public class main extends Application implements Serializable {
         //------------------------------------------------------ LOGIN FORM ------------------------------------------------------\\
 
         GridPane loginLayout = createLoginFormPane();
-
         Scene loginScene = new Scene(loginLayout, width, height);
-
         addUIControls(registrationLayout, currentStage, menuScene, loginScene, gcMenu);
-
         addUIControlsLogin(loginLayout, currentStage, menuScene, registrationScene, gcMenu);
-
         menuCanvas.play(gcMenu);
         currentStage.setScene(menuScene);
         if (isFullscreen) currentStage.setFullScreen(true);
-
 
         if (!isLoggedIn) {
             currentStage.setScene(loginScene);
@@ -700,7 +750,6 @@ public class main extends Application implements Serializable {
         }
 
         currentStage.show();
-
         logoff(logoffButton, currentStage);
         deleteAccount(deleteAccountButton, currentStage);
         exitToMain(exitButton, currentStage, menuScene);
@@ -728,13 +777,17 @@ public class main extends Application implements Serializable {
             if (e.getCode() == KeyCode.ESCAPE) {      // If "Escape" Pressed
                 try {
                     sounds.playClick();
-                    start(currentStage);            // Restart with new settings
+                    start(currentStage);
                     gameStarted = false;
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
             }
         });
+
+        /*
+          Combo Boxes
+         */
 
         getScheme.setOnAction((event) -> {
             sounds.playClick();
@@ -773,9 +826,9 @@ public class main extends Application implements Serializable {
             }
         });
 
-        getScheme2.setOnAction((event) -> {
+        getScreenSize.setOnAction((event) -> {
             sounds.playClick();
-            int selectedIndex = getScheme2.getSelectionModel().getSelectedIndex();
+            int selectedIndex = getScreenSize.getSelectionModel().getSelectedIndex();
 
             switch (selectedIndex) {
                 case 0 -> {
@@ -797,6 +850,33 @@ public class main extends Application implements Serializable {
             }
         });
 
+        getDebugMode.setOnAction((event) -> {
+            sounds.playClick();
+            int selectedIndex = getDebugMode.getSelectionModel().getSelectedIndex();
+
+            switch (selectedIndex) {
+                case 0 -> {
+                    debug = true;
+                }
+                case 1 -> {
+                    debug = false;
+                }
+            }
+        });
+
+        toggleMusic.setOnAction((event) -> {
+            sounds.playClick();
+            int selectedIndex = toggleMusic.getSelectionModel().getSelectedIndex();
+
+            switch (selectedIndex) {
+                case 0 -> {
+                    backgroundMusic.play();
+                }
+                case 1 -> {
+                    backgroundMusic.stop();
+                }
+            }
+        });
         //--------------------------------------------HIGHSCORE CONTROLS--------------------------------------------\\
 
         highscoreScene.setOnKeyPressed(e -> {
@@ -821,7 +901,6 @@ public class main extends Application implements Serializable {
             velocityAdder -= 0.1;
         });
 
-
         if (connect) {
             sendScore();
             readAllScores(gcGame);
@@ -830,6 +909,11 @@ public class main extends Application implements Serializable {
     }
 
 
+    /**
+     * Allows Logging off
+     * @param logoffButton  Text
+     * @param currentStage  Stage
+     */
     public void logoff(Text logoffButton, Stage currentStage) {
         logoffButton.setOnMouseClicked(e -> {
             sounds.playClick();
@@ -842,6 +926,11 @@ public class main extends Application implements Serializable {
         });
     }
 
+    /**
+     * Allows Deleting Account
+     * @param deleteButton  Text
+     * @param currentStage  Stage
+     */
     public void deleteAccount(Text deleteButton, Stage currentStage) {
         deleteButton.setOnMouseClicked(e -> {
             sounds.playClick();
@@ -855,6 +944,12 @@ public class main extends Application implements Serializable {
         });
     }
 
+    /**
+     * Allows Exiting to Main
+     * @param exitButton    Text
+     * @param currentStage  Stage
+     * @param menuScene     Scene
+     */
     public void exitToMain(Text exitButton, Stage currentStage, Scene menuScene) {
         exitButton.setOnMouseClicked(e -> {
             sounds.playClick();
@@ -865,6 +960,11 @@ public class main extends Application implements Serializable {
     }
 
 
+    /**
+     * PacMan Controls
+     * With Premoves
+     * @param primaryStage Stage
+     */
     private void controls(Stage primaryStage) {
 
         Thread t = new Thread(() -> {
@@ -1099,11 +1199,14 @@ public class main extends Application implements Serializable {
     }
 
 
+    /**
+     * Creates Registration Form Pane
+     * @return GridPane
+     */
     private GridPane createRegistrationFormPane() {
-        // Instantiate a new Grid Pane
         GridPane gridPane = new GridPane();
 
-        // Position the pane at the center of the screen, both vertically and horizontally
+        // Position the pane at the center of the screen
         gridPane.setAlignment(Pos.CENTER);
 
         // Set a padding of 20px on each side
@@ -1114,31 +1217,28 @@ public class main extends Application implements Serializable {
 
         // Set the vertical gap between rows
         gridPane.setVgap(10);
-
         gridPane.addRow(8, new Text(""));
 
 
-        // Add Column Constraints
-
-        // columnOneConstraints will be applied to all the nodes placed in column one.
         ColumnConstraints columnOneConstraints = new ColumnConstraints(400, 400, Double.MAX_VALUE);
         columnOneConstraints.setHalignment(HPos.CENTER);
 
-        // columnTwoConstraints will be applied to all the nodes placed in column two.
         ColumnConstraints columnTwoConstrains = new ColumnConstraints(200, 200, 400);
         columnTwoConstrains.setHgrow(Priority.ALWAYS);
 
         gridPane.getColumnConstraints().addAll(columnOneConstraints, columnTwoConstrains);
-
         return gridPane;
     }
 
 
+    /**
+     * Creates Login Form Pane
+     * @return
+     */
     private GridPane createLoginFormPane() {
-        // Instantiate a new Grid Pane
         GridPane loginLayout = new GridPane();
 
-        // Position the pane at the center of the screen, both vertically and horizontally
+        // Position the pane at the center of the screen
         loginLayout.setAlignment(Pos.CENTER);
 
         // Set a padding of 20px on each side
@@ -1149,27 +1249,28 @@ public class main extends Application implements Serializable {
 
         // Set the vertical gap between rows
         loginLayout.setVgap(10);
-
-
         loginLayout.addRow(6, new Text(""));
 
-        // Add Column Constraints
 
-        // columnOneConstraints will be applied to all the nodes placed in column one.
         ColumnConstraints columnOneConstraints = new ColumnConstraints(400, 400, Double.MAX_VALUE);
         columnOneConstraints.setHalignment(HPos.CENTER);
 
-        // columnTwoConstraints will be applied to all the nodes placed in column two.
         ColumnConstraints columnTwoConstrains = new ColumnConstraints(200, 200, 400);
         columnTwoConstrains.setHgrow(Priority.ALWAYS);
 
         loginLayout.getColumnConstraints().addAll(columnOneConstraints, columnTwoConstrains);
 
-        //loginLayout.gridLinesVisibleProperty().set(true);
-
         return loginLayout;
     }
 
+    /**
+     * Allows Controlling Forms
+     * @param gridPane      GridPane
+     * @param currentStage  Stage
+     * @param menuScene     Scene
+     * @param loginScene    Scene
+     * @param gcMenu        GraphicsContext
+     */
     private void addUIControls(GridPane gridPane, Stage currentStage, Scene menuScene, Scene loginScene, GraphicsContext gcMenu) {
 
         // Add PacMan Header
@@ -1265,18 +1366,19 @@ public class main extends Application implements Serializable {
                         "Please enter your name!");
                 return;
             }
+
             // Not matching username regexp
             if (!isValidNickname(nameField.getText())) {
                 showAlert(gridPane.getScene().getWindow(),
                         "Not allowed Username!");
                 return;
             }
+            // Taken Username
             if (application.UserDataStore.getInstance().isUsernameTaken(nameField.getText().toUpperCase())) {
                 showAlert(gridPane.getScene().getWindow(),
                         "Username Taken!");
                 return;
             }
-
 
             // Empty Input
             if (passwordField.getText().isEmpty()) {
@@ -1290,11 +1392,13 @@ public class main extends Application implements Serializable {
                         "Not allowed Password!");
                 return;
             }
+            // No Entry in Password Confirmation
             if (passwordConfirmField.getText().isEmpty()) {
                 showAlert(gridPane.getScene().getWindow(),
                         "Please confirm your password!");
                 return;
             }
+            // No match with Password Confirmation
             if (!passwordField.getText().equals(passwordConfirmField.getText())) {
                 showAlert(gridPane.getScene().getWindow(),
                         "passwords do not match!");
@@ -1318,6 +1422,10 @@ public class main extends Application implements Serializable {
         });
     }
 
+    /**
+     * Creates Bloom Effect on Button Hover
+     * @param button
+     */
     private void buttonHover(Button button) {
         Bloom bloom = new Bloom();
 
@@ -1334,6 +1442,10 @@ public class main extends Application implements Serializable {
                 });
     }
 
+    /**
+     * Creates Custom Text input field
+     * @param field
+     */
     private void textfieldCustom(TextField field) {
         DropShadow shadow = new DropShadow();
         shadow.setColor(Color.BLUE);
@@ -1347,6 +1459,14 @@ public class main extends Application implements Serializable {
     }
 
 
+    /**
+     * Allows Controlling Login Form
+     * @param gridPane              GridPane
+     * @param currentStage          Stage
+     * @param menuScene             Scene
+     * @param registrationScene     Scene
+     * @param gcMenu                GraphicsContext
+     */
     private void addUIControlsLogin(GridPane gridPane, Stage currentStage, Scene menuScene, Scene registrationScene, GraphicsContext gcMenu) {
 
         // Add PacMan Header
@@ -1458,6 +1578,11 @@ public class main extends Application implements Serializable {
     }
 
 
+    /**
+     * Shows an Alert
+     * @param owner     Window
+     * @param message   String
+     */
     private void showAlert(Window owner, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Form Error!");
@@ -1473,6 +1598,9 @@ public class main extends Application implements Serializable {
     public static Connection connection = null;
 
 
+    /**
+     * Connects to the SQL Database
+     */
     public static void sqlConnection() {
         try {
             connection = DriverManager.getConnection(url, username, password);
@@ -1484,15 +1612,16 @@ public class main extends Application implements Serializable {
 
     private static int sendPauseCounter = 0;
 
+    /**
+     * Sends Score to Server every half a second
+     */
     public static void sendScore() {
-        Runnable helloRunnable = new Runnable() {
+        Runnable runnable = new Runnable() {
             public void run() {
                 try {
-
                     out.writeUTF(validUsername + "," + score );
                     out.flush();
                     sendPauseCounter = 0;
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -1500,32 +1629,29 @@ public class main extends Application implements Serializable {
         };
 
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-        executor.scheduleAtFixedRate(helloRunnable, 0, 500, TimeUnit.MILLISECONDS);
+        executor.scheduleAtFixedRate(runnable, 0, 500, TimeUnit.MILLISECONDS);
     }
 
     public static Map<String, Integer> clientScores = new HashMap<>();
     public static Map<String, Integer> sortedMap = new HashMap<>();
 
+    /**
+     * Reads Scores received from server every second
+     * @param gcGame GraphicsContext
+     */
     public static void readAllScores(GraphicsContext gcGame) {
-        Runnable helloRunnable = () -> {
+        Runnable runnable = () -> {
+
             try {
-
-
-
                 String x = in.readUTF().replace("{", "");
                 x = x.replace("}", "");
                 x = x.replace(", ", "=");
-
-                System.out.println();
 
                 for (int i = 0; i + 1 < x.split("=").length; i += 2) {
                     clientScores.put(x.split("=")[i], Integer.parseInt(x.split("=")[i + 1]));
                 }
 
-
-
                 sortedMap = sortByValue(clientScores);
-
 
             } catch (EOFException i) {
                 System.out.println("No more data to read");
@@ -1535,10 +1661,15 @@ public class main extends Application implements Serializable {
         };
 
         ScheduledExecutorService executor2 = Executors.newScheduledThreadPool(1);
-        executor2.scheduleAtFixedRate(helloRunnable, 0, 1000, TimeUnit.MILLISECONDS);
+        executor2.scheduleAtFixedRate(runnable, 0, 1000, TimeUnit.MILLISECONDS);
     }
 
 
+    /**
+     * Sorts given Map and returns sorted
+     * @param map   Map<String, Integer>
+     * @return      Map<String, Integer>
+     */
     public static Map<String, Integer> sortByValue(final Map<String, Integer> map) {
         return map.entrySet()
                 .stream()
@@ -1549,26 +1680,23 @@ public class main extends Application implements Serializable {
 
     public static long startingTime;
 
+    /**
+     * Main Method
+     * @param args String[]
+     */
     public static void main(String[] args) {
         try {
-
             verbindung = new Socket("localhost", 10024);
 
             System.out.println("Verbunden");
             out = new ObjectOutputStream(verbindung.getOutputStream());
             in = new ObjectInputStream(verbindung.getInputStream());
 
-            launch(args);
+            sounds.playBackgroundMusic();   // Play Background Music
+            launch(args);                   // Launch Application
         } catch (Exception e) {
             System.out.println("Verbindung fehlgeschlagen");
         }
-
-
-        // TODO: Music
-        // Sets Background Music
-        // sounds.playBackgroundMusic();
-        //Application.launch(args);
-        //myLaunch(main.class);
     }
 }
 

@@ -5,13 +5,13 @@ import javafx.scene.Group;
 import static application.gameMechanics.*;
 import static application.imageViewerVariables.*;
 import static application.main.*;
-import static application.mapReader.*;
 
 public class scaredMode extends Ghost {
 
     /**
-     * Animates Ghosts
-     * TODO: Ghost AI remaining
+     * Animates Ghost
+     * @param gameLayout Game Layout Group
+     * @param ghost lowercase name of the Ghost
      */
     public static void ghostAnimate(Group gameLayout, String ghost) {
 
@@ -87,6 +87,11 @@ public class scaredMode extends Ghost {
     }
 
 
+    /**
+     * Allows eating Ghosts if in PowerMode
+     * @param gameLayout Game Layout Group
+     * @param ghost      lowercase name of the Ghost
+     */
     public static void eatGhost(Group gameLayout, String ghost) {
         if (ghost.equals("blinky")) {
             if (!inScaredModeBlinky) {
@@ -106,7 +111,7 @@ public class scaredMode extends Ghost {
 
                 gameLayout.getChildren().remove(viewScaredBlinky);
 
-                score += 200;
+                score += 200;   // Eating ghost gives 200 points
                 ghostsEaten++;
             }
             return;
@@ -187,16 +192,15 @@ public class scaredMode extends Ghost {
 
 
     /**
-     * Calculates Distances
+     * Calculates Distance to the target block
+     * @param ghost lowercase name of the ghost
      */
-
     public static void calculateDistances(String ghost) {
         if (ghost.equals("blinky")) {
             if ((blinkyRow == 18 || blinkyRow == 19) && (blinkyColumn == 14 || blinkyColumn == 15)) {
                 distance2 = 0;
                 return;
             }
-
             if (blinkyColumnNew > 10 && blinkyColumnNew < 17 && blinkyRowNew > 15 && blinkyRowNew < 20) {
                 if (blinkyGoRight) distance1 = Math.pow(Math.abs((blinkyColumn + 1) - 26 - 1), 2) + Math.pow(Math.abs(blinkyRow - 1), 2);
                 if (blinkyGoUp) distance2 = Math.pow(Math.abs(blinkyColumn - 26), 2) + Math.pow(Math.abs((blinkyRow - 1) - 1 - 1), 2);
@@ -217,7 +221,6 @@ public class scaredMode extends Ghost {
                 distance2pinky = 0;
                 return;
             }
-
             if (pinkyColumnNew > 10 && pinkyColumnNew < 17 && pinkyRowNew > 15 && pinkyRowNew < 20) {
                 if (pinkyGoRight) distance1pinky = Math.pow(Math.abs((pinkyColumn + 1) - 2 - 1), 2) + Math.pow(Math.abs(pinkyRow - 1), 2);
                 if (pinkyGoUp) distance2pinky = Math.pow(Math.abs(pinkyColumn - 2), 2) + Math.pow(Math.abs((pinkyRow - 1) - 1 - 1), 2);
@@ -238,7 +241,6 @@ public class scaredMode extends Ghost {
                 distance2clyde = 0;
                 return;
             }
-
             if (clydeColumnNew > 10 && clydeColumnNew < 17 && clydeRowNew > 15 && clydeRowNew < 20) {
                 if (clydeGoRight) distance1clyde = Math.pow(Math.abs((clydeColumn + 1) - 26 - 1), 2) + Math.pow(Math.abs(clydeRow - 1), 2);
                 if (clydeGoUp) distance2clyde = Math.pow(Math.abs(clydeColumn - 26), 2) + Math.pow(Math.abs((clydeRow - 1) - 1 - 1), 2);
@@ -254,14 +256,10 @@ public class scaredMode extends Ghost {
 
 
         if (ghost.equals("inky")) {
-            // TARGET SCATTER MODE
-            // COLUMN: 0 (pacmanColumn)
-            // ROW: 34 (pacmanRow)
             if ((inkyRow == 18 || inkyRow == 19) && (inkyColumn == 14 || inkyColumn == 15)) {
                 distance2inky = 0;
                 return;
             }
-
             if (inkyColumnNew > 10 && inkyColumnNew < 17 && inkyRowNew > 15 && inkyRowNew < 20) {
                 if (inkyGoRight) distance1inky = Math.pow(Math.abs((inkyColumn + 1) - 26 - 1), 2) + Math.pow(Math.abs(inkyRow - 1), 2);
                 if (inkyGoUp) distance2inky = Math.pow(Math.abs(inkyColumn - 26), 2) + Math.pow(Math.abs((inkyRow - 1) - 1 - 1), 2);
@@ -277,7 +275,8 @@ public class scaredMode extends Ghost {
     }
 
     /**
-     * Calculates next move
+     * Calculate next move by eliminating not possible moves
+     * @param ghost lowercase name of the Ghost
      */
     public static void calculateNextMove(String ghost) {
 
@@ -327,7 +326,6 @@ public class scaredMode extends Ghost {
             return;
         }
 
-
         if (ghost.equals("pinky")) {
             pinkyRowNew = (int) Math.round((pinkyYPos + characterHeight / 2) / widthOneBlock);
             pinkyColumnNew = (int) Math.round(((pinkyXPos - characterWidth / 2) / heightOneBlock));
@@ -351,8 +349,6 @@ public class scaredMode extends Ghost {
             distance2pinky = 10000;
             distance3pinky = 10000;
             distance4pinky = 10000;
-
-
 
             if (pinkyColumnNew == pinkyColumn + 1 || pinkyColumnNew == pinkyColumn - 1) {
                 pinkyColumn = pinkyColumnNew;
@@ -401,7 +397,6 @@ public class scaredMode extends Ghost {
             distance3clyde = 10000;
             distance4clyde = 10000;
 
-
             if (clydeColumnNew == clydeColumn + 1 || clydeColumnNew == clydeColumn - 1) {
                 clydeColumn = clydeColumnNew;
                 getMovingDirection("clyde");
@@ -446,7 +441,6 @@ public class scaredMode extends Ghost {
             distance2inky = 10000;
             distance3inky = 10000;
             distance4inky = 10000;
-
 
             if (inkyColumnNew == inkyColumn + 1 || inkyColumnNew == inkyColumn - 1) {
                 inkyColumn = inkyColumnNew;

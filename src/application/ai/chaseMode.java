@@ -1,30 +1,31 @@
 package application.ai;
 
-import application.ai.Ghost;
 import javafx.scene.Group;
 
 import static application.gameMechanics.*;
 import static application.imageViewerVariables.*;
 import static application.main.*;
-import static application.mapReader.*;
+
 
 public class chaseMode extends Ghost {
 
-
+    /**
+     * makes the ghost move
+     * @param gameLayout Game Layout Group
+     * @param ghost lower case name of the ghost
+     */
     public static void ghostAnimate(Group gameLayout, String ghost) {
         chaseModeTimer();
+
         if (ghost.equals("blinky")) {
             gameLayout.getChildren().remove(viewScaredBlinky);
             gameLayout.getChildren().remove(viewBlinky);
-
             gameLayout.getChildren().add(viewBlinky);
 
-            // Blinky
             viewBlinky.setX(blinkyXPos);
             viewBlinky.setY(blinkyYPos);
             blinkyXPos += velocityBlinkyHorizontal;
             blinkyYPos += velocityBlinkyVertical;
-
 
             calculateNextMove("blinky");
             allowTeleport("blinky");
@@ -35,15 +36,12 @@ public class chaseMode extends Ghost {
         if (ghost.equals("pinky")) {
             gameLayout.getChildren().remove(viewScaredPinky);
             gameLayout.getChildren().remove(viewPinky);
-
             gameLayout.getChildren().add(viewPinky);
 
-            // Pinky
             viewPinky.setX(pinkyXPos);
             viewPinky.setY(pinkyYPos);
             pinkyXPos += velocityPinkyHorizontal;
             pinkyYPos += velocityPinkyVertical;
-
 
             calculateNextMove("pinky");
             allowTeleport("pinky");
@@ -53,15 +51,12 @@ public class chaseMode extends Ghost {
         if (ghost.equals("clyde")) {
             gameLayout.getChildren().remove(viewScaredClyde);
             gameLayout.getChildren().remove(viewClyde);
-
             gameLayout.getChildren().add(viewClyde);
 
-            // Clyde
             viewClyde.setX(clydeXPos);
             viewClyde.setY(clydeYPos);
             clydeXPos += velocityClydeHorizontal;
             clydeYPos += velocityClydeVertical;
-
 
             calculateNextMove("clyde");
             allowTeleport("clyde");
@@ -70,31 +65,36 @@ public class chaseMode extends Ghost {
         if (ghost.equals("inky")) {
             gameLayout.getChildren().remove(viewScaredInky);
             gameLayout.getChildren().remove(viewInky);
-
             gameLayout.getChildren().add(viewInky);
 
-            // Inky
             viewInky.setX(inkyXPos);
             viewInky.setY(inkyYPos);
             inkyXPos += velocityInkyHorizontal;
             inkyYPos += velocityInkyVertical;
-
 
             calculateNextMove("inky");
             allowTeleport("inky");
         }
     }
 
+    /**
+     * Calculates Distance to the target block
+     * @param ghost lowercase name of the ghost
+     */
     public static void calculateDistances(String ghost) {
+
+        /*
+          BLINKY
+          Target block => PacMan
+         */
         if (ghost.equals("blinky")) {
-            // TARGET SCATTER MODE
-            // COLUMN: 26
-            // ROW: 1
+            // If in Ghosthouse -> go up
             if ((blinkyRow == 18 || blinkyRow == 19) && (blinkyColumn == 14 || blinkyColumn == 15)) {
                 distance2 = 0;
                 return;
             }
 
+            // calculated with the pythagorean theorem
             if (blinkyGoRight) distance1 = Math.pow(Math.abs((blinkyColumn + 1) - pacmanColumn - 1), 2) + Math.pow(Math.abs(blinkyRow - pacmanRow), 2);
             if (blinkyGoUp) distance2 = Math.pow(Math.abs(blinkyColumn - pacmanColumn), 2) + Math.pow(Math.abs((blinkyRow - 1) - pacmanRow - 1), 2);
             if (blinkyGoDown) distance3 = Math.pow(Math.abs(blinkyColumn - pacmanColumn), 2) + Math.pow(Math.abs((blinkyRow + 1) - pacmanRow - 1), 2);
@@ -102,18 +102,26 @@ public class chaseMode extends Ghost {
             return;
         }
 
-        if (ghost.equals("pinky")) {
-            // TARGET SCATTER MODE
-            // COLUMN: 2
-            // ROW: 1
-            int vertical = 0;
-            int horizontal = 0;
 
+        /*
+          PINKY
+          Target block => 4 blocks in front of Pacman
+             if pacman facing up => 4 blocks up and 4 blocks left
+         */
+        if (ghost.equals("pinky")) {
+            int vertical = 0;       // vertical shift
+            int horizontal = 0;     // horizontal shift
+
+            // If in Ghosthouse -> go up
             if ((pinkyRow == 18 || pinkyRow == 19) && (pinkyColumn == 14 || pinkyColumn == 15)) {
                 distance2pinky = 0;
                 return;
             }
 
+
+            /*
+              4 Block shifts
+             */
             if (pacmanFacingUp) {
                 vertical = -4;
                 horizontal = -4;
@@ -122,7 +130,7 @@ public class chaseMode extends Ghost {
             if (pacmanFacingLeft) horizontal = -4;
             if (pacmanFacingRight) horizontal = 4;
 
-
+            // calculated with the pythagorean theorem
             if (pinkyGoRight) distance1pinky = Math.pow(Math.abs((pinkyColumn + 1) - (pacmanColumn + horizontal) - 1), 2) + Math.pow(Math.abs(pinkyRow - (pacmanRow + vertical)), 2);
             if (pinkyGoUp) distance2pinky = Math.pow(Math.abs(pinkyColumn - (pacmanColumn + horizontal)), 2) + Math.pow(Math.abs((pinkyRow - 1) - (pacmanRow + vertical) - 1), 2);
             if (pinkyGoDown) distance3pinky = Math.pow(Math.abs(pinkyColumn - (pacmanColumn + horizontal)), 2) + Math.pow(Math.abs((pinkyRow + 1) - (pacmanRow + vertical) - 1), 2);
@@ -132,11 +140,14 @@ public class chaseMode extends Ghost {
 
 
 
+        /*
+          CLYDE
+          Target block => PacMan
+           if clyde is in the 8 block radius of pacman then target => Scatter Mode Target
+         */
         if (ghost.equals("clyde")) {
-            // TARGET SCATTER MODE
-            // COLUMN: 0
-            // ROW: 34
 
+            // If in Ghosthouse -> go up
             if ((clydeRow == 18 || clydeRow == 19) && (clydeColumn == 14 || clydeColumn == 15)) {
                 distance2clyde = 0;
                 return;
@@ -145,13 +156,14 @@ public class chaseMode extends Ghost {
             double targetColumn = pacmanColumn;
             double targetRow = pacmanRow;
 
-
+            // If distance <= 64 then radius in blocks = 8
+            // and target changes
             if (Math.pow(Math.abs(clydeColumn - pacmanColumn), 2) + Math.pow(Math.abs(clydeRow - pacmanRow), 2) <= 64) {
                 targetColumn = 0;
                 targetRow = 34;
             }
 
-
+            // calculated with the pythagorean theorem
             if (clydeGoRight) distance1clyde = Math.pow(Math.abs((clydeColumn + 1) - targetColumn - 1), 2) + Math.pow(Math.abs(clydeRow - targetRow), 2);
             if (clydeGoUp) distance2clyde = Math.pow(Math.abs(clydeColumn - targetColumn), 2) + Math.pow(Math.abs((clydeRow - 1) - targetRow - 1), 2);
             if (clydeGoDown) distance3clyde = Math.pow(Math.abs(clydeColumn - targetColumn), 2) + Math.pow(Math.abs((clydeRow + 1) - targetRow - 1), 2);
@@ -162,11 +174,13 @@ public class chaseMode extends Ghost {
 
 
 
+        /*
+          INKY
+          Target block => Line from Pacman to Blinky rotated 180 degrees around Pacman
+         */
         if (ghost.equals("inky")) {
-            // TARGET SCATTER MODE
-            // COLUMN: 27
-            // ROW: 34
 
+            // If in Ghosthouse -> go up
             if ((inkyRow == 18 || inkyRow == 19) && (inkyColumn == 14 || inkyColumn == 15)) {
                 distance2inky = 0;
                 return;
@@ -175,6 +189,7 @@ public class chaseMode extends Ghost {
             double targetColumn;
             double targetRow;
 
+            // "Rotates" the target
             if (blinkyColumn > pacmanColumn) {
                 targetColumn = blinkyColumn - (2 * (blinkyColumn-pacmanColumn));
             } else {
@@ -187,7 +202,7 @@ public class chaseMode extends Ghost {
                 targetRow = blinkyRow - (2 * (blinkyRow - pacmanRow));
             }
 
-
+            // calculated with the pythagorean theorem
             if (inkyGoRight) distance1inky = Math.pow(Math.abs((inkyColumn + 1) - targetColumn - 1), 2) + Math.pow(Math.abs(inkyRow - targetRow), 2);
             if (inkyGoUp) distance2inky = Math.pow(Math.abs(inkyColumn - targetColumn), 2) + Math.pow(Math.abs((inkyRow - 1) - targetRow - 1), 2);
             if (inkyGoDown) distance3inky = Math.pow(Math.abs(inkyColumn - targetColumn), 2) + Math.pow(Math.abs((inkyRow + 1) - targetRow - 1), 2);
@@ -198,9 +213,9 @@ public class chaseMode extends Ghost {
     }
 
 
-
     /**
-     * Calculates next move
+     * Calculate next move by eliminating worst / not possible moves
+     * @param ghost lowercase name of the Ghost
      */
     public static void calculateNextMove(String ghost) {
         if (ghost.equals("blinky")) {
@@ -212,11 +227,15 @@ public class chaseMode extends Ghost {
                 blinkyColumnNew = (int) Math.round(((blinkyXPos + characterWidth / 2) / heightOneBlock));
             }
 
+            // Direction the Ghost is heading into
+            // (unknown at the moment)
             blinkyGoingRight = false;
             blinkyGoingLeft = false;
             blinkyGoingUp = false;
             blinkyGoingDown = false;
 
+            // Possible Moves
+            // (All allowed at the moment)
             blinkyGoRight = true;
             blinkyGoLeft = true;
             blinkyGoUp = true;
@@ -227,7 +246,7 @@ public class chaseMode extends Ghost {
             distance3 = 10000;
             distance4 = 10000;
 
-
+            // Every time when Ghost moves into new column
             if (blinkyColumnNew == blinkyColumn + 1 || blinkyColumnNew == blinkyColumn - 1) {
                 blinkyColumn = blinkyColumnNew;
                 getMovingDirection("blinky");
@@ -237,6 +256,7 @@ public class chaseMode extends Ghost {
                 getShortestDistance(distance1, distance2, distance3, distance4, "blinky");
                 move("blinky");
             }
+            // Every time when Ghost moves into new Row
             if (blinkyRowNew == blinkyRow + 1 || blinkyRowNew == blinkyRow - 1) {
                 blinkyRow = blinkyRowNew;
                 getMovingDirection("blinky");

@@ -7,10 +7,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
-
 import java.sql.*;
-import java.util.Locale;
-
 import static application.main.*;
 
 
@@ -45,15 +42,13 @@ public class statsCanvas {
         //::::::::::: Text :::::::::::\\
 
         gc.fillText("STATS", width / 2, pacmanFontSize * 1.5);
-
         gc.setFont(Font.loadFont("file:resources/fonts/emulogic.ttf", 30));
         gc.setTextAlign(TextAlignment.CENTER);      // Align text to center
         gc.setStroke(Color.YELLOW);
 
-
         try {
-
             Statement statementHighscore = connection.createStatement();
+            // Gets Highest Score of logged in user
             ResultSet resultsHighscore = statementHighscore.executeQuery("SELECT * FROM highscores WHERE username = '" + validUsername.toUpperCase() + "' ORDER BY score DESC LIMIT 1");
             int highestScore = 0;
             while (resultsHighscore.next()) {
@@ -69,9 +64,10 @@ public class statsCanvas {
                 pk = Integer.parseInt(results.getString("pk_user"));
                 currentHighest = Integer.parseInt(results.getString("highscore"));
             }
-
+            // Rerequest data
             results = statement.executeQuery("SELECT * FROM User WHERE name = '" + validUsername.toUpperCase() + "'");
 
+            // Update highest score in stat if new highscore achieved
             if (highestScore > currentHighest) {
                 String query = "UPDATE User SET highscore = "+highestScore+" WHERE pk_user = "+pk;
                 PreparedStatement preparedStmt = connection.prepareStatement(query);
@@ -81,9 +77,11 @@ public class statsCanvas {
             sqlConnection();
 
             statement = connection.createStatement();
+            //Rerequest data
             results = statement.executeQuery("SELECT * FROM User WHERE name = '" + validUsername.toUpperCase() + "'");
 
 
+            // Draw Stats titles
             gc.strokeText("USERNAME", width / 4, heightOneBlock * 10);
             gc.strokeText("HIGHSCORE", width / 4, heightOneBlock * 13);
             gc.strokeText("GHOSTS EATEN", width / 4, heightOneBlock * 16);
@@ -94,7 +92,7 @@ public class statsCanvas {
 
 
 
-
+            // Fill out data
             while (results.next()) {
                 gc.strokeText(results.getString("name"), (width / 4) * 3, heightOneBlock * 10);
                 gc.strokeText(results.getString("highscore"), (width / 4) * 3, heightOneBlock * 13);

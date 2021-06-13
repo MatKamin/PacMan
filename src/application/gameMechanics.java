@@ -8,13 +8,12 @@ import javafx.scene.Group;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-
 import java.util.Timer;
 import java.util.regex.Pattern;
+import static application.ai.Ghost.*;
 import static application.imageViewerVariables.*;
 import static application.main.*;
 import static application.mapReader.*;
@@ -64,8 +63,8 @@ public class gameMechanics {
 
     static boolean allowNextMoveUp = true;
     static boolean allowNextMoveDown = true;
-    public static boolean allowNextMoveLeft = true;
-    public static boolean allowNextMoveRight = true;
+    static boolean allowNextMoveLeft = true;
+    static boolean allowNextMoveRight = true;
 
     static boolean stop = false;
 
@@ -92,13 +91,13 @@ public class gameMechanics {
 
     public static int ghostsEaten = 0;
 
-    /**
+    /*
      * min. 3 word characters
      * max. 10 word characters + optional 3 digits at end
      */
     static final String regexpName = "\\w{3,10}" + "\\d{0,3}";
 
-    /**
+    /*
      * min. 8 characters
      * min. 1 digit
      * min. 1 lower & upper letter
@@ -110,7 +109,6 @@ public class gameMechanics {
 
     /**
      * checks if given Username is valid
-     *
      * @param USERNAME username to validate
      * @return true or false
      */
@@ -118,16 +116,29 @@ public class gameMechanics {
         return Pattern.compile(regexpName).matcher(USERNAME).matches();
     }
 
+    /**
+     * checks if given Password is valid
+     * @param PASSWORD password to validate
+     * @return true or false
+     */
     public static boolean isValidPassword(String PASSWORD) {
         return Pattern.compile(regexpPass).matcher(PASSWORD).matches();
     }
 
 
+    /**
+     * Saves Data to Database:
+     *  Score
+     *  Number of Ghosts Eaten
+     *  Levels Cleared
+     *
+     * And Updates current data in database:
+     *  Alltime score
+     *  Games played
+     */
     public static void saveScore() {
-
         try {
             sqlConnection();
-
 
             Statement statement2 = connection.createStatement();
             ResultSet results2 = statement2.executeQuery("SELECT * FROM highscores ORDER BY score DESC LIMIT 1");
@@ -158,7 +169,9 @@ public class gameMechanics {
             preparedStmt.execute();
             connection.close();
 
+
             // EATEN GHOSTS
+
             sqlConnection();
 
             Statement statement = connection.createStatement();
@@ -178,7 +191,7 @@ public class gameMechanics {
             connection.close();
 
 
-            //ALLTIME SCORE
+            // ALLTIME SCORE
             sqlConnection();
 
             Statement statement3 = connection.createStatement();
@@ -246,15 +259,14 @@ public class gameMechanics {
             preparedStmt5.execute();
             connection.close();
 
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+
     /**
      * Sets and draws the Starting Position of PacMan
-     *
      * @param gameLayout Group Layout of the Game window
      */
     public static void setPacmanStartingPos(Group gameLayout) {
@@ -277,13 +289,11 @@ public class gameMechanics {
 
     /**
      * Resets the Game
-     *
      * @param gameLayout Group Layout of the Game window
      */
     public static void resetGame(Group gameLayout) {
 
         saveScore();
-
         removeMap(gameLayout);
         gameLayout.getChildren().removeAll(viewCherry);
         firstRead = true;
@@ -351,7 +361,6 @@ public class gameMechanics {
 
     /**
      * Spawns Fruit after eating 70 and / or 170 dots
-     *
      * @param gameLayout Group Layout of the Game window
      */
     public static void spawnFruit(Group gameLayout) {
@@ -369,13 +378,13 @@ public class gameMechanics {
     }
 
 
-    /**
-     * Draws Life counter
-     *
-     * @param gameLayout Group Layout of the Game window
-     */
+
     static boolean drawLifesCounterOnce = true;
 
+    /**
+     * Draws Life counter
+     * @param gameLayout Group Layout of the Game window
+     */
     public static void drawLifesCounter(Group gameLayout) {
         if (drawLifesCounterOnce) {
             for (int i = 1; i <= lifesCounter; i++) {
@@ -392,17 +401,14 @@ public class gameMechanics {
     }
 
 
-    /**
-     * draws Level counter
-     *
-     * @param gameLayout Group Layout of the Game window
-     */
 
     static boolean drawLevelCounterOnce = true;
 
+    /**
+     * draws Level counter
+     * @param gameLayout Group Layout of the Game window
+     */
     public static void drawLevelCounter(Group gameLayout) {
-        // TODO: More Level Icons
-
         if (drawLevelCounterOnce) {
             for (int i = 0; i < levelCounter; i++) {
                 viewCherry = new ImageView(cherry);
@@ -415,65 +421,63 @@ public class gameMechanics {
             }
             drawLevelCounterOnce = false;
         }
-
     }
 
 
     /**
      * Removes Complete Map
-     *
      * @param gameLayout Group Layout of the Game window
      */
     private static void removeMap(Group gameLayout) {
         if (reset) {
-            // Remove Dots to Map
+            // Remove Dots from Map
             for (int i = 0; i < dotCount; i++) {
                 gameLayout.getChildren().remove(viewDot[i]);
             }
 
-            // Remove Power Pills to Map
+            // Remove Power Pills from Map
             for (int i = 0; i < powerPillCount; i++) {
                 gameLayout.getChildren().remove(viewPowerPill[i]);
             }
         }
-        // Remove Vertical Rails to Map
+
+        // Remove Vertical Rails from Map
         for (int i = 0; i < railVerticalCount; i++) {
             gameLayout.getChildren().remove(viewRailVertical[i]);
         }
 
-        // Remove Horizontal Rails to Map
+        // Remove Horizontal Rails from Map
         for (int i = 0; i < railHorizontalCount; i++) {
             gameLayout.getChildren().remove(viewRailHorizontal[i]);
         }
 
-        // Remove Up Right Rails to Map
+        // Remove Up Right Rails from Map
         for (int i = 0; i < railUpRightCount; i++) {
             gameLayout.getChildren().remove(viewRailUpRight[i]);
         }
 
-        // Remove Up Left Rails to Map
+        // Remove Up Left Rails from Map
         for (int i = 0; i < railUpLeftCount; i++) {
             gameLayout.getChildren().remove(viewRailUpLeft[i]);
         }
 
-        // Remove Right Up Rails to Map
+        // Remove Right Up Rails from Map
         for (int i = 0; i < railRightUpCount; i++) {
             gameLayout.getChildren().remove(viewRailRightUp[i]);
         }
 
-        // Remove Left Up Rails to Map
+        // Remove Left Up Rails from Map
         for (int i = 0; i < railLeftUpCount; i++) {
             gameLayout.getChildren().remove(viewRailLeftUp[i]);
         }
     }
 
+
     /**
      * Draws Next Map
-     *
      * @param gameLayout Group Layout of the Game window
      */
     private static void drawNextMap(Group gameLayout) {
-
         if (reset) {
             // Add Dots to Map
             for (int i = 0; i < dotCount; i++) {
@@ -562,14 +566,16 @@ public class gameMechanics {
     }
 
 
-    /**
-     * Sets the next level
-     * @param gameLayout Group Layout of the Game window
-     */
+
 
     static int mapNumber = 0;
     static int maxLevel = 255;
 
+    /**
+     * Sets the next level
+     * Max Level : 255
+     * @param gameLayout Group Layout of the Game window
+     */
     public static void levelUp(Group gameLayout) {
         if (dotCount == 0 && powerPillCount == 0) nextLevel = true;
         if (nextLevel) {
@@ -649,8 +655,6 @@ public class gameMechanics {
         }
         if ((pacmanColumn == spawningFruitColumn) && (pacmanRow == spawningFruitRow)) {
             score += 100;       // Fruit gives 100 Points
-            // TODO: Fruit gives points depending on current Level
-
             collectableFruit = false;
             gameLayout.getChildren().remove(viewSpawningFruit);
             return;
@@ -719,21 +723,20 @@ public class gameMechanics {
      */
     public static void collectPoints(Group gameLayout) {
         if (!dots[(int) pacmanColumn][(int) pacmanRow]) return;
-
         dots[(int) pacmanColumn][(int) pacmanRow] = false;
         dotCount--;
         score += 10;    // A dot is worth 10 Points
         clearer(gameLayout);
-
     }
 
+
+
+    public static boolean pacmanInPowerMode = false;
 
     /**
      * Makes Power Pills collectable
      * @param gameLayout Group Layout of the Game window
      */
-    public static boolean pacmanInPowerMode = false;
-
     public static void collectPowerPill(Group gameLayout) {
         if (!powerPills[(int) pacmanColumn][(int) pacmanRow]) return;
         powerPills[(int) pacmanColumn][(int) pacmanRow] = false;
@@ -749,6 +752,10 @@ public class gameMechanics {
     }
 
 
+    /**
+     * Timer for Blinkys Scared Mode
+     * @param gameLayout Game Layout Group
+     */
     private static void pacmanPowerModeBlinky(Group gameLayout) {
         gameLayout.getChildren().remove(viewBlinky);
         inScaredModeBlinky = true;
@@ -769,7 +776,10 @@ public class gameMechanics {
 
 
 
-
+    /**
+     * Timer for Pinkys Scared Mode
+     * @param gameLayout Game Layout Group
+     */
     private static void pacmanPowerModePinky(Group gameLayout) {
         gameLayout.getChildren().remove(viewPinky);
         inScaredModePinky = true;
@@ -788,6 +798,10 @@ public class gameMechanics {
         );
     }
 
+    /**
+     * Timer for Clydes Scared Mode
+     * @param gameLayout Game Layout Group
+     */
     private static void pacmanPowerModeClyde(Group gameLayout) {
         gameLayout.getChildren().remove(viewClyde);
         inScaredModeClyde = true;
@@ -806,6 +820,10 @@ public class gameMechanics {
         );
     }
 
+    /**
+     * Timer for Inkys Scared Mode
+     * @param gameLayout Game Layout Group
+     */
     private static void pacmanPowerModeInky(Group gameLayout) {
         gameLayout.getChildren().remove(viewInky);
         inScaredModeInky = true;
@@ -827,8 +845,13 @@ public class gameMechanics {
 
     private static boolean pacmanIsAlive = true;
 
-    public static void pacmanDeath(Group gameLayout, GraphicsContext gcGame) {
 
+    /**
+     * Allows Dying from touching Ghosts
+     * @param gameLayout Game Layout Group
+     * @param gcGame     Game GraphicsContext
+     */
+    public static void pacmanDeath(Group gameLayout, GraphicsContext gcGame) {
         if (lifesCounter == -1) {
             gcGame.setFill(Color.YELLOW);
             gcGame.fillText("Game Over", (blockCountHorizontally / 2) * widthOneBlock, blockCountVertically * heightOneBlock);
@@ -836,9 +859,7 @@ public class gameMechanics {
             tl.pause();
         }
 
-        if ((!inScaredModeBlinky) && (!inScaredModePinky) && (!inScaredModeClyde)) {
-            pacmanInPowerMode = false;
-        }
+        if ((!inScaredModeBlinky) && (!inScaredModePinky) && (!inScaredModeClyde)) pacmanInPowerMode = false;
 
         if ((!pacmanInPowerMode) && pacmanIsAlive && ((pacmanColumn == blinkyColumn && pacmanRow == blinkyRow) || (pacmanColumn == pinkyColumn && pacmanRow == pinkyRow) || (pacmanColumn == clydeColumn && pacmanRow == clydeRow) || (pacmanColumn == inkyColumn && pacmanRow == inkyRow))) {
 
@@ -907,6 +928,10 @@ public class gameMechanics {
     }
 
 
+    /**
+     * Removes Lifes from Life Counter
+     * @param gameLayout Game Layout Group
+     */
     private static void deleteLifeCounter(Group gameLayout) {
         viewClearer = new ImageView(clearer);
         viewClearer.setX((lifesCounter + 1) * (widthOneBlock + 10));
@@ -1167,6 +1192,7 @@ public class gameMechanics {
             if (!stop) {
                 // Teleport Right to Left
                 if (pacmanColumn + 1 > blockCountHorizontally) pacmanXPos = widthOneBlock;
+
                 // Check if Wall got Hit
                 if (notAllowedBox[(int) pacmanColumn + 1][(int) pacmanRow] && !hitRightWall) {
                     hitRightWall = true;

@@ -1,17 +1,16 @@
 package application.ai;
 
-import application.ai.Ghost;
 import javafx.scene.Group;
 
 import static application.imageViewerVariables.*;
 import static application.main.*;
-import static application.mapReader.*;
 
 public class scatterMode extends Ghost {
 
     /**
-     * Animates Ghosts
-     * TODO: Ghost AI remaining
+     * makes the ghost move
+     * @param gameLayout Game Layout Group
+     * @param ghost lower case name of the ghost
      */
     public static void ghostAnimate(Group gameLayout, String ghost) {
         scatterModeTimer();
@@ -20,12 +19,10 @@ public class scatterMode extends Ghost {
             gameLayout.getChildren().remove(viewBlinky);
             gameLayout.getChildren().add(viewBlinky);
 
-            // Blinky
             viewBlinky.setX(blinkyXPos);
             viewBlinky.setY(blinkyYPos);
             blinkyXPos += velocityBlinkyHorizontal;
             blinkyYPos += velocityBlinkyVertical;
-
             calculateNextMove("blinky");
             allowTeleport("blinky");
             return;
@@ -37,12 +34,10 @@ public class scatterMode extends Ghost {
             gameLayout.getChildren().remove(viewPinky);
             gameLayout.getChildren().add(viewPinky);
 
-            // Pinky
             viewPinky.setX(pinkyXPos);
             viewPinky.setY(pinkyYPos);
             pinkyXPos += velocityPinkyHorizontal;
             pinkyYPos += velocityPinkyVertical;
-
             calculateNextMove("pinky");
             allowTeleport("pinky");
             return;
@@ -53,12 +48,10 @@ public class scatterMode extends Ghost {
             gameLayout.getChildren().remove(viewClyde);
             gameLayout.getChildren().add(viewClyde);
 
-            // Clyde
             viewClyde.setX(clydeXPos);
             viewClyde.setY(clydeYPos);
             clydeXPos += velocityClydeHorizontal;
             clydeYPos += velocityClydeVertical;
-
             calculateNextMove("clyde");
             allowTeleport("clyde");
         }
@@ -68,12 +61,10 @@ public class scatterMode extends Ghost {
             gameLayout.getChildren().remove(viewInky);
             gameLayout.getChildren().add(viewInky);
 
-            // Inky
             viewInky.setX(inkyXPos);
             viewInky.setY(inkyYPos);
             inkyXPos += velocityInkyHorizontal;
             inkyYPos += velocityInkyVertical;
-
             calculateNextMove("inky");
             allowTeleport("inky");
         }
@@ -81,9 +72,14 @@ public class scatterMode extends Ghost {
 
 
 
+    /**
+     * Calculates Distance to the target block
+     * @param ghost lowercase name of the ghost
+     */
     public static void calculateDistances(String ghost) {
         if (ghost.equals("blinky")) {
-            // TARGET SCATTER MODE
+
+            // TARGET
             // COLUMN: 26
             // ROW: 1
 
@@ -101,7 +97,8 @@ public class scatterMode extends Ghost {
 
 
         if (ghost.equals("pinky")) {
-            // TARGET SCATTER MODE
+
+            // TARGET
             // COLUMN: 2
             // ROW: 1
 
@@ -118,7 +115,8 @@ public class scatterMode extends Ghost {
         }
 
         if (ghost.equals("clyde")) {
-            // TARGET SCATTER MODE
+
+            // TARGET
             // COLUMN: 0
             // ROW: 37
 
@@ -141,7 +139,8 @@ public class scatterMode extends Ghost {
         }
 
         if (ghost.equals("inky")) {
-            // TARGET SCATTER MODE
+
+            // TARGET
             // COLUMN: 27
             // ROW: 37
 
@@ -167,7 +166,8 @@ public class scatterMode extends Ghost {
 
 
     /**
-     * Calculates next move
+     * Calculate next move by eliminating worst / not possible moves
+     * @param ghost lowercase name of the Ghost
      */
     public static void calculateNextMove(String ghost) {
         if (ghost.equals("blinky")) {

@@ -3,8 +3,6 @@ package application.canvas;
 
 //---------------------------------IMPORTS---------------------------------\\
 
-import application.Client;
-import application.Server;
 import application.ai.chaseMode;
 import application.ai.scaredMode;
 import application.ai.scatterMode;
@@ -13,19 +11,10 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
-
-import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import static application.Server.checkScore;
-import static application.Server.clientsScoreMap;
 import static application.gameMechanics.*;
 import static application.main.*;
-import static application.mapReader.blockCountHorizontally;
+import static application.mapReader.*;
 
 
 //---------------------------------CLASS---------------------------------\\
@@ -53,7 +42,6 @@ public class gameCanvas {
 
         //::::::::::: Text Settings :::::::::::\\
 
-
         gc.setFill(fontColor);                       // Set font color
         gc.setFont(pacmanFontUI);                    // Set font
         gc.setStroke(fontColor);                     // Set font color for Stroke
@@ -79,7 +67,9 @@ public class gameCanvas {
         gc.fillText("Score: " + score, (int) ((widthOneBlock * blockCountHorizontally) / 6), heightOneBlock * 2);
 
 
+
         //::::::::::: Speed UP/DOWN :::::::::::\\
+
         gc.setFill(Color.BLUE);
         if (inPinkMode) gc.setFill(Color.HOTPINK);
         gc.fillRoundRect((double) width-370, (double)height-130, 110, 40, 30, 30);
@@ -89,19 +79,17 @@ public class gameCanvas {
         gc.fillText("Speed Controls (" + df.format(velocityAdder) + ")", width - 325, height - 150);
 
 
+
+        //::::::::::: LIVE SCOREBOARD :::::::::::\\
+
         final double[] heightStart = {height - 850};
-        final double[] heightStart2 = {height - 850};
         final int[] rank = {1};
         final int[] shownClients = {0};
 
         gc.setFont(Font.loadFont("file:resources/fonts/emulogic.ttf", 20));
 
-
-        gc.setFont(Font.loadFont("file:resources/fonts/emulogic.ttf", 20));
         sortedMap.forEach((key, value) -> {
-
             gc.setFill(Color.GREENYELLOW);
-
 
             if (shownClients[0] < 10 && value != 0) {
                 gc.fillText("#" + rank[0] + ".", width - 455, heightStart[0]);
@@ -115,13 +103,16 @@ public class gameCanvas {
         });
 
 
+
         if (gameStarted) {
 
             //::::::::::: Ghosts :::::::::::\\
 
             switch (levelCounter) {
+                // Levels
                 case 0, 1 -> {
                     switch (scatterCount) {
+                        // Scatter cycle counts
                         case 0, 1 -> scatterTime = 7000;
                         case 2, 3 -> scatterTime = 5000;
                     }
@@ -143,24 +134,18 @@ public class gameCanvas {
 
 
             if (inScatterMode) {
-                if (!inScaredModePinky) {
-                    scatterMode.ghostAnimate(gameLayout, "pinky");
-                }
-                if (!inScaredModeBlinky) {
-                    scatterMode.ghostAnimate(gameLayout, "blinky");
-                }
-                if (!inScaredModeClyde) {
-                    scatterMode.ghostAnimate(gameLayout, "clyde");
-                }
-                if (!inScaredModeInky) {
-                    scatterMode.ghostAnimate(gameLayout, "inky");
-                }
+                if (!inScaredModePinky) scatterMode.ghostAnimate(gameLayout, "pinky");
+                if (!inScaredModeBlinky) scatterMode.ghostAnimate(gameLayout, "blinky");
+                if (!inScaredModeClyde) scatterMode.ghostAnimate(gameLayout, "clyde");
+                if (!inScaredModeInky) scatterMode.ghostAnimate(gameLayout, "inky");
             }
 
 
             switch (levelCounter) {
+                // Levels
                 case 0, 1 -> {
                     switch (chaseCount) {
+                        // chase cycle counts
                         case 0, 1, 2, 3 -> chaseTime = 20000;
                         default -> chaseTime = 50;
                     }
@@ -191,18 +176,10 @@ public class gameCanvas {
             }
 
 
-            if (inScaredModeBlinky) {
-                scaredMode.ghostAnimate(gameLayout, "blinky");
-            }
-            if (inScaredModePinky) {
-                scaredMode.ghostAnimate(gameLayout, "pinky");
-            }
-            if (inScaredModeClyde) {
-                scaredMode.ghostAnimate(gameLayout, "clyde");
-            }
-            if (inScaredModeInky) {
-                scaredMode.ghostAnimate(gameLayout, "inky");
-            }
+            if (inScaredModeBlinky) scaredMode.ghostAnimate(gameLayout, "blinky");
+            if (inScaredModePinky) scaredMode.ghostAnimate(gameLayout, "pinky");
+            if (inScaredModeClyde) scaredMode.ghostAnimate(gameLayout, "clyde");
+            if (inScaredModeInky) scaredMode.ghostAnimate(gameLayout, "inky");
 
 
 
@@ -220,13 +197,12 @@ public class gameCanvas {
             drawLifesCounter(gameLayout);             // Draws Life Counter in UI
             drawLevelCounter(gameLayout);             // Draws Level Counter in UI
 
-            pacmanDeath(gameLayout, gc);                  // Allows Losing
-
+            if (!debug) {
+                pacmanDeath(gameLayout, gc);          // Allows Losing
+            }
 
         } else {
-
             resetGame(gameLayout);
-
         }
     }
 }

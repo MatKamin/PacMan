@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import static application.gameMechanics.score;
 import static application.main.*;
 import static application.main.connection;
 @SuppressWarnings("ALL")
@@ -22,6 +21,10 @@ public class UserDataStore {
     private static final UserDataStore instance = new UserDataStore();
     private final Map<String, String> userPasswordMap = new HashMap<>();
 
+    /**
+     * Loads and Reads Map from File
+     * @throws IOException  Exception
+     */
     private void loadMap() throws IOException {
         Properties properties = new Properties();
         properties.load(new FileInputStream("resources/data/data.properties"));
@@ -30,12 +33,23 @@ public class UserDataStore {
         }
     }
 
-    public static UserDataStore getInstance() {
-        return instance;
-    }
+    /**
+     * Get Instance
+     * @return instance
+     */
+    public static UserDataStore getInstance() { return instance; }
 
+    /**
+     * Constructor
+     */
     private UserDataStore() { }
 
+
+    /**
+     * Check if Username is Taken
+     * @param username  Username to check
+     * @return          True / False
+     */
     public boolean isUsernameTaken(String username) {
         try {
             loadMap();
@@ -45,23 +59,32 @@ public class UserDataStore {
         return userPasswordMap.containsKey(username);
     }
 
+
+    /**
+     * Register New User
+     * @param username          String
+     * @param password          String
+     * @throws IOException      Exception
+     * @throws SQLException     Exception
+     */
     public void registerUser(String username, String password) throws IOException, SQLException {
         loadMap();
 
+        /*
+          encrypts Password using BCrypt for safe storing
+         */
         String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());
+
         userPasswordMap.put(username, passwordHash);
         Properties properties = new Properties();
         properties.putAll(userPasswordMap);
         properties.store(new FileOutputStream("resources/data/data.properties"), null);
-
-
 
         sqlConnection();
 
         // the mysql insert statement
         String query = "INSERT INTO User(pk_user, name, highscore, eatenGhosts, creationDate, alltimeScore, gamesPlayed, finisehLevels)"
                 + " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
 
         Statement queryPKCount = connection.createStatement();
         ResultSet pkCount = queryPKCount.executeQuery("SELECT COUNT(*) AS c FROM User");
@@ -89,6 +112,12 @@ public class UserDataStore {
     }
 
 
+    /**
+     * Check if Login is correct
+     * @param username  String
+     * @param password  String
+     * @return          True / False
+     */
     public boolean isLoginCorrect(String username, String password) {
         try {
             loadMap();
@@ -105,6 +134,10 @@ public class UserDataStore {
     }
 
 
+    /**
+     * Deletes User
+     * @param username String
+     */
     public void deleteUser(String username) {
         userPasswordMap.remove(username.toUpperCase(), userPasswordMap.get(username.toUpperCase()));
         Properties properties = new Properties();

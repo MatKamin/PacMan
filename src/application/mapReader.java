@@ -2,8 +2,8 @@ package application;
 
 //---------------------------------IMPORTS---------------------------------\\
 
-import javafx.scene.image.ImageView;
 
+import javafx.scene.image.ImageView;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -12,6 +12,7 @@ import static application.gameMechanics.*;
 import static application.gameMechanics.mapFile;
 import static application.imageViewerVariables.*;
 import static application.main.*;
+import static application.ai.Ghost.*;
 
 
 //---------------------------------CLASS---------------------------------\\
@@ -25,51 +26,13 @@ public class mapReader {
     static double pacmanXPosStarting;
     static double pacmanYPosStarting;
 
-    public static double blinkyRow;
-    public static double blinkyColumn;
-    public static double blinkyColumnStart;
-    public static double blinkyRowStart;
-    public static double blinkyXPos;
-    public static double blinkyYPos;
-    public static double blinkyXPosStarting;
-    public static double blinkyYPosStarting;
-
-    public static double pinkyRow;
-    public static double pinkyColumn;
-    public static double pinkyColumnStart;
-    public static double pinkyRowStart;
-    public static double pinkyXPos;
-    public static double pinkyYPos;
-    public static double pinkyXPosStarting;
-    public static double pinkyYPosStarting;
-
-
-    public static double clydeRow;
-    public static double clydeColumn;
-    public static double clydeColumnStart;
-    public static double clydeRowStart;
-    public static double clydeXPos;
-    public static double clydeYPos;
-    public static double clydeXPosStarting;
-    public static double clydeYPosStarting;
-
-
-    public static double inkyRow;
-    public static double inkyColumn;
-    public static double inkyColumnStart;
-    public static double inkyRowStart;
-    public static double inkyXPos;
-    public static double inkyYPos;
-    public static double inkyXPosStarting;
-    public static double inkyYPosStarting;
-
-    static int spawningFruitColumn = 14;
-    static int spawningFruitRow = 21;
+    static int spawningFruitColumn;
+    static int spawningFruitRow;
 
     public static boolean reset = true;
 
     /**
-     * reads the Map
+     * Reads the Map
      */
     public static void readMap() {
         if (firstRead) {
@@ -87,7 +50,9 @@ public class mapReader {
                         row++;
                         column = columnCounter - 1;
                         columnCounter = -1;
+
                     } else {
+
                         switch (value) {
                             case "S" -> {
                                 // POWER PILLS

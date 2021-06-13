@@ -9,6 +9,8 @@ import static application.mapReader.*;
 public class Ghost {
 
     //---------------------------------VARIABLES---------------------------------\\
+
+    //-----------------------BLINKY-----------------------\\
     static int blinkyColumnNew;
     static int blinkyRowNew;
 
@@ -31,10 +33,19 @@ public class Ghost {
     static double distance3 = 10000;
     static double distance4 = 10000;
 
+    public static double blinkyRow;
+    public static double blinkyColumn;
+    public static double blinkyColumnStart;
+    public static double blinkyRowStart;
+    public static double blinkyXPos;
+    public static double blinkyYPos;
+    public static double blinkyXPosStarting;
+    public static double blinkyYPosStarting;
 
 
 
 
+    //-----------------------PINKY-----------------------\\
 
     static int pinkyColumnNew;
     static int pinkyRowNew;
@@ -58,9 +69,19 @@ public class Ghost {
     static double distance3pinky = 10000;
     static double distance4pinky = 10000;
 
+    public static double pinkyRow;
+    public static double pinkyColumn;
+    public static double pinkyColumnStart;
+    public static double pinkyRowStart;
+    public static double pinkyXPos;
+    public static double pinkyYPos;
+    public static double pinkyXPosStarting;
+    public static double pinkyYPosStarting;
 
 
 
+
+    //-----------------------CLYDE-----------------------\\
 
     static int clydeColumnNew;
     static int clydeRowNew;
@@ -84,8 +105,19 @@ public class Ghost {
     static double distance3clyde = 10000;
     static double distance4clyde = 10000;
 
+    public static double clydeRow;
+    public static double clydeColumn;
+    public static double clydeColumnStart;
+    public static double clydeRowStart;
+    public static double clydeXPos;
+    public static double clydeYPos;
+    public static double clydeXPosStarting;
+    public static double clydeYPosStarting;
 
 
+
+
+    //-----------------------INKY-----------------------\\
 
     static int inkyColumnNew;
     static int inkyRowNew;
@@ -109,12 +141,22 @@ public class Ghost {
     static double distance3inky = 10000;
     static double distance4inky = 10000;
 
-
-
+    public static double inkyRow;
+    public static double inkyColumn;
+    public static double inkyColumnStart;
+    public static double inkyRowStart;
+    public static double inkyXPos;
+    public static double inkyYPos;
+    public static double inkyXPosStarting;
+    public static double inkyYPosStarting;
 
 
 
     public static Timer scatterTimer = new Timer();
+
+    /**
+     * Timer controlling the Scatter Times
+     */
     public static void scatterModeTimer() {
         inScatterMode = true;
 
@@ -123,7 +165,7 @@ public class Ghost {
                     new java.util.TimerTask() {
                         @Override
                         public void run() {
-                            if (gameStarted && inScatterMode && !inScaredModeBlinky && !inScaredModePinky && !inScaredModeClyde && !inScaredModeInky) {
+                            if (gameStarted && !inChaseMode && inScatterMode && !inScaredModeBlinky && !inScaredModePinky && !inScaredModeClyde && !inScaredModeInky) {
                                 if (chaseCount < 5) {
                                     inScatterMode = false;
                                     scatterCount++;
@@ -144,6 +186,9 @@ public class Ghost {
 
 
     public static Timer chaseTimer = new Timer();
+    /**
+     * Timer controlling the Chase Times
+     */
     public static void chaseModeTimer() {
         inChaseMode = true;
 
@@ -174,6 +219,15 @@ public class Ghost {
     }
 
 
+    /**
+     * Used For Scared Mode
+     * Chooses a random direction
+     * @param d1 distance 1
+     * @param d2 distance 2
+     * @param d3 distance 3
+     * @param d4 distance 4
+     * @param ghost lowercase name of the ghost
+     */
     public static void getRandomDirection(double d1, double d2, double d3, double d4, String ghost) {
         int random = 0;
 
@@ -181,44 +235,24 @@ public class Ghost {
             random = (int)(Math.random() * 4 + 1);
         } catch (Exception ignore) { }
 
-
         double direction = 0;
 
 
-        if (random == 1 && d1 != 10000) {
-            direction = d1;
-        }
-        if (random == 2 && d2 != 10000) {
-            direction = d2;
-        }
-        if (random == 3 && d3 != 10000) {
-            direction = d3;
-        }
-        if (random == 4 && d4 != 10000) {
-            direction = d4;
-        }
+        if (random == 1 && d1 != 10000) direction = d1;
+        if (random == 2 && d2 != 10000) direction = d2;
+        if (random == 3 && d3 != 10000) direction = d3;
+        if (random == 4 && d4 != 10000) direction = d4;
 
         if (direction == 0) {
             try {
                 try {
                     random = (int)(Math.random() * 4 + 1);
                 } catch (Exception ignore) { }
-
-
                 direction = 0;
-
-                if (random == 1 && d1 != 10000) {
-                    direction = d1;
-                }
-                if (random == 2 && d2 != 10000) {
-                    direction = d2;
-                }
-                if (random == 3 && d3 != 10000) {
-                    direction = d3;
-                }
-                if (random == 4 && d4 != 10000) {
-                    direction = d4;
-                }
+                if (random == 1 && d1 != 10000) direction = d1;
+                if (random == 2 && d2 != 10000) direction = d2;
+                if (random == 3 && d3 != 10000) direction = d3;
+                if (random == 4 && d4 != 10000) direction = d4;
             } catch (Exception ignore) { }
             return;
         }
@@ -258,6 +292,14 @@ public class Ghost {
     }
 
 
+    /**
+     * Chooses the shortest Distance
+     * @param d1 distance 1
+     * @param d2 distance 2
+     * @param d3 distance 3
+     * @param d4 distance 4
+     * @param ghost lowercase name of the ghost
+     */
     public static void getShortestDistance(double d1, double d2, double d3, double d4, String ghost) {
         double smallest = d1;
         if (d3 < smallest) smallest = d3;
@@ -299,6 +341,10 @@ public class Ghost {
     }
 
 
+    /**
+     * Gives Ghost the correct velocity
+     * @param ghost lowercase name of the Ghost
+     */
     public static void move(String ghost) {
         if (ghost.equals("blinky")) {
             if (blinkyGoLeft) {
@@ -317,8 +363,6 @@ public class Ghost {
             return;
         }
 
-
-
         if (ghost.equals("pinky")) {
             if (pinkyGoLeft) {
                 velocityPinkyVertical = 0;
@@ -335,8 +379,6 @@ public class Ghost {
             }
         }
 
-
-
         if (ghost.equals("clyde")) {
             if (clydeGoLeft) {
                 velocityClydeVertical = 0;
@@ -352,7 +394,6 @@ public class Ghost {
                 velocityClydeHorizontal = 0;
             }
         }
-
 
         if (ghost.equals("inky")) {
             if (inkyGoLeft) {
@@ -372,6 +413,10 @@ public class Ghost {
     }
 
 
+    /**
+     * Blocks Moves which result in hitting the wall
+     * @param ghost lowercase name of the Ghost
+     */
     public static void blockImpossibleMoves(String ghost) {
         if (ghost.equals("blinky")) {
             if (ghostNotPossibleUp(blinkyColumn, blinkyRow)) blinkyGoUp = false;
@@ -380,31 +425,32 @@ public class Ghost {
             if (ghostNotPossibleRight(blinkyColumn, blinkyRow)) blinkyGoRight = false;
             return;
         }
-
         if (ghost.equals("pinky")) {
             if (ghostNotPossibleUp(pinkyColumn, pinkyRow)) pinkyGoUp = false;
             if (ghostNotPossibleDown(pinkyColumn, pinkyRow)) pinkyGoDown = false;
             if (ghostNotPossibleLeft(pinkyColumn, pinkyRow)) pinkyGoLeft = false;
             if (ghostNotPossibleRight(pinkyColumn, pinkyRow)) pinkyGoRight = false;
         }
-
         if (ghost.equals("clyde")) {
             if (ghostNotPossibleUp(clydeColumn, clydeRow)) clydeGoUp = false;
             if (ghostNotPossibleDown(clydeColumn, clydeRow)) clydeGoDown = false;
             if (ghostNotPossibleLeft(clydeColumn, clydeRow)) clydeGoLeft = false;
             if (ghostNotPossibleRight(clydeColumn, clydeRow)) clydeGoRight = false;
         }
-
         if (ghost.equals("inky")) {
             if (ghostNotPossibleUp(inkyColumn, inkyRow)) inkyGoUp = false;
             if (ghostNotPossibleDown(inkyColumn, inkyRow)) inkyGoDown = false;
             if (ghostNotPossibleLeft(inkyColumn, inkyRow)) inkyGoLeft = false;
             if (ghostNotPossibleRight(inkyColumn, inkyRow)) inkyGoRight = false;
         }
-
     }
 
 
+    /**
+     * Blocks moves which result in turning around
+     * (Illegal Ghost move in PacMan)
+     * @param ghost lowercase name of the ghost
+     */
     public static void blockTurnAround(String ghost) {
         if (ghost.equals("blinky")) {
             if (blinkyGoingRight) blinkyGoLeft = false;
@@ -413,21 +459,18 @@ public class Ghost {
             if (blinkyGoingDown) blinkyGoUp = false;
             return;
         }
-
         if (ghost.equals("pinky")) {
             if (pinkyGoingRight) pinkyGoLeft = false;
             if (pinkyGoingLeft) pinkyGoRight = false;
             if (pinkyGoingUp) pinkyGoDown = false;
             if (pinkyGoingDown) pinkyGoUp = false;
         }
-
         if (ghost.equals("clyde")) {
             if (clydeGoingRight) clydeGoLeft = false;
             if (clydeGoingLeft) clydeGoRight = false;
             if (clydeGoingUp) clydeGoDown = false;
             if (clydeGoingDown) clydeGoUp = false;
         }
-
         if (ghost.equals("inky")) {
             if (inkyGoingRight) inkyGoLeft = false;
             if (inkyGoingLeft) inkyGoRight = false;
@@ -436,6 +479,11 @@ public class Ghost {
         }
     }
 
+
+    /**
+     * Gives moving direction by setting the right boolean to true
+     * @param ghost lowercase name of the Ghost
+     */
     public static void getMovingDirection(String ghost) {
         if (ghost.equals("blinky")) {
             if (velocityBlinkyHorizontal > 0) blinkyGoingRight = true;
@@ -444,21 +492,18 @@ public class Ghost {
             if (velocityBlinkyVertical > 0) blinkyGoingDown = true;
             return;
         }
-
         if (ghost.equals("pinky")) {
             if (velocityPinkyHorizontal > 0) pinkyGoingRight = true;
             if (velocityPinkyHorizontal < 0) pinkyGoingLeft = true;
             if (velocityPinkyVertical < 0) pinkyGoingUp = true;
             if (velocityPinkyVertical > 0) pinkyGoingDown = true;
         }
-
         if (ghost.equals("clyde")) {
             if (velocityClydeHorizontal > 0) clydeGoingRight = true;
             if (velocityClydeHorizontal < 0) clydeGoingLeft = true;
             if (velocityClydeVertical < 0) clydeGoingUp = true;
             if (velocityClydeVertical > 0) clydeGoingDown = true;
         }
-
         if (ghost.equals("inky")) {
             if (velocityInkyHorizontal > 0) inkyGoingRight = true;
             if (velocityInkyHorizontal < 0) inkyGoingLeft = true;
@@ -468,6 +513,10 @@ public class Ghost {
     }
 
 
+    /**
+     * Allows Teleporting Ghosts on Exits
+     * @param ghost lowercase name of the Ghost
+     */
     public static void allowTeleport(String ghost) {
         if (ghost.equals("blinky")) {
             if (velocityBlinkyHorizontal > 0) {
@@ -488,7 +537,6 @@ public class Ghost {
             }
             return;
         }
-
         if (ghost.equals("pinky")) {
             if (velocityPinkyHorizontal > 0) {
                 if (pinkyColumnNew + 1 > blockCountHorizontally) {
@@ -507,8 +555,6 @@ public class Ghost {
                 }
             }
         }
-
-
         if (ghost.equals("clyde")) {
             if (velocityClydeHorizontal > 0) {
                 if (clydeColumnNew + 1 > blockCountHorizontally) {
@@ -527,8 +573,6 @@ public class Ghost {
                 }
             }
         }
-
-
         if (ghost.equals("inky")) {
             if (velocityInkyHorizontal > 0) {
                 if (inkyColumnNew + 1 > blockCountHorizontally) {
@@ -550,23 +594,42 @@ public class Ghost {
     }
 
 
-
-
+    /**
+     * Checks if moving Up results in hitting wall
+     * @param column Column to check
+     * @param row    Row to check
+     * @return       True / False
+     */
     public static boolean ghostNotPossibleUp(double column, double row) {
         return notAllowedBox[(int) column][(int) row - 1];
     }
 
-
+    /**
+     * Checks if moving Down results in hitting wall
+     * @param column Column to check
+     * @param row    Row to check
+     * @return       True / False
+     */
     public static boolean ghostNotPossibleDown(double column, double row) {
         return notAllowedBox[(int) column][(int) row + 1];
     }
 
-
+    /**
+     * Checks if moving Left results in hitting wall
+     * @param column Column to check
+     * @param row    Row to check
+     * @return       True / False
+     */
     public static boolean ghostNotPossibleLeft(double column, double row) {
         return notAllowedBox[(int) column - 1][(int) row];
     }
 
-
+    /**
+     * Checks if moving Right results in hitting wall
+     * @param column Column to check
+     * @param row    Row to check
+     * @return       True / False
+     */
     public static boolean ghostNotPossibleRight(double column, double row) {
         return notAllowedBox[(int) column + 1][(int) row];
     }

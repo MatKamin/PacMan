@@ -5,15 +5,16 @@ package application;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-
 import static application.mapReader.blockCountHorizontally;
 import static application.mapReader.blockCountVertically;
 
 //---------------------------------CLASS---------------------------------\\
 
+/**
+ * Class with all Image viewers
+ */
 public class imageViewerVariables {
 
 

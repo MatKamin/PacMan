@@ -5,8 +5,6 @@ package application.canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
-
-import static application.imageViewerVariables.viewCoin;
 import static application.main.*;
 
 
@@ -45,7 +43,6 @@ public class menuCanvas {
         gc.setStroke(Color.DARKGRAY);
         gc.setFont(pacmanFontUI);
         gc.fillText("Welcome " + validUsername + "!!! ", width / 2, pacmanFontSize * 3);
-
 
     }
 }

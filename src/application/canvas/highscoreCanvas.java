@@ -2,32 +2,30 @@ package application.canvas;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
-
 import java.io.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Scanner;
-
-import static application.gameMechanics.allowNextMoveLeft;
-import static application.gameMechanics.highscore;
 import static application.main.*;
 
 
 public class highscoreCanvas {
 
 
+    /**
+     * draws highscore Canvas
+     * @param gc Graphics Context of the Highscore window
+     */
     public static void play(GraphicsContext gc) throws FileNotFoundException {
 
         sqlConnection();
 
         //::::::::::: Background :::::::::::\\
 
-        gc.setFill(Color.BLACK);                // Set background color
-        gc.fillRect(0, 0, width, height);    // Draw background
+        gc.setFill(Color.BLACK);                     // Set background color
+        gc.fillRect(0, 0, width, height);     // Draw background
 
 
         //::::::::::: Text :::::::::::\\
@@ -37,9 +35,10 @@ public class highscoreCanvas {
         gc.setTextAlign(TextAlignment.CENTER);      // Align text to center
         gc.setStroke(Color.YELLOW);
 
-        try {
 
+        try {
             Statement statement = connection.createStatement();
+            // get top 10 ordered scores
             ResultSet results = statement.executeQuery("SELECT * FROM highscores ORDER BY score DESC LIMIT 10");
 
             gc.strokeText("HIGHSCORES", width / 2, heightOneBlock * 3);
@@ -55,18 +54,14 @@ public class highscoreCanvas {
             int i = 1;
 
             while (results.next()) {
-
                 gc.strokeText(results.getString("username"), width / 4, heightOneBlock * (8 + (i * 3) ));
                 gc.strokeText(results.getString("score"), (width / 4) * 2, heightOneBlock * (8 + (i * 3) ));
                 gc.strokeText(String.valueOf(i), (width / 4) * 3, heightOneBlock * (8 + (i * 3) ));
-
                 i++;
             }
-
             connection.close();
         } catch (SQLException e) {
             System.out.println("Could not retrieve data from the database " + e.getMessage());
         }
-
     }
 }
