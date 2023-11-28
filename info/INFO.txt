@@ -1,0 +1,12 @@
+SDK:
+	openjdk-15, language Level: 16
+
+
+Modules:
+	mysql-connector-java-8.0.25
+	javafx-sdk-11.0.2
+	JUnit5.7.0
+
+
+Worktime:
+	~ 95 hrs
